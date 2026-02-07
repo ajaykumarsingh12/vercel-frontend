@@ -1,0 +1,1107 @@
+/* Hall Card Base - Clean Modern Design with Smooth Hover */
+.hall-card {
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.08),
+    0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: auto;
+  width: 100%;
+  animation: cardFadeIn 0.6s ease-out backwards;
+  will-change: transform;
+  /* Optimize for animations */
+}
+
+/* Dark Mode - Hall Card */
+[data-theme="dark"] .hall-card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) {
+  .hall-card:hover {
+    transform: translateY(-4px);
+    /* Reduced movement to prevent jitter */
+    box-shadow:
+      0 12px 20px -5px rgba(0, 0, 0, 0.15),
+      0 6px 8px -5px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+    z-index: 10;
+    will-change: transform;
+    /* Optimize for animations */
+  }
+
+  [data-theme="dark"] .hall-card:hover {
+    box-shadow:
+      0 12px 20px -5px rgba(0, 0, 0, 0.4),
+      0 6px 8px -5px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+}
+
+/* Image Container - Ultra Compact */
+.hall-image-container {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 20px 20px 0 0;
+}
+
+.hall-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  will-change: transform;
+  /* Optimize for animations */
+}
+
+.hall-card:hover .hall-image {
+  transform: scale(1.05);
+  /* Reduced scale to prevent jitter */
+}
+
+/* Carousel Controls - Elegant & Minimal */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  border-radius: 50%;
+}
+
+@media (max-width: 1024px) {
+  .carousel-control {
+    display: none !important;
+    /* Hide arrows on touch devices */
+  }
+}
+
+.hall-card:hover .carousel-control {
+  opacity: 1;
+}
+
+.carousel-card-item .hall-card:hover .carousel-control {
+  opacity: 1;
+}
+
+.carousel-control:hover {
+  background: white;
+  color: #1e293b;
+  transform: translateY(-50%) scale(1.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .carousel-control:hover {
+  background: #334155;
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.carousel-control.next {
+  right: 12px;
+}
+
+.carousel-control.prev {
+  left: 12px;
+}
+
+/* Carousel Indicators - Sleek Pills */
+.carousel-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator-dot.active {
+  background: white;
+  width: 14px;
+  border-radius: 10px;
+}
+
+/* Overlay - Hidden by default */
+.hall-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.hall-card:hover .hall-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.view-details-btn {
+  background: rgba(255, 255, 255, 0.98);
+  color: #1e293b;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(10px);
+  opacity: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.hall-card:hover .view-details-btn {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.view-details-btn:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Like Button - Minimal */
+.favorite-btn {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #64748b;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 40;
+}
+
+[data-theme="dark"] .favorite-btn {
+  background: rgba(30, 41, 59, 0.95);
+  color: #94a3b8;
+}
+
+.favorite-btn:hover {
+  background: #ffffff;
+  color: #ef4444;
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+}
+
+.favorite-btn.active {
+  background: #ffffff;
+  color: #ef4444;
+  animation: heartPulse 0.6s ease-out;
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.favorite-btn svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+  width: 16px;
+  height: 16px;
+}
+
+/* Share Button - Radial Menu Style */
+.share-btn-container {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 40;
+}
+
+.share-btn {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #64748b;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .share-btn {
+  background: rgba(30, 41, 59, 0.95);
+  color: #94a3b8;
+}
+
+.share-btn:hover {
+  background: #ffffff;
+  color: #6366f1;
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+[data-theme="dark"] .share-btn:hover {
+  background: #334155;
+  color: #818cf8;
+}
+
+.share-btn.active {
+  transform: rotate(180deg);
+  background: #6366f1;
+  color: white;
+}
+
+[data-theme="dark"] .share-btn.active {
+  background: #818cf8;
+}
+
+.share-btn svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+  width: 18px;
+  height: 18px;
+  transition: transform 0.4s ease;
+}
+
+/* Horizontal Share Menu - Opens to the left */
+.share-radial-menu {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  pointer-events: none;
+  align-items: center;
+}
+
+.share-radial-option {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  animation: horizontalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: calc(var(--index) * 0.08s);
+  opacity: 0;
+  transform: translateX(20px) scale(0.8);
+}
+
+[data-theme="dark"] .share-radial-option {
+  background: #1e293b;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes horizontalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Remove individual positioning - all buttons stack vertically */
+.share-radial-option.facebook {
+  color: #1877f2;
+}
+
+.share-radial-option.whatsapp {
+  color: #25d366;
+}
+
+.share-radial-option.copy {
+  color: #6366f1;
+}
+
+.share-radial-option:hover {
+  transform: translateY(0) scale(1.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.share-radial-option.facebook:hover {
+  background: #1877f2;
+  color: white;
+}
+
+.share-radial-option.whatsapp:hover {
+  background: #25d366;
+  color: white;
+}
+
+.share-radial-option.copy:hover {
+  background: #6366f1;
+  color: white;
+}
+
+[data-theme="dark"] .share-radial-option:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Photo Count Badge - Minimal */
+.photo-count-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #1e293b;
+  padding: 5px 8px;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  z-index: 20;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.3s ease;
+}
+
+.photo-count-badge::before {
+  content: "📷";
+  font-size: 0.7rem;
+}
+
+.photo-count-badge .divider {
+  opacity: 0.4;
+  margin: 0 1px;
+}
+
+.hall-card:hover .photo-count-badge {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Price Badge - Hidden */
+.hall-badge {
+  display: none;
+}
+
+.hall-price-badge {
+  display: none;
+}
+
+/* Hall Info Section - Expands on Hover */
+.hall-info {
+  padding: 0.75rem 0.9rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  background: #ffffff;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hall-card:hover .hall-info {
+  padding-bottom: 1.1rem;
+  gap: 0.45rem;
+}
+
+/* Dark Mode - Hall Info */
+[data-theme="dark"] .hall-info {
+  background: #1e293b;
+}
+
+/* Title - Ultra Compact */
+.hall-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: left;
+  transition: color 0.3s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Dark Mode - Title */
+[data-theme="dark"] .hall-name {
+  color: #f1f5f9;
+}
+
+.hall-card:hover .hall-name {
+  color: #6366f1;
+}
+
+[data-theme="dark"] .hall-card:hover .hall-name {
+  color: #818cf8;
+}
+
+/* Location - Ultra Compact */
+.hall-location {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0.05rem;
+  text-align: left;
+}
+
+/* Dark Mode - Location */
+[data-theme="dark"] .hall-location {
+  color: #94a3b8;
+}
+
+.hall-location span:first-child {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Capacity & Price Info - Ultra Minimal */
+.hall-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.45rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.detail-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.detail-item:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.detail-item:hover::before {
+  opacity: 1;
+}
+
+/* Capacity Card - Blue Theme */
+.detail-item:first-child {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #bfdbfe;
+}
+
+[data-theme="dark"] .detail-item:first-child {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  border-color: #3b82f6;
+}
+
+.detail-item:first-child::before {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.detail-item:first-child:hover {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #93c5fd;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="dark"] .detail-item:first-child:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  border-color: #60a5fa;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+.detail-item:first-child .icon {
+  color: #3b82f6;
+}
+
+[data-theme="dark"] .detail-item:first-child .icon {
+  color: #60a5fa;
+}
+
+/* Price Card - Purple Theme */
+.detail-item:last-child {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #e9d5ff;
+}
+
+[data-theme="dark"] .detail-item:last-child {
+  background: linear-gradient(135deg, #581c87 0%, #6b21a8 100%);
+  border-color: #a855f7;
+}
+
+.detail-item:last-child::before {
+  background: linear-gradient(90deg, #a855f7, #9333ea);
+}
+
+.detail-item:last-child:hover {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  border-color: #d8b4fe;
+  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.15);
+}
+
+[data-theme="dark"] .detail-item:last-child:hover {
+  background: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
+  border-color: #c084fc;
+  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.3);
+}
+
+.detail-item:last-child .icon {
+  color: #a855f7;
+}
+
+[data-theme="dark"] .detail-item:last-child .icon {
+  color: #c084fc;
+}
+
+.detail-item .icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  margin-bottom: 0.1rem;
+  transition: transform 0.3s ease;
+}
+
+.detail-item:hover .icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.detail-item .guest-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0;
+}
+
+[data-theme="dark"] .detail-item .guest-label {
+  color: #cbd5e1;
+}
+
+.detail-item span:last-child {
+  font-size: 0.8rem;
+  color: #1e293b;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="dark"] .detail-item span:last-child {
+  color: #f1f5f9;
+}
+
+.hall-description {
+  display: none;
+}
+
+/* Book Now Button - Always Visible */
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: white;
+  text-align: center;
+  padding: 0.7rem 1.25rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.75rem;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  letter-spacing: 0.3px;
+  margin-top: 0.4rem;
+  opacity: 1;
+  height: 42px;
+  overflow: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.btn-primary::after {
+  content: "→";
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+}
+
+.btn-primary:hover::after {
+  transform: translateX(4px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Price Info - Bold & Prominent with Brand Color */
+.hall-price-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 14px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hall-price-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.hall-card:hover .hall-price-info::before {
+  left: 100%;
+}
+
+.hall-price-info:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.hall-price-info .icon {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hall-price-info .price-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.hall-price-info .price-value {
+  font-size: 1.5rem;
+  /* Bold and large */
+  font-weight: 800;
+  /* Extra bold */
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design for Hall Card */
+@media (max-width: 1024px) {
+  .hall-card {
+    height: auto;
+    min-height: 380px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .hall-image-container {
+    aspect-ratio: 16 / 9;
+    /* Slightly wider for tablets */
+  }
+
+  .hall-name {
+    font-size: 1.25rem;
+  }
+
+  .hall-info {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hall-card {
+    border-radius: 16px;
+    max-width: 336px;
+    margin: 0 auto;
+  }
+
+  .hall-image-container {
+    height: 140px;
+  }
+
+  .hall-info {
+    padding: 0.7rem;
+    gap: 0.4rem;
+  }
+
+  .hall-name {
+    font-size: 0.85rem;
+    line-height: 1.25;
+    -webkit-line-clamp: 1;
+  }
+
+  .hall-location {
+    font-size: 0.6rem;
+    gap: 0.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Horizontal layout for capacity, price, and button */
+  .hall-details {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    margin-bottom: 0;
+    align-items: stretch;
+  }
+
+  .detail-item {
+    flex: 1;
+    padding: 0.35rem 0.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .detail-item .icon {
+    font-size: 0.75rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .detail-item .guest-label {
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .detail-item span:last-child {
+    font-size: 0.65rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .btn-primary {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.6rem;
+    height: auto;
+    margin-top: 0.4rem;
+    white-space: nowrap;
+    min-height: 32px;
+  }
+
+  .btn-primary::after {
+    font-size: 0.75rem;
+  }
+
+  .favorite-btn,
+  .share-btn {
+    width: 30px;
+    height: 30px;
+    top: 0.4rem;
+  }
+
+  .favorite-btn {
+    left: 0.4rem;
+  }
+
+  .share-btn-container {
+    right: 0.4rem;
+    top: 0.4rem;
+  }
+
+  .favorite-btn svg,
+  .share-btn svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .photo-count-badge {
+    top: 0.4rem;
+    right: 0.4rem;
+    padding: 3px 5px;
+    font-size: 0.55rem;
+  }
+
+  .carousel-indicators {
+    bottom: 8px;
+    padding: 2px 6px;
+  }
+
+  .indicator-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .indicator-dot.active {
+    width: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hall-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 309px;
+  }
+
+  .hall-image-container {
+    height: 120px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .hall-info {
+    padding: 0.6rem;
+    gap: 0.35rem;
+  }
+
+  .hall-name {
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .hall-location {
+    font-size: 0.55rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .hall-location svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Horizontal compact layout */
+  .hall-details {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    margin-bottom: 0;
+  }
+
+  .detail-item {
+    flex: 1;
+    font-size: 0.6rem;
+    padding: 0.3rem 0.25rem;
+    border-radius: 6px;
+  }
+
+  .detail-item .icon {
+    font-size: 0.7rem;
+    margin-bottom: 0.05rem;
+  }
+
+  .detail-item .guest-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+  }
+
+  .detail-item span:last-child {
+    font-size: 0.6rem;
+  }
+
+  .btn-primary {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.55rem;
+    min-height: 30px;
+    border-radius: 30px;
+    margin-top: 0.35rem;
+    gap: 0.3rem;
+  }
+
+  .btn-primary::after {
+    font-size: 0.7rem;
+  }
+
+  .favorite-btn,
+  .share-btn {
+    width: 28px;
+    height: 28px;
+    top: 0.35rem;
+  }
+
+  .favorite-btn {
+    left: 0.35rem;
+  }
+
+  .share-btn-container {
+    right: 0.35rem;
+    top: 0.35rem;
+  }
+
+  .favorite-btn svg,
+  .share-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .photo-count-badge {
+    padding: 2px 4px;
+    font-size: 0.5rem;
+    top: 0.35rem;
+    right: 0.35rem;
+  }
+
+  .photo-count-badge::before {
+    font-size: 0.6rem;
+  }
+
+  .carousel-indicators {
+    bottom: 6px;
+    padding: 2px 5px;
+    gap: 4px;
+  }
+
+  .indicator-dot {
+    width: 3px;
+    height: 3px;
+  }
+
+  .indicator-dot.active {
+    width: 8px;
+  }
+
+  .hall-price-info .price-value {
+    font-size: 0.95rem;
+  }
+
+  /* Share menu adjustments for small screens */
+  .share-radial-menu {
+    right: 38px;
+    gap: 0.4rem;
+  }
+
+  .share-radial-option {
+    width: 36px;
+    height: 36px;
+  }
+
+  .share-radial-option svg {
+    width: 16px;
+    height: 16px;
+  }
+}

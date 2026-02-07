@@ -1,0 +1,333 @@
+.revenue-details {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.revenue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.revenue-header h1 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 2rem;
+}
+
+/* Stats Cards */
+.revenue-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--input-border);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card.revenue-card {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  border: none;
+}
+
+.stat-card.bookings-card {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+}
+
+.stat-card.fees-card {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  border: none;
+}
+
+.stat-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.stat-card .stat-number {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-card .stat-subtitle {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Filters */
+.revenue-filters {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--input-border);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.clear-filters-btn {
+  padding: 0.5rem 1rem;
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  height: fit-content;
+}
+
+.clear-filters-btn:hover {
+  background: var(--secondary-dark);
+  transform: translateY(-1px);
+}
+
+/* Revenue Table */
+.revenue-table-container {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--input-border);
+  overflow: hidden;
+}
+
+.revenue-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.revenue-table th {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.revenue-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--input-border);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.revenue-table tr:hover {
+  background: var(--hover-bg);
+}
+
+.revenue-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table Cell Styles */
+.hall-name-cell {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.phone-cell .phone-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.phone-cell .phone-link:hover {
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.amount-cell,
+.commission-cell,
+.fee-cell {
+  font-weight: 600;
+  text-align: right;
+}
+
+.commission-cell {
+  color: #27ae60;
+}
+
+.fee-cell {
+  color: #e74c3c;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.refunded {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* No Revenue State */
+.no-revenue {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-muted);
+}
+
+.no-revenue-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.no-revenue h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+}
+
+.no-revenue p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .revenue-details {
+    padding: 1rem;
+  }
+
+  .revenue-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .revenue-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .revenue-table-container {
+    overflow-x: auto;
+  }
+
+  .revenue-table {
+    min-width: 800px;
+  }
+
+  .revenue-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .revenue-table th {
+    background: var(--primary-dark);
+  }
+
+  .status-badge.completed {
+    background: rgba(39, 174, 96, 0.2);
+    color: #2ecc71;
+  }
+
+  .status-badge.refunded {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+  }
+}
