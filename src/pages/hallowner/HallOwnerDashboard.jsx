@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import Loader from "../../components/commons/Loader";
 import Calendar from "../../components/commons/Calendar";
 
 import "./HallOwnerDashboard.css";
-
-// Simple toast notification system
-const toast = {
-  success: (message) => {
-    alert(`✅ ${message}`);
-  },
-  error: (message) => {
-    alert(`❌ ${message}`);
-  }
-};
 
 const HallOwnerDashboard = () => {
   const location = useLocation();
@@ -431,7 +422,6 @@ const HallOwnerDashboard = () => {
   return (
     <div className="hall-owner-dashboard">
       <div className="dashboard-header">
-        <h1>Dashboard</h1>
       </div>
 
       <div className="dashboard-layout">
@@ -449,6 +439,12 @@ const HallOwnerDashboard = () => {
               onClick={() => setActiveTab("slots")}
             >
               Manage Slots
+            </button>
+            <button
+              className={`earnings-report-btn ${activeTab === "earnings" ? "active" : ""}`}
+              onClick={() => navigate('/hall-owner/revenue')}
+            >
+              Earnings Report
             </button>
           </div>
 
@@ -568,35 +564,9 @@ const HallOwnerDashboard = () => {
                               </span>
                             </td>
                             <td className="actions-cell">
-                              {booking.status === "pending" && (
-                                <div className="table-actions">
-                                  <button
-                                    onClick={() =>
-                                      handleStatusUpdate(
-                                        booking._id,
-                                        "confirmed",
-                                      )
-                                    }
-                                    className="btn-table btn-confirm-table"
-                                    title="Confirm"
-                                  >
-                                    ✓
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleStatusUpdate(
-                                        booking._id,
-                                        "cancelled",
-                                      )
-                                    }
-                                    className="btn-table btn-reject-table"
-                                    title="Reject"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              )}
-                              {booking.status === "confirmed" && !completedBookings.has(booking._id) && (
+                              {booking.status === "cancelled" ? (
+                                <span className="user-cancelled-text">User Cancelled</span>
+                              ) : !completedBookings.has(booking._id) ? (
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -610,7 +580,7 @@ const HallOwnerDashboard = () => {
                                 >
                                   Complete
                                 </button>
-                              )}
+                              ) : null}
                             </td>
                           </tr>
                         ))}

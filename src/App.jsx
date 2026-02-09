@@ -31,6 +31,7 @@ import MyHalls from "./pages/hallowner/MyHalls";
 import AddHall from "./pages/hallowner/AddHall";
 import EditHall from "./pages/hallowner/EditHall";
 import EditProfile from "./pages/hallowner/EditProfile";
+import EarningsReport from "./pages/hallowner/EarningsReport";
 import "./styles/custom.css";
 
 function App() {
@@ -129,6 +130,14 @@ function App() {
                   element={
                     <PrivateRoute allowedRoles={["hall_owner", "admin"]}>
                       <EditProfile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/hall-owner/revenue"
+                  element={
+                    <PrivateRoute allowedRoles={["hall_owner", "admin"]}>
+                      <EarningsReport />
                     </PrivateRoute>
                   }
                 />

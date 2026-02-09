@@ -1,15 +1,10 @@
-/* Hall Card Base - Clean Modern Design with Smooth Hover */
+/* Hall Card Base */
 .hall-card {
   background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.08),
-    0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  transition:
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #f1f5f9;
   display: flex;
   flex-direction: column;
@@ -18,16 +13,12 @@
   width: 100%;
   animation: cardFadeIn 0.6s ease-out backwards;
   will-change: transform;
-  /* Optimize for animations */
 }
 
-/* Dark Mode - Hall Card */
 [data-theme="dark"] .hall-card {
   background: #1e293b;
   border-color: #334155;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.3),
-    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes cardFadeIn {
@@ -35,7 +26,6 @@
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -45,27 +35,19 @@
 @media (hover: hover) {
   .hall-card:hover {
     transform: translateY(-4px);
-    /* Reduced movement to prevent jitter */
-    box-shadow:
-      0 12px 20px -5px rgba(0, 0, 0, 0.15),
-      0 6px 8px -5px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15), 0 6px 8px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(99, 102, 241, 0.1);
     border-color: rgba(99, 102, 241, 0.2);
     z-index: 10;
     will-change: transform;
-    /* Optimize for animations */
   }
 
   [data-theme="dark"] .hall-card:hover {
-    box-shadow:
-      0 12px 20px -5px rgba(0, 0, 0, 0.4),
-      0 6px 8px -5px rgba(0, 0, 0, 0.25),
-      0 0 0 1px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 8px -5px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.3);
     border-color: rgba(99, 102, 241, 0.4);
   }
 }
 
-/* Image Container - Ultra Compact */
+/* Image Container */
 .hall-image-container {
   position: relative;
   width: 100%;
@@ -82,15 +64,13 @@
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
   will-change: transform;
-  /* Optimize for animations */
 }
 
 .hall-card:hover .hall-image {
   transform: scale(1.05);
-  /* Reduced scale to prevent jitter */
 }
 
-/* Carousel Controls - Elegant & Minimal */
+/* Carousel Controls */
 .carousel-control {
   position: absolute;
   top: 50%;
@@ -115,15 +95,10 @@
 @media (max-width: 1024px) {
   .carousel-control {
     display: none !important;
-    /* Hide arrows on touch devices */
   }
 }
 
 .hall-card:hover .carousel-control {
-  opacity: 1;
-}
-
-.carousel-card-item .hall-card:hover .carousel-control {
   opacity: 1;
 }
 
@@ -149,7 +124,7 @@
   left: 12px;
 }
 
-/* Carousel Indicators - Sleek Pills */
+/* Carousel Indicators */
 .carousel-indicators {
   position: absolute;
   bottom: 15px;
@@ -179,7 +154,7 @@
   border-radius: 10px;
 }
 
-/* Overlay - Hidden by default */
+/* Overlay */
 .hall-overlay {
   position: absolute;
   top: 0;
@@ -227,7 +202,7 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
-/* Like Button - Minimal */
+/* Favorite Button */
 .favorite-btn {
   position: absolute;
   top: 0.75rem;
@@ -268,17 +243,9 @@
 }
 
 @keyframes heartPulse {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 .favorite-btn svg {
@@ -287,7 +254,7 @@
   height: 16px;
 }
 
-/* Share Button - Radial Menu Style */
+/* Share Button */
 .share-btn-container {
   position: absolute;
   top: 0.75rem;
@@ -346,7 +313,7 @@
   transition: transform 0.4s ease;
 }
 
-/* Horizontal Share Menu - Opens to the left */
+/* Share Menu */
 .share-radial-menu {
   position: absolute;
   top: 0;
@@ -388,18 +355,15 @@
     opacity: 0;
     transform: translateX(20px) scale(0.8);
   }
-
   50% {
     opacity: 1;
   }
-
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
   }
 }
 
-/* Remove individual positioning - all buttons stack vertically */
 .share-radial-option.facebook {
   color: #1877f2;
 }
@@ -436,7 +400,7 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* Photo Count Badge - Minimal */
+/* Photo Count Badge */
 .photo-count-badge {
   position: absolute;
   top: 0.75rem;
@@ -474,16 +438,7 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Price Badge - Hidden */
-.hall-badge {
-  display: none;
-}
-
-.hall-price-badge {
-  display: none;
-}
-
-/* Hall Info Section - Expands on Hover */
+/* Hall Info Section */
 .hall-info {
   padding: 0.75rem 0.9rem 0.9rem;
   display: flex;
@@ -499,12 +454,11 @@
   gap: 0.45rem;
 }
 
-/* Dark Mode - Hall Info */
 [data-theme="dark"] .hall-info {
   background: #1e293b;
 }
 
-/* Title - Ultra Compact */
+/* Title */
 .hall-name {
   font-size: 1.05rem;
   font-weight: 700;
@@ -516,11 +470,11 @@
   transition: color 0.3s ease;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Dark Mode - Title */
 [data-theme="dark"] .hall-name {
   color: #f1f5f9;
 }
@@ -533,7 +487,7 @@
   color: #818cf8;
 }
 
-/* Location - Ultra Compact */
+/* Location */
 .hall-location {
   display: flex;
   align-items: center;
@@ -545,7 +499,6 @@
   text-align: left;
 }
 
-/* Dark Mode - Location */
 [data-theme="dark"] .hall-location {
   color: #94a3b8;
 }
@@ -556,7 +509,7 @@
   align-items: center;
 }
 
-/* Capacity & Price Info - Ultra Minimal */
+/* Capacity & Price Info */
 .hall-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -602,7 +555,6 @@
   opacity: 1;
 }
 
-/* Capacity Card - Blue Theme */
 .detail-item:first-child {
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border-color: #bfdbfe;
@@ -629,15 +581,6 @@
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
-.detail-item:first-child .icon {
-  color: #3b82f6;
-}
-
-[data-theme="dark"] .detail-item:first-child .icon {
-  color: #60a5fa;
-}
-
-/* Price Card - Purple Theme */
 .detail-item:last-child {
   background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
   border-color: #e9d5ff;
@@ -664,25 +607,6 @@
   box-shadow: 0 6px 16px rgba(168, 85, 247, 0.3);
 }
 
-.detail-item:last-child .icon {
-  color: #a855f7;
-}
-
-[data-theme="dark"] .detail-item:last-child .icon {
-  color: #c084fc;
-}
-
-.detail-item .icon {
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  margin-bottom: 0.1rem;
-  transition: transform 0.3s ease;
-}
-
-.detail-item:hover .icon {
-  transform: scale(1.15) rotate(5deg);
-}
-
 .detail-item .guest-label {
   font-size: 0.55rem;
   font-weight: 700;
@@ -707,11 +631,7 @@
   color: #f1f5f9;
 }
 
-.hall-description {
-  display: none;
-}
-
-/* Book Now Button - Always Visible */
+/* Book Now Button */
 .btn-primary {
   background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
   color: white;
@@ -758,88 +678,7 @@
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
-/* Price Info - Bold & Prominent with Brand Color */
-.hall-price-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 14px;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.hall-price-info::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.hall-card:hover .hall-price-info::before {
-  left: 100%;
-}
-
-.hall-price-info:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
-}
-
-.hall-price-info .icon {
-  display: flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.hall-price-info .price-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-.hall-price-info .price-value {
-  font-size: 1.5rem;
-  /* Bold and large */
-  font-weight: 800;
-  /* Extra bold */
-  color: #ffffff;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Responsive Design for Hall Card */
-@media (max-width: 1024px) {
-  .hall-card {
-    height: auto;
-    min-height: 380px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  }
-
-  .hall-image-container {
-    aspect-ratio: 16 / 9;
-    /* Slightly wider for tablets */
-  }
-
-  .hall-name {
-    font-size: 1.25rem;
-  }
-
-  .hall-info {
-    padding: 1.25rem;
-  }
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
   .hall-card {
     border-radius: 16px;
@@ -860,6 +699,7 @@
     font-size: 0.85rem;
     line-height: 1.25;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
   }
 
   .hall-location {
@@ -868,7 +708,6 @@
     margin-bottom: 0.3rem;
   }
 
-  /* Horizontal layout for capacity, price, and button */
   .hall-details {
     display: flex;
     flex-direction: row;
@@ -886,11 +725,6 @@
     justify-content: center;
     text-align: center;
     min-width: 0;
-  }
-
-  .detail-item .icon {
-    font-size: 0.75rem;
-    margin-bottom: 0.1rem;
   }
 
   .detail-item .guest-label {
@@ -995,7 +829,6 @@
     height: 10px;
   }
 
-  /* Horizontal compact layout */
   .hall-details {
     display: flex;
     flex-direction: row;
@@ -1008,11 +841,6 @@
     font-size: 0.6rem;
     padding: 0.3rem 0.25rem;
     border-radius: 6px;
-  }
-
-  .detail-item .icon {
-    font-size: 0.7rem;
-    margin-bottom: 0.05rem;
   }
 
   .detail-item .guest-label {
@@ -1085,11 +913,6 @@
     width: 8px;
   }
 
-  .hall-price-info .price-value {
-    font-size: 0.95rem;
-  }
-
-  /* Share menu adjustments for small screens */
   .share-radial-menu {
     right: 38px;
     gap: 0.4rem;

@@ -3,12 +3,18 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import "./HeroSection.css";
+/*
+const heroImages = [
+  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1920&q=80",
+  "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1920&q=80"
+];
+*/
 const heroVideos = [
   {
-    src: "/videos/video.mp4",
-
+    src: "https://res.cloudinary.com/dmr0vnlww/video/upload/v1770547810/hall-booking/videos/hero-video.mp4",
   }
 ];
+
 const HeroSection = () => {
   const heroRef = useRef(null);
   const videoRef = useRef(null);

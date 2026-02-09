@@ -2542,14 +2542,6 @@
   }
 }
 
-/* Place Your Hall Section */
-.place-hall-section {
-  display: flex;
-  justify-content: center;
-  margin: 3rem 0;
-  padding: 2rem;
-}
-
 .btn-place-hall {
   /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   color: red;
@@ -2760,7 +2752,7 @@
 
 .detail-item span {
   font-size: 0.9rem;
-  color: var(--text-primary, #1e293b);
+  color: #000000;
   font-weight: 500;
 }
 
@@ -3307,11 +3299,6 @@
 
 /* Responsive Design for Booking Header */
 @media (max-width: 768px) {
-  .place-hall-section {
-    margin: 2rem 0;
-    padding: 1rem;
-  }
-
   .btn-place-hall {
     padding: 0.875rem 2rem;
     font-size: 1rem;
@@ -3327,10 +3314,6 @@
 }
 
 @media (max-width: 480px) {
-  .place-hall-section {
-    margin: 1.5rem 0;
-    padding: 0.75rem;
-  }
 
   .btn-place-hall {
     padding: 0.75rem 1.5rem;
@@ -3503,10 +3486,6 @@
 
 /* Responsive Design for Place Hall Modal */
 @media (max-width: 768px) {
-  .place-hall-section {
-    margin: 2rem 0;
-    padding: 1rem;
-  }
 
   .btn-place-hall {
     padding: 0.875rem 2rem;
@@ -3542,10 +3521,6 @@
 }
 
 @media (max-width: 480px) {
-  .place-hall-section {
-    margin: 1.5rem 0;
-    padding: 0.75rem;
-  }
 
   .btn-place-hall {
     padding: 0.75rem 1.5rem;
@@ -4117,7 +4092,7 @@ input[type="time"] {
 
 /* Hall Availability Carousel - Fine Tuned to Screenshot */
 .availability-carousel-detail {
-  background: #000000;
+  background: rgb(80, 52, 64);
   border-radius: 20px;
   padding: 2.5rem;
   margin: 2rem 0 3rem;
@@ -4141,8 +4116,6 @@ input[type="time"] {
 }
 
 .section-icon-main {
-  background: #7c3aed;
-  /* Purple-heavy */
   width: 54px;
   height: 54px;
   border-radius: 14px;
@@ -4150,7 +4123,7 @@ input[type="time"] {
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+  /* box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3); */
 }
 
 .section-title-main {

@@ -72,9 +72,17 @@ const Favorites = () => {
               <div className="favorite-image-wrapper">
                 {hall.images && hall.images.length > 0 ? (
                   <img
-                    src={`http://localhost:5000/${hall.images[0]}`}
+                    src={
+                      hall.images[0].startsWith('http')
+                        ? hall.images[0]
+                        : `http://localhost:5000/${hall.images[0]}`
+                    }
                     alt={hall.name}
                     className="favorite-image"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
                   />
                 ) : (
                   <div className="favorite-image-placeholder">

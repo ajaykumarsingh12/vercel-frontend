@@ -43,31 +43,6 @@
   background-clip: text;
 }
 
-/* Form Section */
-.form-section {
-  margin: 2rem 0;
-  padding: 2rem;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
-  border-radius: 16px;
-  border: 2px solid rgba(102, 126, 234, 0.1);
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: orange;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(102, 126, 234, 0.1);
-}
-
-.section-icon {
-  font-size: 1.75rem;
-}
-
 /* Form Labels */
 .form-group label {
   display: block;
@@ -76,12 +51,6 @@
   margin-bottom: 0.75rem;
   font-size: 1rem;
   letter-spacing: 0.3px;
-}
-
-/* Make asterisks red for required fields */
-.required-asterisk {
-  color: #e74c3c;
-  font-weight: 700;
 }
 
 .form-row {
@@ -240,17 +209,6 @@
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-}
-
-.btn-slot {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
-}
-
-.btn-slot:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
 }
 
 .btn-secondary {
@@ -589,7 +547,7 @@
   display: grid;
   grid-template-columns: 2fr 1.5fr 1.5fr auto;
   gap: 1.5rem;
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   align-items: center;

@@ -50,6 +50,20 @@ const HallDetail = () => {
   const [availabilityView, setAvailabilityView] = useState("carousel"); // carousel or calendar
   const [availabilitySlots, setAvailabilitySlots] = useState([]); // Slots from hallalloteds collection
 
+  // Helper function to get correct image URL (handles both Cloudinary and local paths)
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "/placeholder-image.png";
+    
+    // If it's already a full URL (Cloudinary), return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // Otherwise, it's a local path - construct the URL
+    const cleanPath = imagePath.replace("uploads/", "");
+    return `http://localhost:5000/uploads/${cleanPath}`;
+  };
+
   // Update current time every minute to refresh availability slots
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -193,9 +207,13 @@ const HallDetail = () => {
     try {
       // Fetch ALL hall allotments from hallalloteds collection
       const response = await axios.get(`/api/hallalloted/hall/${id}/all`);
+      // console.log('Fetched availability slots:', response.data);
+      // console.log('Total slots:', response.data.length);
+      // console.log('Available slots:', response.data.filter(s => s.status === 'available' && s.isAvailabilitySlot).length);
+      // console.log('Booked slots:', response.data.filter(s => s.status !== 'available' || !s.isAvailabilitySlot).length);
       setAvailabilitySlots(response.data);
     } catch (error) {
-            console.error(error);
+            console.error('Error fetching availability slots:', error);
             setAvailabilitySlots([]);
     }
   };
@@ -322,10 +340,7 @@ const HallDetail = () => {
                   <label>Main Hall Photo (Cover Image)</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[0].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[0])}
                       alt={`${hall.name} - Main Hall Photo`}
                       className="display-image"
                       onError={(e) => {
@@ -342,10 +357,7 @@ const HallDetail = () => {
                   <label>Stage Photo</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[1].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[1])}
                       alt={`${hall.name} - Stage Photo`}
                       className="display-image"
                       onError={(e) => {
@@ -362,10 +374,7 @@ const HallDetail = () => {
                   <label>Seating Arrangement</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[2].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[2])}
                       alt={`${hall.name} - Seating Arrangement`}
                       className="display-image"
                       onError={(e) => {
@@ -382,10 +391,7 @@ const HallDetail = () => {
                   <label>Dining Area</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[3].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[3])}
                       alt={`${hall.name} - Dining Area`}
                       className="display-image"
                       onError={(e) => {
@@ -402,10 +408,7 @@ const HallDetail = () => {
                   <label>Parking Area</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[4].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[4])}
                       alt={`${hall.name} - Parking Area`}
                       className="display-image"
                       onError={(e) => {
@@ -422,10 +425,7 @@ const HallDetail = () => {
                   <label>Outside View</label>
                   <div className="image-display-container">
                     <img
-                      src={`http://localhost:5000/uploads/${hall.images[5].replace(
-                        "uploads/",
-                        "",
-                      )}`}
+                      src={getImageUrl(hall.images[5])}
                       alt={`${hall.name} - Outside View`}
                       className="display-image"
                       onError={(e) => {
@@ -444,10 +444,7 @@ const HallDetail = () => {
                     {hall.images.slice(6).map((image, index) => (
                       <div key={index} className="gallery-item">
                         <img
-                          src={`http://localhost:5000/uploads/${image.replace(
-                            "uploads/",
-                            "",
-                          )}`}
+                          src={getImageUrl(image)}
                           alt={`${hall.name} - Washroom ${index + 1}`}
                           className="gallery-image"
                           onError={(e) => {
@@ -734,6 +731,8 @@ const HallDetail = () => {
         {/* Hall Availability Carousel Section */}
         {availabilitySlots && (
           (() => {
+            // console.log('Processing availability slots:', availabilitySlots.length);
+            
             const processedAvailability = availabilitySlots.map(slot => {
               const slotDate = new Date(slot.allotmentDate);
 
@@ -741,17 +740,25 @@ const HallDetail = () => {
               const today = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
               const justSlotDate = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate());
 
-              if (justSlotDate < today) return { ...slot, isPast: true };
+              // console.log('Slot date:', justSlotDate, 'Today:', today, 'Slot:', slot);
 
-              const [hours, minutes] = slot.endTime.split(':');
-              const slotEndDate = new Date(justSlotDate.getFullYear(), justSlotDate.getMonth(), justSlotDate.getDate(), parseInt(hours), parseInt(minutes));
+              // If slot date is before today, mark as past
+              if (justSlotDate < today) {
+                // console.log('Slot marked as past (date before today)');
+                return { ...slot, isPast: true };
+              }
 
-              const [startHours, startMinutes] = slot.startTime.split(':');
-              const start = new Date(justSlotDate.getFullYear(), justSlotDate.getMonth(), justSlotDate.getDate(), parseInt(startHours), parseInt(startMinutes));
-              const end = slotEndDate;
+              // If slot date is today, check if end time has passed
+              if (justSlotDate.getTime() === today.getTime()) {
+                const [hours, minutes] = slot.endTime.split(':');
+                const slotEndDate = new Date(justSlotDate.getFullYear(), justSlotDate.getMonth(), justSlotDate.getDate(), parseInt(hours), parseInt(minutes));
 
-              // Filter out if end time is in the past
-              if (slotEndDate <= currentTime) return { ...slot, isPast: true };
+                // Only mark as past if end time has passed
+                if (slotEndDate <= currentTime) {
+                  // console.log('Slot marked as past (end time passed)');
+                  return { ...slot, isPast: true };
+                }
+              }
 
               // Determine if slot is booked based on status and isAvailabilitySlot flag
               const isBooked = slot.status !== 'available' || !slot.isAvailabilitySlot;
@@ -765,7 +772,19 @@ const HallDetail = () => {
                 // Convert allotmentDate to date for compatibility with existing code
                 date: slot.allotmentDate
               };
-            }).filter(slot => !slot.isPast && !(slot.isBooked && slot.bookingStatus === "completed"));
+            }).filter(slot => {
+              // Only filter out past slots
+              // Show both available and booked slots (including completed ones)
+              const keep = !slot.isPast;
+              if (!keep) {
+                // console.log('Filtering out past slot:', slot);
+              }
+              return keep;
+            });
+
+            // console.log('Processed availability count:', processedAvailability.length);
+            // console.log('Available slots:', processedAvailability.filter(s => !s.isBooked).length);
+            // console.log('Booked slots:', processedAvailability.filter(s => s.isBooked).length);
 
             return (
               <div className={`availability-carousel-detail ${processedAvailability.length === 0 ? 'empty' : ''}`}>
@@ -850,7 +869,7 @@ const HallDetail = () => {
                                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                       <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
-                                    {slot.user.name}
+                                    {slot.user.name +" Booked "}
                                   </div>
                                 </div>
                               )}
@@ -1005,27 +1024,7 @@ const HallDetail = () => {
 
       {/* Place Your Hall Button */}
       <div className="place-hall-section">
-        {/* <button 
-          className="btn-place-hall" 
-          onClick={() => {
-            if (showBookingModal) {
-              // Close the modal with animation
-              setShowBookingAnimation(false);
-              setTimeout(() => setShowBookingModal(false), 600);
-            } else {
-              // Open the modal
-              setShowBookingModal(true);
-              // Trigger animation after a small delay to ensure DOM is ready
-              setTimeout(() => setShowBookingAnimation(true), 10);
-            }
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          RESERVE THIS HALL
-        </button> */}
+    
       </div>
 
       {/* Similar Halls Section */}

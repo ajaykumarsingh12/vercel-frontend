@@ -664,3 +664,123 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* Blocked User Alert */
+.blocked-user-alert {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blocked-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.15);
+  border-radius: 50%;
+}
+
+.blocked-icon svg {
+  color: #ef4444;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+}
+
+.blocked-content {
+  flex: 1;
+}
+
+.blocked-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+[data-theme="dark"] .blocked-content h4 {
+  color: #ef4444;
+}
+
+.blocked-content p {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  color: #991b1b;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .blocked-content p {
+  color: #fca5a5;
+}
+
+.btn-request-unblock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-request-unblock:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+.btn-request-unblock:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-request-unblock svg {
+  flex-shrink: 0;
+}
+
+.request-sent-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  color: #059669;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .request-sent-message {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.request-sent-message svg {
+  flex-shrink: 0;
+  color: #10b981;
+}

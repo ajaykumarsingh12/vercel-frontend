@@ -358,7 +358,7 @@ const AdminHallTableRow = ({ hall, handleApproveHall }) => {
   );
 };
 
-const AdminUserTableRow = ({ user, handleDeleteUser }) => {
+const AdminUserTableRow = ({ user, handleDeleteUser, handleBlockUser }) => {
   const profileImageUrl = user.profileImage 
     ? (user.profileImage.startsWith('http') 
         ? user.profileImage 
@@ -471,14 +471,43 @@ const AdminUserTableRow = ({ user, handleDeleteUser }) => {
       <td className="actions-cell">
         <div className="table-actions">
           <button
+            onClick={() => handleBlockUser(user._id, !user.isBlocked, user.name)}
+            className={`btn btn-sm ${user.isBlocked ? 'btn-success' : 'btn-warning'}`}
+            title={user.isBlocked ? 'Unblock User' : 'Block User'}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {user.isBlocked ? (
+                <>
+                  <path d="M18 6L6 18"></path>
+                  <path d="M6 6l12 12"></path>
+                </>
+              ) : (
+                <>
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                </>
+              )}
+            </svg>
+          </button>
+          <button
             onClick={() => handleDeleteUser(user._id)}
             className="btn btn-danger btn-sm"
             title="Delete User"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -489,10 +518,10 @@ const AdminUserTableRow = ({ user, handleDeleteUser }) => {
               <path d="M3 6h18"></path>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-          </button>
-        </div>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
+      </div>
       </td>
     </tr>
   );
@@ -507,11 +536,13 @@ const AdminDashboard = () => {
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list" for stats
   const [hallsViewMode, setHallsViewMode] = useState("grid"); // "grid" or "list" for halls
   const [usersViewMode, setUsersViewMode] = useState("grid"); // "grid" or "list" for users
+  const [unblockRequests, setUnblockRequests] = useState([]);
 
   useEffect(() => {
     fetchStats();
     fetchPendingHalls();
     fetchUsers();
+    fetchUnblockRequests();
   }, []);
 
   const fetchStats = async () => {
@@ -538,6 +569,15 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get("/api/admin/users");
       setUsers(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUnblockRequests = async () => {
+    try {
+      const response = await axios.get("/api/admin/unblock-requests");
+      setUnblockRequests(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -573,6 +613,53 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleBlockUser = async (id, isBlocked, userName) => {
+    const action = isBlocked ? "block" : "unblock";
+    if (!window.confirm(`Are you sure you want to ${action} this user?`)) {
+      return;
+    }
+
+    try {
+      await axios.put(`/api/admin/users/${id}/block`, { isBlocked });
+      toast.success(`${userName} ${action}ed successfully`);
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
+      toast.error(`Failed to ${action} ${userName}`);
+    }
+  };
+
+  const handleApproveUnblockRequest = async (requestId) => {
+    if (!window.confirm("Are you sure you want to approve this unblock request?")) {
+      return;
+    }
+
+    try {
+      await axios.put(`/api/admin/unblock-requests/${requestId}/approve`);
+      toast.success("User unblocked successfully");
+      fetchUnblockRequests();
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to approve unblock request");
+    }
+  };
+
+  const handleDenyUnblockRequest = async (requestId) => {
+    if (!window.confirm("Are you sure you want to deny this unblock request?")) {
+      return;
+    }
+
+    try {
+      await axios.put(`/api/admin/unblock-requests/${requestId}/deny`);
+      toast.success("Unblock request denied");
+      fetchUnblockRequests();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to deny unblock request");
+    }
+  };
+
   if (loading) return <Loader />;
 
   return (
@@ -600,6 +687,12 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab("users")}
             >
               Users
+            </button>
+            <button
+              className={activeTab === "unblockRequests" ? "active" : ""}
+              onClick={() => setActiveTab("unblockRequests")}
+            >
+              Unblock Requests ({unblockRequests.length})
             </button>
           </div>
 
@@ -1160,7 +1253,7 @@ const AdminDashboard = () => {
                     <p>No users have been registered in the system yet.</p>
                   </div>
                 ) : usersViewMode === "grid" ? (
-                  users.map((user) => {
+                  users.filter(user => user.role !== "admin").map((user) => {
                     const profileImageUrl = user.profileImage 
                       ? (user.profileImage.startsWith('http') 
                           ? user.profileImage 
@@ -1273,9 +1366,10 @@ const AdminDashboard = () => {
                         </div>
                         <div className="user-actions">
                           <button
-                            onClick={() => handleDeleteUser(user._id)}
-                            className="btn btn-danger btn-sm delete-btn"
-                            aria-label={`Delete user ${user.name}`}
+                            onClick={() => handleBlockUser(user._id, !user.isBlocked, user.name)}
+                            className={`btn btn-sm ${user.isBlocked ? 'btn-success' : 'btn-warning'}`}
+                            aria-label={user.isBlocked ? `Unblock user ${user.name}` : `Block user ${user.name}`}
+                            title={user.isBlocked ? 'Unblock User' : 'Block User'}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1287,14 +1381,42 @@ const AdminDashboard = () => {
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className="delete-icon"
+                            >
+                              {user.isBlocked ? (
+                                <>
+                                  <path d="M18 6L6 18"></path>
+                                  <path d="M6 6l12 12"></path>
+                                </>
+                              ) : (
+                                <>
+                                  <circle cx="12" cy="12" r="10"></circle>
+                                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                </>
+                              )}
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user._id)}
+                            className="btn btn-danger btn-sm"
+                            aria-label={`Delete user ${user.name}`}
+                            title="Delete User"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path d="M3 6h18"></path>
                               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                               <line x1="10" y1="11" x2="10" y2="17"></line>
                               <line x1="14" y1="11" x2="14" y2="17"></line>
                             </svg>
-                            <span className="btn-text">Delete</span>
                           </button>
                         </div>
                       </div>
@@ -1386,11 +1508,12 @@ const AdminDashboard = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {users.map((user) => (
+                          {users.filter(user => user.role !== "admin").map((user) => (
                             <AdminUserTableRow
                               key={user._id}
                               user={user}
                               handleDeleteUser={handleDeleteUser}
+                              handleBlockUser={handleBlockUser}
                             />
                           ))}
                         </tbody>
@@ -1399,6 +1522,185 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {activeTab === "unblockRequests" && (
+            <div className="unblock-requests-section">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                    <span className="section-title">Unblock Requests</span>
+                  </h2>
+                  <p className="section-description">
+                    Review and manage user unblock requests
+                  </p>
+                </div>
+              </div>
+
+              {unblockRequests.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-state-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="64"
+                      height="64"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <h3>No Pending Requests</h3>
+                  <p>All unblock requests have been reviewed</p>
+                </div>
+              ) : (
+                <div className="unblock-requests-container">
+                  {unblockRequests.map((request) => (
+                    <div key={request._id} className="unblock-request-card">
+                      <div className="request-header">
+                        <div className="user-info-section">
+                          <div className="user-avatar-small">
+                            {request.relatedId?.profileImage ? (
+                              <img
+                                src={request.relatedId.profileImage.startsWith('http') 
+                                  ? request.relatedId.profileImage 
+                                  : `http://localhost:5000/${request.relatedId.profileImage}`}
+                                alt={request.requestData?.userName || request.relatedId?.name || "User"}
+                                className="user-avatar-image"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextElementSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            {(request.requestData?.userRole === "hall_owner" || request.relatedId?.role === "hall_owner") ? (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ display: request.relatedId?.profileImage ? 'none' : 'flex' }}
+                              >
+                                <path d="M3 21h18v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2z"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
+                            ) : (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                style={{ display: request.relatedId?.profileImage ? 'none' : 'flex' }}
+                              >
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
+                            )}
+                          </div>
+                          <div className="user-details">
+                            <h4>{request.requestData?.userName || request.relatedId?.name || "Unknown User"}</h4>
+                            <p className="user-email">{request.requestData?.userEmail || request.relatedId?.email || "N/A"}</p>
+                            <span className={`user-role-badge ${request.requestData?.userRole || request.relatedId?.role || "user"}`}>
+                              {request.requestData?.userRole === "hall_owner" || request.relatedId?.role === "hall_owner" ? "Hall Owner" : "User"}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="request-date">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12,6 12,12 16,14"></polyline>
+                          </svg>
+                          <span>{new Date(request.requestData?.requestedAt || request.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <div className="request-message">
+                        <p>{request.message}</p>
+                      </div>
+                      <div className="request-actions">
+                        <button
+                          onClick={() => handleApproveUnblockRequest(request._id)}
+                          className="btn btn-approve"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20,6 9,17 4,12"></polyline>
+                          </svg>
+                          Approve & Unblock
+                        </button>
+                        <button
+                          onClick={() => handleDenyUnblockRequest(request._id)}
+                          className="btn btn-reject"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          Deny Request
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -19,7 +19,26 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      
+      // Add response interceptor to handle blocked users
+      const interceptor = axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (error.response?.data?.isBlocked) {
+            // User is blocked, logout immediately
+            logout();
+            alert("Your account has been blocked. Please contact support for assistance.");
+          }
+          return Promise.reject(error);
+        }
+      );
+      
       fetchUser();
+      
+      // Cleanup interceptor on unmount
+      return () => {
+        axios.interceptors.response.eject(interceptor);
+      };
     } else {
       delete axios.defaults.headers.common["Authorization"];
       setLoading(false);
@@ -53,6 +72,14 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user: userData };
     } catch (error) {
+      // Check if user is blocked
+      if (error.response?.data?.isBlocked) {
+        return {
+          success: false,
+          message: error.response.data.message || "Your account has been blocked. Please contact support.",
+          isBlocked: true
+        };
+      }
       return {
         success: false,
         message: error.response?.data?.message || "Login failed",

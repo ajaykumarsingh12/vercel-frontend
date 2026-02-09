@@ -1,99 +1,53 @@
 .hall-owner-dashboard {
-
   min-height: calc(100vh - 200px);
-
 }
-
-
-
 .dashboard-stats {
-
   margin-bottom: 2rem;
-
 }
-
-
 
 .dashboard-stats.grid {
-
   display: grid;
-
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
   gap: 1.5rem;
-
 }
 
-
-
 .stat-card {
-
   background: var(--card-bg);
-
   padding: 2rem;
-
   border-radius: 12px;
-
   box-shadow: var(--shadow-sm);
-
   transition: all 0.3s ease;
-
   border: 1px solid var(--input-border);
 
 }
 
-
-
 .dashboard-stats.grid .stat-card {
-
   text-align: center;
-
 }
-
-
 
 .stat-card:hover {
-
   transform: translateY(-2px);
-
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-
 }
 
-
-
 .stat-card h3 {
-
   color: var(--text-color);
-
   opacity: 0.7;
-
   margin-bottom: 1rem;
-
   font-size: 1rem;
 
 }
 
-
-
 .stat-number {
-
   font-size: 2.5rem;
-
   font-weight: bold;
-
   color: #3498db;
-
   margin-bottom: 1rem;
 
 }
 
-
-
 .stat-card a {
-
   color: #3498db;
-
   text-decoration: underline;
 
 }
@@ -295,51 +249,18 @@
 
 
 .dashboard-content {
-
-  max-width: 1400px;
-
-  margin: 0 auto;
-
-  padding: 2rem;
+  width: 100%;
+  padding: 2.5rem;
 
 }
-
-
-
-.dashboard-header {
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  margin-bottom: 0.2px;
-
-}
-
 
 
 .dashboard-content>h1 {
-
   font-size: 2rem;
-
   font-weight: 700;
-
-  margin: 0;
-
   color: var(--secondary-color);
 
 }
-
-
-
-/* h1 {
-
-  color: var(--secondary-color) !important;
-
-} */
-
 
 
 /* Responsive adjustments for HallOwnerDashboard */
@@ -385,7 +306,6 @@
 
 
   .dashboard-content>h1 {
-
     font-size: 1.5rem;
 
   }
@@ -395,7 +315,6 @@
   .dashboard-stats.grid {
 
     grid-template-columns: 1fr;
-
     gap: 1rem;
 
   }
@@ -2054,7 +1973,17 @@
 
 }
 
-
+/* User Cancelled Text */
+.user-cancelled-text {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
 
 /* Responsive Table */
 
@@ -2596,358 +2525,60 @@
 
 }
 
-/* Action Buttons Section - Modern Gradient Design */
+/* Action Buttons Section - Simple Design */
 .action-buttons-section {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  justify-content: flex-start;
+  gap: 15px;
+  margin: 25px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  padding: 0.5rem 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
-  border-radius: 0px;
-  border: 1px solid rgba(102, 126, 234, 0.08);
 }
 
 .dashboard-btn,
-.slot-management-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.1rem;
-  padding: 1rem 2.5rem;
-  font-size: 15px;
-  font-weight: 700;
-  text-transform: none;
-  letter-spacing: 0.5px;
-  border: none;
+.slot-management-btn,
+.earnings-report-btn {
+  padding: 10px 18px;
   border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background: transparent;
+  color: var(--text-color);
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  min-height: 35px;
-  min-width: 121px;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.25),
-    0 4px 16px rgba(102, 126, 234, 0.15);
-}
-
-/* Dashboard Button - Primary Gradient */
-.dashboard-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  position: relative;
-}
-
-.dashboard-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.8s ease;
-}
-
-.dashboard-btn:hover::before {
-  left: 100%;
+  transition: all 0.3s ease;
+  font-size: 14px;
 }
 
 .dashboard-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.35),
-    0 6px 20px rgba(102, 126, 234, 0.25);
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  background: transparent;
+  box-shadow: none;
 }
 
-.dashboard-btn:active {
-  transform: translateY(-2px);
-  transition: transform 0.1s ease;
-}
-
-/* Slot Management Button - Secondary Style */
-.slot-management-btn {
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15),
-    0 2px 8px rgba(102, 126, 234, 0.1);
-}
-
-.slot-management-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transition: left 0.4s ease;
-  z-index: -1;
-}
-
-.slot-management-btn:hover::before {
-  left: 0;
+.dashboard-btn.active {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
 }
 
 .slot-management-btn:hover {
-  color: white;
-  border-color: transparent;
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.35),
-    0 6px 20px rgba(102, 126, 234, 0.25);
-}
-
-.slot-management-btn:active {
-  transform: translateY(-2px);
-  transition: transform 0.1s ease;
-}
-
-/* Button Icons */
-.dashboard-btn svg,
-.slot-management-btn svg {
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.dashboard-btn:hover svg,
-.slot-management-btn:hover svg {
-  transform: scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-/* Button Text Animation */
-.dashboard-btn span,
-.slot-management-btn span {
-  position: relative;
-  z-index: 1;
-}
-
-/* Ripple Effect */
-.dashboard-btn::after,
-.slot-management-btn::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-  pointer-events: none;
-}
-
-.dashboard-btn:active::after,
-.slot-management-btn:active::after {
-  width: 300px;
-  height: 300px;
-  transition: width 0.1s, height 0.1s;
-}
-
-/* Loading State */
-.dashboard-btn.loading,
-.slot-management-btn.loading {
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-.dashboard-btn.loading::before,
-.slot-management-btn.loading::before {
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-
-  100% {
-    left: 100%;
-  }
-}
-
-/* Focus States for Accessibility */
-.dashboard-btn:focus,
-.slot-management-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3),
-    0 8px 32px rgba(102, 126, 234, 0.25),
-    0 4px 16px rgba(102, 126, 234, 0.15);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .action-buttons-section {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-    padding: 0.75rem 0;
-  }
-
-  .dashboard-btn,
-  .slot-management-btn {
-    width: 100%;
-    max-width: 225px;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    min-height: 52px;
-  }
-
-  .dashboard-btn svg,
-  .slot-management-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-@media (max-width: 480px) {
-  .action-buttons-section {
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .dashboard-btn,
-  .slot-management-btn {
-    padding: 0.875rem 1.75rem;
-    font-size: 0.95rem;
-    min-height: 48px;
-    letter-spacing: 0.3px;
-  }
-
-  .dashboard-btn svg,
-  .slot-management-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-@media (max-width: 360px) {
-
-  .dashboard-btn,
-  .slot-management-btn {
-    padding: 0.8rem 1.5rem;
-    font-size: 0.9rem;
-    min-height: 44px;
-    min-width: 180px;
-  }
-}
-
-/* Touch devices - enhance touch targets */
-@media (hover: none) and (pointer: coarse) {
-
-  .dashboard-btn,
-  .slot-management-btn {
-    min-height: 48px;
-  }
-
-  .dashboard-btn:hover,
-  .slot-management-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .dashboard-btn:hover::before,
-  .slot-management-btn:hover::before {
-    transition: left 0.2s ease;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .dashboard-btn {
-    border: 2px solid white;
-  }
-
-  .slot-management-btn {
-    border-width: 3px;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-
-  .dashboard-btn,
-  .slot-management-btn {
-    transition: none;
-  }
-
-  .dashboard-btn::before,
-  .slot-management-btn::before,
-  .dashboard-btn::after,
-  .slot-management-btn::after {
-    transition: none;
-    animation: none;
-  }
-
-  .dashboard-btn:hover,
-  .slot-management-btn:hover {
-    transform: none;
-  }
-
-  .dashboard-btn svg,
-  .slot-management-btn svg {
-    transition: none;
-  }
-
-  .dashboard-btn:hover svg,
-  .slot-management-btn:hover svg {
-    transform: none;
-  }
-}
-
-/* Button entrance animation */
-@keyframes buttonSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dashboard-btn {
-  animation: buttonSlideIn 0.6s ease-out;
-  animation-delay: 0.1s;
-  animation-fill-mode: both;
-}
-
-.slot-management-btn {
-  animation: buttonSlideIn 0.6s ease-out;
-  animation-delay: 0.2s;
-  animation-fill-mode: both;
-}
-
-/* Active state styling */
-.dashboard-btn.active {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4),
-    0 3px 12px rgba(102, 126, 234, 0.3);
-  transform: translateY(-2px);
+  background: transparent;
+  box-shadow: none;
 }
 
 .slot-management-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4),
-    0 3px 12px rgba(102, 126, 234, 0.3);
-  transform: translateY(-2px);
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
 }
 
-.slot-management-btn.active::before {
-  left: 0;
+.earnings-report-btn:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.earnings-report-btn.active {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
 }
 
 /* Hall Info Section - Elegant Image Card Design */
@@ -4281,20 +3912,34 @@
     background: #1f2937 !important;
     color: #60a5fa !important;
     border: 2px solid #3b82f6 !important;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2), 0 2px 8px rgba(59, 130, 246, 0.1) !important;
+    /* box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2), 0 2px 8px rgba(59, 130, 246, 0.1) !important; */
   }
 
   .slot-management-btn:hover {
     color: #ffffff !important;
     border-color: transparent !important;
-    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4), 0 6px 20px rgba(59, 130, 246, 0.3) !important;
   }
 
   .slot-management-btn.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    background-color: 0 12px 40px rgba(59, 130, 246, 0.4), 0 6px 20px rgba(59, 130, 246, 0.3) !important;
+    color: #ffffff !important;
+  }
+
+  /* Earnings Report Button Dark Mode */
+  .earnings-report-btn {
+    background: #1f2937 !important;
+    color: #60a5fa !important;
+    border: 2px solid #3b82f6 !important;
+  }
+
+  .earnings-report-btn:hover {
     color: #ffffff !important;
     border-color: transparent !important;
-    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.5), 0 3px 12px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .earnings-report-btn.active {
+    background-color: 0 12px 40px rgba(59, 130, 246, 0.4), 0 6px 20px rgba(59, 130, 246, 0.3) !important;
+    color: #ffffff !important;
   }
 
   /* Table Dark Mode */
@@ -4402,7 +4047,8 @@
 .back-btn,
 .back-btn-1,
 .dashboard-btn,
-.slot-management-btn {
+.slot-management-btn,
+.earnings-report-btn {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 

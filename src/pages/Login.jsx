@@ -16,6 +16,9 @@ const Login = () => {
     confirmNewPassword: ""
   });
   const [newPasswordErrors, setNewPasswordErrors] = useState({});
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockedEmail, setBlockedEmail] = useState("");
+  const [unblockRequestSent, setUnblockRequestSent] = useState(false);
   const { login, verifyEmailExists, resetPassword, googleLogin, appleLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -285,6 +288,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setIsBlocked(false);
 
     const result = await login(formData.email, formData.password);
 
@@ -303,10 +307,45 @@ const Login = () => {
         navigate("/");
       }
     } else {
-      toast.error(result.message);
+      // Check if user is blocked
+      if (result.isBlocked) {
+        setIsBlocked(true);
+        setBlockedEmail(formData.email);
+        toast.error(result.message);
+      } else {
+        toast.error(result.message);
+      }
     }
 
     setLoading(false);
+  };
+
+  const handleRequestUnblock = async () => {
+    try {
+      setLoading(true);
+      // Send unblock request to admin
+      const response = await fetch('http://localhost:5000/api/auth/request-unblock', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: blockedEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUnblockRequestSent(true);
+        toast.success("Unblock request sent to admin successfully!");
+      } else {
+        toast.error(data.message || "Failed to send unblock request");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send unblock request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -384,7 +423,55 @@ const Login = () => {
               Forgot Password?
             </button>
           </div>
-          <button type="submit" className="btn-auth-submit" disabled={loading}>
+          
+          {/* Blocked User Message */}
+          {isBlocked && (
+            <div className="blocked-user-alert">
+              <div className="blocked-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                </svg>
+              </div>
+              <div className="blocked-content">
+                <h4>Account Blocked</h4>
+                <p>Your account has been blocked by the administrator. Please request to unblock your account.</p>
+                {!unblockRequestSent ? (
+                  <button 
+                    type="button" 
+                    className="btn-request-unblock" 
+                    onClick={handleRequestUnblock}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner"></span>
+                        Sending Request...
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Request Unblock
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div className="request-sent-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Request sent! Admin will review your request.</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <button type="submit" className="btn-auth-submit" disabled={loading || isBlocked}>
             {loading ? (
               <>
                 <span className="spinner"></span>

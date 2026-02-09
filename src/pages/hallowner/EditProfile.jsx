@@ -39,7 +39,7 @@ const EditProfile = () => {
       if (user.profileImage) {
         const imageUrl = user.profileImage.startsWith('http')
           ? user.profileImage
-          : `/${user.profileImage}`;
+          : `http://localhost:5000/${user.profileImage}`;
         setImagePreview(imageUrl);
       }
     }
@@ -83,16 +83,33 @@ const EditProfile = () => {
     }
   };
 
-  const removeImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      profileImage: null
-    }));
-    setImagePreview(null);
-    // Reset file input
-    const fileInput = document.getElementById('profileImage');
-    if (fileInput) {
-      fileInput.value = '';
+  const removeImage = async () => {
+    try {
+      // Call backend to delete the profile image
+      const response = await axios.delete('/api/users/profile/image');
+      
+      if (response.data.success) {
+        // Update local state
+        setFormData(prev => ({
+          ...prev,
+          profileImage: null
+        }));
+        setImagePreview(null);
+        
+        // Update user context
+        updateUser(response.data.user);
+        
+        // Reset file input
+        const fileInput = document.getElementById('profileImage');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+        
+        toast.success('Profile image removed successfully!');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to remove profile image');
     }
   };
 
