@@ -249,121 +249,91 @@
 }
 
 .recommended-btn {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  color: #d4af37;
-  border: 2px solid #d4af37;
-  padding: 0.875rem 1.5rem;
-  border-radius: 50px;
-  font-size: 1rem;
+  background: #ffffff;
+  color: #1e293b;
+  border: 2px solid #e2e8f0;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  min-width: 180px;
+  min-width: 200px;
   justify-content: space-between;
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: hidden;
-  z-index: 1;
 }
 
-/* Background fill animation */
-.recommended-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: -1;
-}
-
-/* Shimmer effect */
-.recommended-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.4),
-      transparent);
-  transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 2;
-  opacity: 0;
+[data-theme="dark"] .recommended-btn {
+  background: #1e293b;
+  color: #f1f5f9;
+  border-color: #334155;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .recommended-btn:hover {
-  color: #1e293b;
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 12px 35px rgba(212, 175, 55, 0.3);
-  border-color: #d4af37;
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
 }
 
-.recommended-btn:hover::before {
-  left: 0;
-}
-
-.recommended-btn:hover::after {
-  left: 100%;
-  opacity: 1;
+[data-theme="dark"] .recommended-btn:hover {
+  border-color: #818cf8;
+  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.2);
 }
 
 .recommended-btn:active {
-  transform: translateY(-1px) scale(1.01);
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
+  transform: translateY(0);
 }
 
 .recommended-dropdown.open .recommended-btn {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-color: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="dark"] .recommended-dropdown.open .recommended-btn {
+  border-color: #818cf8;
+}
+
+.recommended-btn svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  color: #6366f1;
+}
+
+[data-theme="dark"] .recommended-btn svg {
+  color: #818cf8;
 }
 
 .recommended-dropdown.open .recommended-btn svg {
   transform: rotate(180deg);
 }
 
-.recommended-btn svg {
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  flex-shrink: 0;
-  z-index: 3;
-  position: relative;
-}
-
-.recommended-dropdown.open .recommended-btn svg {
-  transform: rotate(180deg) scale(1.1);
-}
-
-.recommended-btn:hover svg {
-  transform: rotate(5deg) scale(1.1);
-}
-
-.recommended-dropdown.open .recommended-btn:hover svg {
-  transform: rotate(175deg) scale(1.1);
-}
-
 .dropdown-menu {
   position: absolute;
-  top: calc(100% - 2px);
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
   background: white;
-  border: 2px solid #d4af37;
-  border-top: none;
-  border-radius: 10px 14px 24px 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
-  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
 .recommended-dropdown.open .dropdown-menu {
@@ -374,7 +344,7 @@
 
 .dropdown-item {
   width: 100%;
-  padding: 0.875rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   background: transparent;
   border: none;
   text-align: left;
@@ -384,35 +354,43 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: #cbd5e1;
 }
 
 .dropdown-item:hover {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(244, 208, 63, 0.1) 100%);
-  color: #1e293b;
+  background: #f8fafc;
+  color: #6366f1;
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+  background: #334155;
+  color: #818cf8;
 }
 
 .dropdown-item.active {
-  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
   font-weight: 600;
 }
 
-.dropdown-item.active::before {
+.dropdown-item.active::after {
   content: '✓';
-  position: absolute;
-  right: 1.5rem;
-  top: 50%;
-  transform: translateY(-50%);
   font-weight: 700;
+  font-size: 1rem;
 }
 
 .dropdown-item:first-child {
-  padding-top: 1rem;
+  border-radius: 10px 10px 0 0;
 }
 
 .dropdown-item:last-child {
-  padding-bottom: 1rem;
-  border-radius: 0 0 18px 18px;
+  border-radius: 0 0 10px 10px;
 }
 
 /* Hall Grid - Balanced Card Size */
@@ -1126,9 +1104,26 @@
   width: 340px !important;
 }
 
-/* Mobile width adjustment */
+/* Mobile width adjustment - Show 1 full card centered */
 @media (max-width: 770px) {
   .category-section .swiper-slide {
-    width: 242px !important;
+    width: 85% !important; /* Use percentage for responsive width */
+    max-width: 380px !important;
+  }
+  
+  .category-section .carousel-outer-container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Small mobile screens - 1 card only */
+@media (max-width: 442px) {
+  .category-section .swiper-slide {
+    width: 90% !important; /* Larger percentage for small screens */
+    max-width: 360px !important;
+  }
+  
+  .category-section .carousel-outer-container {
+    padding: 0 1rem;
   }
 }

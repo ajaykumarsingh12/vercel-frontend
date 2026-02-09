@@ -615,6 +615,15 @@
   .earnings-chart-section {
     order: -1;
   }
+  
+  .chart-stats {
+    flex-wrap: wrap;
+  }
+  
+  .chart-stat-item {
+    flex: 1;
+    min-width: 100px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -624,15 +633,39 @@
 
   .earnings-stats-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .earnings-stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-icon {
+    font-size: 1.75rem;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
   }
 
   .overview-header {
     flex-direction: column;
     align-items: flex-start;
   }
+  
+  .overview-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .overview-controls select,
+  .date-range-display {
+    width: 100%;
+  }
 
   .download-buttons {
     flex-direction: column;
+    width: 100%;
   }
 
   .btn-download {
@@ -640,12 +673,237 @@
     justify-content: center;
   }
 
+  /* Make table scrollable on mobile */
+  .earnings-table-section {
+    overflow-x: auto;
+  }
+
   .earnings-table {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    min-width: 600px;
   }
 
   .earnings-table th,
   .earnings-table td {
     padding: 0.75rem 0.5rem;
+    white-space: nowrap;
+  }
+  
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Pagination mobile */
+  .pagination {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .pagination-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Chart mobile adjustments */
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .chart-view-toggle {
+    width: 100%;
+  }
+  
+  .view-toggle-btn {
+    flex: 1;
+    padding: 0.625rem 0.75rem;
+  }
+  
+  /* Keep Y-axis on left side on mobile */
+  .bar-chart-container {
+    flex-direction: row; /* Keep horizontal layout */
+  }
+  
+  .chart-y-axis {
+    height: 180px; /* Match bar chart height */
+    width: auto;
+    min-width: 40px;
+    flex-direction: column; /* Keep vertical */
+    padding-right: 0.5rem;
+  }
+  
+  .y-axis-label {
+    text-align: right;
+    font-size: 0.65rem;
+  }
+  
+  .bar-chart {
+    height: 180px;
+    padding: 0 0.25rem;
+    gap: 0.25rem;
+  }
+  
+  .bar {
+    max-width: 24px;
+  }
+  
+  .bar-value {
+    font-size: 0.6rem;
+  }
+  
+  .x-axis-day-labels {
+    padding: 0.5rem 0.25rem 0.5rem calc(40px + 0.5rem); /* Offset for Y-axis */
+    gap: 0.25rem;
+  }
+  
+  .x-axis-day-label {
+    font-size: 0.65rem;
+  }
+  
+  .nav-label {
+    font-size: 0.875rem;
+    min-width: auto;
+  }
+  
+  .chart-legend {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  
+  .chart-stats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .chart-stat-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .chart-stat-value {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .earnings-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .breadcrumb {
+    font-size: 0.75rem;
+  }
+  
+  .earnings-stat-card {
+    padding: 0.875rem;
+    gap: 0.75rem;
+  }
+  
+  .stat-icon {
+    font-size: 1.5rem;
+  }
+  
+  .stat-content h3 {
+    font-size: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .stat-details,
+  .stat-growth,
+  .stat-subtitle {
+    font-size: 0.7rem;
+  }
+  
+  .earnings-overview-section {
+    padding: 1rem;
+  }
+  
+  .overview-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .btn-download {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .earnings-table {
+    font-size: 0.75rem;
+  }
+  
+  .earnings-table th,
+  .earnings-table td {
+    padding: 0.5rem 0.375rem;
+  }
+  
+  .pagination-buttons button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .chart-value {
+    font-size: 1.25rem;
+  }
+  
+  .view-toggle-btn {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Keep Y-axis visible on small mobile */
+  .chart-y-axis {
+    height: 150px;
+    min-width: 35px;
+  }
+  
+  .y-axis-label {
+    font-size: 0.6rem;
+  }
+  
+  .bar-chart {
+    height: 150px;
+    gap: 0.125rem;
+  }
+  
+  .bar {
+    max-width: 20px;
+  }
+  
+  .bar-value {
+    font-size: 0.55rem;
+  }
+  
+  .x-axis-day-labels {
+    padding-left: calc(35px + 0.5rem); /* Offset for smaller Y-axis */
+  }
+  
+  .x-axis-day-label {
+    font-size: 0.6rem;
+  }
+  
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+  
+  .nav-label {
+    font-size: 0.8rem;
+  }
+  
+  .chart-stat-label {
+    font-size: 0.65rem;
+  }
+  
+  .chart-stat-value {
+    font-size: 0.9rem;
   }
 }

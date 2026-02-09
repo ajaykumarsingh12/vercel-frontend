@@ -290,7 +290,7 @@
 .table-container {
   background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border-radius: 16px;
+  border-radius: 1px;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--input-border);

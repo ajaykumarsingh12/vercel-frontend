@@ -190,7 +190,8 @@ const Halls = () => {
               pauseOnMouseEnter: true,
             }}
             breakpoints={{
-              320: { slidesPerView: 1.2, spaceBetween: 15 },
+              320: { slidesPerView: 1, spaceBetween: 15, centeredSlides: true },
+              443: { slidesPerView: 1, spaceBetween: 20, centeredSlides: true },
               640: { slidesPerView: 2, spaceBetween: 20 },
               1024: { slidesPerView: 3, spaceBetween: 25 },
               1280: { slidesPerView: 3.5, spaceBetween: 30 },

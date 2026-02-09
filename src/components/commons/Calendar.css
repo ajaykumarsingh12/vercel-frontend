@@ -572,37 +572,63 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .calendar-container {
+    min-height: auto;
+  }
+
   .calendar-header {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    gap: 12px;
+    padding: 12px;
   }
 
   .calendar-navigation {
     order: 2;
+    width: 100%;
+    justify-content: center;
   }
 
   .calendar-controls {
     order: 1;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .calendar-title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     min-width: auto;
   }
 
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .calendar-days {
+    grid-template-rows: repeat(6, minmax(90px, auto));
+    min-height: auto;
+  }
+
   .calendar-day {
-    min-height: 100px;
-    padding: 8px;
+    min-height: 90px;
+    padding: 6px;
   }
 
   .day-number {
-    font-size: 12px;
+    font-size: 11px;
+    margin-bottom: 2px;
   }
 
   .slot-indicator {
-    font-size: 10px;
-    padding: 1px 4px;
+    font-size: 9px;
+    padding: 2px 3px;
+    min-height: 16px;
+  }
+
+  .more-slots {
+    font-size: 9px;
   }
 
   .week-header {
@@ -619,32 +645,163 @@
   }
 
   .day-time-row {
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 70px 1fr;
+  }
+
+  .day-time-label {
+    font-size: 12px;
+    padding: 8px;
   }
 
   .calendar-legend {
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .legend-item {
+    font-size: 11px;
+  }
+
+  .legend-color {
+    width: 14px;
+    height: 14px;
   }
 }
 
 @media (max-width: 480px) {
+  .calendar-header {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .calendar-title {
+    font-size: 1rem;
+  }
+
   .view-switcher {
-    flex-direction: column;
+    width: 100%;
   }
 
   .view-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    flex: 1;
+  }
+
+  .today-btn {
     padding: 6px 12px;
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .calendar-weekday {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  .calendar-days {
+    grid-template-rows: repeat(6, minmax(70px, auto));
+    gap: 0.5px;
   }
 
   .calendar-day {
-    min-height: 80px;
-    padding: 6px;
+    min-height: 70px;
+    padding: 4px;
+  }
+
+  .day-number {
+    font-size: 10px;
+    margin-bottom: 1px;
   }
 
   .slot-indicator {
+    font-size: 8px;
+    padding: 1px 2px;
+    min-height: 14px;
+    border-radius: 2px;
+  }
+
+  .more-slots {
+    font-size: 8px;
+  }
+
+  .add-slot-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    bottom: 3px;
+    right: 3px;
+  }
+
+  .calendar-legend {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .legend-item {
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .legend-color {
+    width: 12px;
+    height: 12px;
+  }
+
+  .day-header {
+    padding: 8px 4px;
+  }
+
+  .day-name {
+    font-size: 10px;
+  }
+
+  .day-date {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .calendar-days {
+    grid-template-rows: repeat(6, minmax(60px, auto));
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 3px;
+  }
+
+  .day-number {
     font-size: 9px;
+  }
+
+  .slot-indicator {
+    font-size: 7px;
+    padding: 1px;
+    min-height: 12px;
+  }
+
+  .add-slot-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    bottom: 2px;
+    right: 2px;
+  }
+
+  .calendar-title {
+    font-size: 0.9rem;
+  }
+
+  .view-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .today-btn {
+    padding: 5px 10px;
+    font-size: 10px;
   }
 }
 
@@ -779,6 +936,29 @@
   font-size: 10px;
   color: #ff9800;
   font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .calendar-day.fully-booked .day-number::after {
+    content: '';
+  }
+  
+  .calendar-day.fully-booked {
+    position: relative;
+  }
+  
+  .calendar-day.fully-booked::before {
+    content: 'Full';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 8px;
+    color: #e65100;
+    background: rgba(255, 152, 0, 0.2);
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
 }
 
 /* Don't show add button on fully booked days */
