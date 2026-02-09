@@ -134,6 +134,7 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
         {
           headers: {
             'Accept': 'application/json',
+            'User-Agent': 'BookMyHall/1.0 (Hall Booking Application)'
           }
         }
       );
@@ -144,7 +145,7 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
         setShowSuggestions(data.length > 0);
       }
     } catch (error) {
-      console.error(error);
+      console.error('OpenStreetMap API Error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -237,7 +238,7 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
         {
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'HallBookingApp/1.0',
+            'User-Agent': 'BookMyHall/1.0 (Hall Booking Application)',
           }
         }
       );
