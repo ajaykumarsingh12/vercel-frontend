@@ -8,6 +8,7 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const inputRef = useRef(null);
   const autocompleteService = useRef(null);
   const placesService = useRef(null);
@@ -18,6 +19,18 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
   // Get API key from environment variable
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const [useGoogleMaps, setUseGoogleMaps] = useState(false);
+
+  // Check if mobile on mount and window resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Check if we should use Google Maps or OpenStreetMap
@@ -273,16 +286,32 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
 
   const handleClickOutside = (e) => {
     if (inputRef.current && !inputRef.current.contains(e.target)) {
-      setShowSuggestions(false);
+      // Don't close if clicking on backdrop on mobile
+      if (!e.target.classList.contains('suggestions-backdrop')) {
+        setShowSuggestions(false);
+      }
     }
+  };
+
+  const handleBackdropClick = () => {
+    setShowSuggestions(false);
   };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
+    
+    // Prevent body scroll when mobile dropdown is open
+    if (isMobile && showSuggestions) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = '';
     };
-  }, []);
+  }, [isMobile, showSuggestions]);
 
   // Initialize interactive map when location is selected
   useEffect(() => {
@@ -370,29 +399,49 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
         </div>
 
         {showSuggestions && suggestions.length > 0 && (
-          <div className="suggestions-dropdown">
-            {suggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="suggestion-item"
-                onClick={() => handleSuggestionClick(suggestion)}
-              >
-                <span className="suggestion-icon">📍</span>
-                <div className="suggestion-content">
-                  <div className="suggestion-main">
-                    {suggestion.source === 'google' 
-                      ? suggestion.structured_formatting?.main_text 
-                      : (suggestion.name || suggestion.display_name.split(',')[0])}
-                  </div>
-                  <div className="suggestion-secondary">
-                    {suggestion.source === 'google'
-                      ? suggestion.structured_formatting?.secondary_text
-                      : suggestion.display_name}
+          <>
+            {isMobile && (
+              <div 
+                className="suggestions-backdrop" 
+                onClick={handleBackdropClick}
+              />
+            )}
+            <div className="suggestions-dropdown">
+              {isMobile && (
+                <div className="suggestions-header">
+                  <span className="suggestions-title">Select Location</span>
+                  <button 
+                    className="suggestions-close"
+                    onClick={() => setShowSuggestions(false)}
+                    type="button"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={index}
+                  className="suggestion-item"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  <span className="suggestion-icon">📍</span>
+                  <div className="suggestion-content">
+                    <div className="suggestion-main">
+                      {suggestion.source === 'google' 
+                        ? suggestion.structured_formatting?.main_text 
+                        : (suggestion.name || suggestion.display_name.split(',')[0])}
+                    </div>
+                    <div className="suggestion-secondary">
+                      {suggestion.source === 'google'
+                        ? suggestion.structured_formatting?.secondary_text
+                        : suggestion.display_name}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
