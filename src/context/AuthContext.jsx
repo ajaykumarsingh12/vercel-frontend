@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "/api/auth/login",
         { email, password },
       );
       const { token: newToken, user: userData } = response.data;
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "/api/auth/register",
         userData,
         {
           headers: { "Content-Type": "application/json" },
@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/halls/${hallId}/favorite`,
+        `/api/halls/${hallId}/favorite`,
       );
       const { isFavorite } = response.data;
 
@@ -181,7 +181,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (profileData) => {
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/auth/profile",
+        "/api/auth/profile",
         profileData,
       );
       const updatedUser = response.data.user;
@@ -203,7 +203,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmailExists = async (email) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/verify-email",
+        "/api/auth/verify-email",
         { email }
       );
       return { success: true, exists: response.data.exists };
@@ -219,7 +219,7 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email, newPassword) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/reset-password",
+        "/api/auth/reset-password",
         { email, newPassword }
       );
       return { success: true, message: response.data.message };
@@ -235,7 +235,7 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async (credential) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/google",
+        "/api/auth/google",
         { credential }
       );
       
@@ -259,7 +259,7 @@ export const AuthProvider = ({ children }) => {
   const appleLogin = async (identityToken, user) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/apple",
+        "/api/auth/apple",
         { identityToken, user }
       );
       

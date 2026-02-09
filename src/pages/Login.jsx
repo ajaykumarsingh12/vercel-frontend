@@ -324,7 +324,8 @@ const Login = () => {
     try {
       setLoading(true);
       // Send unblock request to admin
-      const response = await fetch('http://localhost:5000/api/auth/request-unblock', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/auth/request-unblock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
