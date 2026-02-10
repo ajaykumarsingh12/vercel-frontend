@@ -5,11 +5,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Pagination, Mousewheel } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import HeroSection from "../components/commons/HeroSection";
 import Loader from "../components/commons/Loader";
 import { useAuth } from "../context/AuthContext";
@@ -22,24 +17,12 @@ const Home = () => {
   const { user, toggleFavorite, isAuthenticated } = useAuth();
   const [featuredHalls, setFeaturedHalls] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const carouselRef = useRef(null);
   const featuresRef = useRef(null);
   const cardsSectionRef = useRef(null);
 
   useEffect(() => {
     fetchFeaturedHalls();
-
-    // Check if mobile screen
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const fetchFeaturedHalls = async () => {
@@ -126,63 +109,14 @@ const Home = () => {
               <Loader />
             </div>
           ) : (
-            <div className="carousel-outer-container">
-              {isMobile ? (
-                // Mobile: Regular grid without Swiper
-                <div className="mobile-halls-grid">
-                  {featuredHalls.slice(0, 6).map((hall) => (
-                    <div key={hall._id} className="mobile-card-item">
-                      <HallCard hall={hall} renderStars={renderStars} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                // Desktop: Swiper carousel
-                <Swiper
-                  modules={[Navigation, Autoplay, Mousewheel]}
-                  spaceBetween={30}
-                  slidesPerView={1}
-                  navigation
-                  mousewheel={{
-                    forceToAxis: true,
-                    sensitivity: 1,
-                    releaseOnEdges: true,
-                  }}
-                  simulateTouch={false}
-                  allowTouchMove={false}
-                  autoplay={{
-                    delay: 3500,
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: true,
-                  }}
-                  loop={featuredHalls.length >= 4}
-                  breakpoints={{
-                    320: {
-                      slidesPerView: 1.2,
-                      spaceBetween: 15,
-                    },
-                    640: {
-                      slidesPerView: 2,
-                      spaceBetween: 20,
-                    },
-                    1024: {
-                      slidesPerView: 3,
-                      spaceBetween: 30,
-                    },
-                    1280: {
-                      slidesPerView: 4,
-                      spaceBetween: 30,
-                    },
-                  }}
-                  className="halls-grid carousel-grid"
-                >
-                  {featuredHalls.map((hall) => (
-                    <SwiperSlide key={hall._id} className="carousel-card-item">
-                      <HallCard hall={hall} renderStars={renderStars} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
+            <div className="halls-grid-container">
+              <div className="halls-grid">
+                {featuredHalls.slice(0, 8).map((hall) => (
+                  <div key={hall._id} className="hall-grid-item">
+                    <HallCard hall={hall} renderStars={renderStars} />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

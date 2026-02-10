@@ -239,32 +239,29 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
         )}
       </div>
 
-      <div className="browse-hall-card__info">
-        <h3 className="browse-hall-card__name">{hall.name}</h3>
-        <div className="browse-hall-card__location">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      <div className="hall-info">
+        <h3 className="hall-name">{hall.name}</h3>
+        <div className="hall-location">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" strokeWidth="3">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
           </svg>
           <span>
             {hall.location?.city}, {hall.location?.state}
           </span>
         </div>
-        <div className="browse-hall-card__stats">
-          <div className="browse-hall-card__stat-item browse-hall-card__stat-item--capacity">
-            <div className="browse-hall-card__stat-content">
-              <span className="browse-hall-card__stat-label">CAPACITY:</span>
-              <span className="browse-hall-card__stat-value">{hall.capacity} people</span>
-            </div>
+        <div className="hall-details">
+          <div className="detail-item">
+            <span className="guest-label">Capacity:</span>
+            <span>{hall.capacity} people</span>
           </div>
-          <div className="browse-hall-card__stat-item browse-hall-card__stat-item--price">
-            <div className="browse-hall-card__stat-content">
-              <span className="browse-hall-card__stat-label">PRICE:</span>
-              <span className="browse-hall-card__stat-value">₹{hall.pricePerHour}/hr</span>
-            </div>
+          <div className="detail-item">
+            <span className="guest-label">Price:</span>
+            <span>₹{hall.pricePerHour}/hr</span>
           </div>
         </div>
-        <Link to={`/halls/${hall._id}`} className="browse-hall-card__btn-primary">
-          VIEW DETAIL
+        <Link to={`/halls/${hall._id}`} className="btn-primary">
+          View Detail
         </Link>
       </div>
     </motion.div>

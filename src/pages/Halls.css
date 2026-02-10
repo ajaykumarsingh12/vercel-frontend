@@ -396,8 +396,11 @@
 /* Hall Grid - Balanced Card Size */
 .halls-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 0 1rem 1rem;
+  width: 100%;
+  margin-top:40px;
 }
 
 /* Categories Container */
@@ -767,7 +770,7 @@
 
   .halls-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .results-info {

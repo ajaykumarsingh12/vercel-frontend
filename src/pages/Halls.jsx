@@ -1,10 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Pagination, Mousewheel } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import Loader from "../components/commons/Loader";
 import { useAuth } from "../context/AuthContext";
 import HallCard from "../components/commons/HallCard";
@@ -155,13 +150,8 @@ const Halls = () => {
 
   const sortedHalls = getSortedHalls();
 
-  // Categorize halls by price
-  const budgetHalls = sortedHalls.filter(hall => hall.pricePerHour < 5000);
-  const premiumHalls = sortedHalls.filter(hall => hall.pricePerHour >= 5000 && hall.pricePerHour <= 15000);
-  const luxuryHalls = sortedHalls.filter(hall => hall.pricePerHour > 15000);
-
-  // Render carousel for each category
-  const renderCarousel = (halls, categoryTitle, categoryDescription) => {
+  // Render grid for each category
+  const renderGrid = (halls, categoryTitle, categoryDescription) => {
     if (halls.length === 0) return null;
 
     return (
@@ -171,38 +161,10 @@ const Halls = () => {
           <p className="category-description">{categoryDescription}</p>
         </div>
 
-        <div className="carousel-outer-container">
-          <Swiper
-            modules={[Navigation, Autoplay, Pagination, Mousewheel]}
-            spaceBetween={20}
-            slidesPerView="auto"
-            navigation
-            pagination={{ clickable: true }}
-            mousewheel={{
-              forceToAxis: true,
-              sensitivity: 1,
-              releaseOnEdges: true,
-            }}
-            loop={halls.length > 3}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            breakpoints={{
-              320: { slidesPerView: 1, spaceBetween: 15, centeredSlides: true },
-              443: { slidesPerView: 1, spaceBetween: 20, centeredSlides: true },
-              640: { slidesPerView: 2, spaceBetween: 20 },
-              1024: { slidesPerView: 3, spaceBetween: 25 },
-              1280: { slidesPerView: 3.5, spaceBetween: 30 },
-            }}
-          >
-            {halls.map((hall) => (
-              <SwiperSlide key={hall._id}>
-                <HallCard hall={hall} showShare={true} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="halls-grid">
+          {halls.map((hall) => (
+            <HallCard key={hall._id} hall={hall} showShare={true} />
+          ))}
         </div>
       </div>
     );
@@ -417,22 +379,10 @@ const Halls = () => {
             <p>We couldn't find any halls matching your current filters.</p>
           </div>
         ) : (
-          <div className="categories-container">
-            {renderCarousel(
-              budgetHalls,
-              "Budget Friendly Halls",
-              "Affordable venues perfect for intimate celebrations • Under ₹5,000/hr"
-            )}
-            {renderCarousel(
-              premiumHalls,
-              "Premium Venues",
-              "Mid-range halls with excellent amenities • ₹5,000 - ₹15,000/hr"
-            )}
-            {renderCarousel(
-              luxuryHalls,
-              "Luxury & Grand Halls",
-              "Exclusive venues for grand celebrations • Above ₹15,000/hr"
-            )}
+          <div className="halls-grid">
+            {sortedHalls.map((hall) => (
+              <HallCard key={hall._id} hall={hall} showShare={true} />
+            ))}
           </div>
         )}
       </div>
