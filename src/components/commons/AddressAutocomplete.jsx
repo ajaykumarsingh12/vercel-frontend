@@ -151,11 +151,23 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setSuggestions(data.map(d => ({ ...d, source: 'osm' })));
-        setShowSuggestions(data.length > 0);
+        if (data && data.length > 0) {
+          setSuggestions(data.map(d => ({ ...d, source: 'osm' })));
+          setShowSuggestions(true);
+        } else {
+          console.warn('OpenStreetMap returned no results for:', query);
+          setSuggestions([]);
+          setShowSuggestions(false);
+        }
+      } else {
+        console.error('OpenStreetMap API Error:', response.status, response.statusText);
+        setSuggestions([]);
+        setShowSuggestions(false);
       }
     } catch (error) {
       console.error('OpenStreetMap API Error:', error);
+      setSuggestions([]);
+      setShowSuggestions(false);
     } finally {
       setIsLoading(false);
     }
