@@ -312,6 +312,7 @@ const HeroSection = () => {
               to="/register"
               className="btn btn-secondary hero-btn-secondary"
             >
+                <span >List Hall</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -324,8 +325,12 @@ const HeroSection = () => {
                 strokeLinejoin="round"
                 className="btn-arrow"
               >
+            
                 <path d="m9 18 6-6-6-6" />
+             
               </svg>
+               
+             
             </Link>
           </motion.div>
         </div>
