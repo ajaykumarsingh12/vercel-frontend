@@ -514,8 +514,8 @@
 
 .browse-hall-card__stat-label {
   font-size: 0.625rem;
-  font-weight: 700;
-  color: #64748b;
+  font-weight: 800;
+  color: orange;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
