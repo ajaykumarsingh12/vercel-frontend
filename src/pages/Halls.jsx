@@ -150,6 +150,33 @@ const Halls = () => {
 
   const sortedHalls = getSortedHalls();
 
+  // Categorize halls by price
+  const categorizeHallsByPrice = (halls) => {
+    const budget = halls.filter(hall => hall.pricePerHour < 5000);
+    const midRange = halls.filter(hall => hall.pricePerHour >= 5000 && hall.pricePerHour < 15000);
+    const premium = halls.filter(hall => hall.pricePerHour >= 15000);
+
+    return { budget, midRange, premium };
+  };
+
+  const { budget, midRange, premium } = categorizeHallsByPrice(sortedHalls);
+
+  // Carousel navigation
+  const scrollCarousel = (categoryId, direction) => {
+    const container = document.getElementById(categoryId);
+    if (!container) return;
+
+    const scrollAmount = 370; // Card width + gap
+    const newScrollPosition = direction === 'next' 
+      ? container.scrollLeft + scrollAmount 
+      : container.scrollLeft - scrollAmount;
+
+    container.scrollTo({
+      left: newScrollPosition,
+      behavior: 'smooth'
+    });
+  };
+
   // Render grid for each category
   const renderGrid = (halls, categoryTitle, categoryDescription) => {
     if (halls.length === 0) return null;
@@ -379,10 +406,120 @@ const Halls = () => {
             <p>We couldn't find any halls matching your current filters.</p>
           </div>
         ) : (
-          <div className="halls-grid">
-            {sortedHalls.map((hall) => (
-              <HallCard key={hall._id} hall={hall} showShare={true} />
-            ))}
+          <div className="categorized-halls">
+            {/* Budget Category */}
+            {budget.length > 0 && (
+              <div className="category-section">
+                <div className="category-header">
+                  <div className="category-title-wrapper">
+                    <h3 className="category-title">Budget Friendly</h3>
+                    <span className="category-badge">Under ₹5,000/hr</span>
+                  </div>
+                  <p className="category-description">
+                    Affordable venues perfect for intimate gatherings and budget-conscious events
+                  </p>
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--prev"
+                  onClick={() => scrollCarousel('budget-carousel', 'prev')}
+                  aria-label="Previous"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <div className="halls-grid" id="budget-carousel">
+                  {budget.map((hall) => (
+                    <HallCard key={hall._id} hall={hall} showShare={true} />
+                  ))}
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--next"
+                  onClick={() => scrollCarousel('budget-carousel', 'next')}
+                  aria-label="Next"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+            )}
+
+            {/* Mid-Range Category */}
+            {midRange.length > 0 && (
+              <div className="category-section">
+                <div className="category-header">
+                  <div className="category-title-wrapper">
+                    <h3 className="category-title">Mid-Range</h3>
+                    <span className="category-badge">₹5,000 - ₹15,000/hr</span>
+                  </div>
+                  <p className="category-description">
+                    Well-equipped venues offering great value with modern amenities
+                  </p>
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--prev"
+                  onClick={() => scrollCarousel('midrange-carousel', 'prev')}
+                  aria-label="Previous"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <div className="halls-grid" id="midrange-carousel">
+                  {midRange.map((hall) => (
+                    <HallCard key={hall._id} hall={hall} showShare={true} />
+                  ))}
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--next"
+                  onClick={() => scrollCarousel('midrange-carousel', 'next')}
+                  aria-label="Next"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+            )}
+
+            {/* Premium Category */}
+            {premium.length > 0 && (
+              <div className="category-section">
+                <div className="category-header">
+                  <div className="category-title-wrapper">
+                    <h3 className="category-title">Premium</h3>
+                    <span className="category-badge">₹15,000+/hr</span>
+                  </div>
+                  <p className="category-description">
+                    Luxurious venues with premium facilities for grand celebrations
+                  </p>
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--prev"
+                  onClick={() => scrollCarousel('premium-carousel', 'prev')}
+                  aria-label="Previous"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <div className="halls-grid" id="premium-carousel">
+                  {premium.map((hall) => (
+                    <HallCard key={hall._id} hall={hall} showShare={true} />
+                  ))}
+                </div>
+                <button 
+                  className="carousel-nav-btn carousel-nav-btn--next"
+                  onClick={() => scrollCarousel('premium-carousel', 'next')}
+                  aria-label="Next"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
