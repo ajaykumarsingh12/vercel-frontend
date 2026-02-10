@@ -2,11 +2,14 @@
 .address-autocomplete-container {
   width: 100%;
   margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .address-input-wrapper {
   position: relative;
   width: 100%;
+  z-index: 10000;
 }
 
 .address-input-group {
@@ -100,7 +103,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   max-height: 300px;
   overflow-y: auto;
-  z-index: 9999;
+  z-index: 10001;
   animation: slideDown 0.3s ease;
 }
 
@@ -173,6 +176,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   animation: fadeIn 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes fadeIn {
@@ -236,6 +241,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 2px solid #e2e8f0;
   position: relative;
+  z-index: 1;
 }
 
 .map-instructions {
@@ -343,32 +349,23 @@
     font-size: 0.95rem;
   }
 
-  /* Mobile-optimized dropdown */
+  /* Mobile-optimized dropdown - use relative positioning instead of fixed */
   .suggestions-dropdown {
-    position: fixed;
-    top: auto;
+    position: absolute;
+    top: calc(100% + 0.5rem);
     left: 0;
     right: 0;
-    bottom: 0;
-    max-height: 60vh;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
-    z-index: 99999;
-    animation: slideUp 0.3s ease;
-    border: none;
-    border-top: 1px solid #e2e8f0;
+    max-height: 300px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
+    animation: slideDown 0.3s ease;
+    border: 1px solid #e2e8f0;
   }
 
-  /* Mobile backdrop */
+  /* Hide mobile backdrop on small screens */
   .suggestions-backdrop {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 99998;
-    animation: fadeIn 0.3s ease;
+    display: none;
   }
 
   @keyframes fadeIn {
@@ -380,17 +377,9 @@
     }
   }
 
-  /* Mobile suggestions header */
+  /* Mobile suggestions header - hide it since we're using normal dropdown */
   .suggestions-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 2px solid #e2e8f0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    display: none;
   }
 
   .suggestions-title {
@@ -422,10 +411,10 @@
     transform: scale(1.1);
   }
 
-  @keyframes slideUp {
+  @keyframes slideDown {
     from {
       opacity: 0;
-      transform: translateY(100%);
+      transform: translateY(-10px);
     }
     to {
       opacity: 1;
