@@ -16,7 +16,7 @@
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 1rem;
+    padding: 0.2rem;
     padding-top: 5rem;
     /* Slightly less padding on mobile */
   }

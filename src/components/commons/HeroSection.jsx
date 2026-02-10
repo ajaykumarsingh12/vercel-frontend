@@ -312,7 +312,6 @@ const HeroSection = () => {
               to="/register"
               className="btn btn-secondary hero-btn-secondary"
             >
-              <span className="btn-text">List Your Hall</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"

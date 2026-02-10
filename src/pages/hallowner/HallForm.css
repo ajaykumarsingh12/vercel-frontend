@@ -137,8 +137,7 @@
 }
 
 .amenity-tag {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: white;
+  color:orange;
   border: none;
   padding: 0.625rem 1rem;
   border-radius: 5px;
@@ -147,7 +146,6 @@
   gap: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
   transition: all 0.3s ease;
 }
 

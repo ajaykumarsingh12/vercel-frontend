@@ -134,38 +134,29 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
   const fetchOpenStreetMapSuggestions = async (query) => {
     setIsLoading(true);
     try {
+      // Use backend proxy instead of direct OpenStreetMap API call
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?` +
-        `q=${encodeURIComponent(query)}&` +
-        `format=json&` +
-        `addressdetails=1&` +
-        `countrycodes=in&` +
-        `limit=5`,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'BookMyHall/1.0 (Hall Booking Application)'
-          }
-        }
+        `${API_URL}/api/geocoding/search?q=${encodeURIComponent(query)}`
       );
 
       if (response.ok) {
         const data = await response.json();
-        if (data && data.length > 0) {
-          setSuggestions(data.map(d => ({ ...d, source: 'osm' })));
+        if (data.success && data.results && data.results.length > 0) {
+          setSuggestions(data.results.map(d => ({ ...d, source: 'osm' })));
           setShowSuggestions(true);
         } else {
-          console.warn('OpenStreetMap returned no results for:', query);
+          console.warn('No location results found for:', query);
           setSuggestions([]);
           setShowSuggestions(false);
         }
       } else {
-        console.error('OpenStreetMap API Error:', response.status, response.statusText);
+        console.error('Geocoding API Error:', response.status, response.statusText);
         setSuggestions([]);
         setShowSuggestions(false);
       }
     } catch (error) {
-      console.error('OpenStreetMap API Error:', error);
+      console.error('Geocoding API Error:', error);
       setSuggestions([]);
       setShowSuggestions(false);
     } finally {
@@ -249,45 +240,39 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
   const handleMarkerDragEnd = async (newLat, newLng) => {
     setMarkerPosition({ lat: newLat, lng: newLng });
     
-    // Reverse geocode to get address for new position
+    // Reverse geocode to get address for new position using backend proxy
     try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?` +
-        `lat=${newLat}&` +
-        `lon=${newLng}&` +
-        `format=json&` +
-        `addressdetails=1`,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'BookMyHall/1.0 (Hall Booking Application)',
-          }
-        }
+        `${API_URL}/api/geocoding/reverse?lat=${newLat}&lon=${newLng}`
       );
 
       if (response.ok) {
-        const data = await response.json();
-        const updatedLocation = {
-          address: data.display_name,
-          lat: newLat,
-          lng: newLng,
-          name: data.name || data.display_name.split(',')[0],
-          city: data.address?.city || 
-                data.address?.town || 
-                data.address?.village || 
-                data.address?.municipality || 
-                selectedLocation?.city || '',
-          state: data.address?.state || selectedLocation?.state || '',
-          pincode: data.address?.postcode || selectedLocation?.pincode || '',
-          source: 'osm',
-        };
+        const responseData = await response.json();
+        if (responseData.success && responseData.result) {
+          const data = responseData.result;
+          const updatedLocation = {
+            address: data.display_name,
+            lat: newLat,
+            lng: newLng,
+            name: data.name || data.display_name.split(',')[0],
+            city: data.address?.city || 
+                  data.address?.town || 
+                  data.address?.village || 
+                  data.address?.municipality || 
+                  selectedLocation?.city || '',
+            state: data.address?.state || selectedLocation?.state || '',
+            pincode: data.address?.postcode || selectedLocation?.pincode || '',
+            source: 'osm',
+          };
 
-        setAddress(data.display_name);
-        setSelectedLocation(updatedLocation);
-        onLocationSelect(updatedLocation);
+          setAddress(data.display_name);
+          setSelectedLocation(updatedLocation);
+          onLocationSelect(updatedLocation);
+        }
       }
     } catch (error) {
-      console.error(error);
+      console.error('Reverse geocoding error:', error);
       // Update coordinates even if reverse geocoding fails
       const updatedLocation = {
         ...selectedLocation,
