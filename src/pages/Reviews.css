@@ -119,11 +119,126 @@
   font-weight: 600;
 }
 
+.reviews-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.review-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--input-border);
+}
+
+.review-card-hall-info {
+  flex: 1;
+}
+
+.review-card-hall-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--secondary-color);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.review-card-hall-info .verified-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.review-card-rating {
+  display: flex;
+  align-items: center;
+}
+
+.review-card-rating .star-rating {
+  gap: 2px;
+}
+
+.review-card-rating .star {
+  font-size: 1.25rem;
+}
+
+.review-card-body {
+  flex: 1;
+}
+
+.review-card-comment {
+  margin: 0;
+  color: var(--text-color);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.review-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--input-border);
+  gap: 1rem;
+}
+
+.review-card-date {
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.review-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.review-card-actions .btn-edit-review,
+.review-card-actions .btn-delete-review {
+  padding: 0.5rem 1rem;
+  font-size: 0.975rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
 .reviews-table-container {
   background: var(--card-bg);
   border-radius: 12px;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  display: none;
 }
 
 .reviews-table {
@@ -756,6 +871,11 @@
     padding: 1.5rem;
   }
 
+  .reviews-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
   .btn-write-review {
     padding: 0.4rem 0.7rem;
     font-size: 0.85rem;
@@ -768,23 +888,6 @@
   .form-actions .btn {
     padding: 0.5rem 0.8rem;
     font-size: 0.875rem;
-  }
-
-  .reviews-table-container {
-    overflow-x: auto;
-  }
-
-  .reviews-table {
-    min-width: 800px;
-  }
-
-  .hall-name-cell {
-    min-width: 180px;
-  }
-
-  .comment-cell {
-    min-width: 280px;
-    max-width: 320px;
   }
 }
 
@@ -808,73 +911,21 @@
     font-size: 1.75rem;
   }
 
-  .reviews-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .reviews-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .reviews-table {
-    min-width: 700px;
-    font-size: 0.85rem;
+  .review-card {
+    padding: 1.25rem;
   }
 
-  .reviews-table th,
-  .reviews-table td {
-    padding: 0.6rem 0.75rem;
-  }
-
-  .hall-name-cell {
-    min-width: 160px;
-  }
-
-  .hall-name-cell .hall-info h3 {
-    font-size: 1.2rem;
-  }
-
-  .hall-name-cell .verified-badge {
-    font-size: 0.6rem;
-    padding: 0.08rem 0.3rem;
-  }
-
-  .rating-cell {
-    min-width: 90px;
-  }
-
-  .rating-cell .review-rating .star {
-    font-size: 0.9rem;
-  }
-
-  .comment-cell {
-    min-width: 240px;
-    max-width: 280px;
-  }
-
-  .comment-cell .review-comment {
-    font-size: 14px;
-    line-height: 1.3;
-  }
-
-  .date-cell {
-    min-width: 80px;
-  }
-
-  .date-cell .review-date {
-    font-size: 0.75rem;
-  }
-
-  .actions-cell {
-    min-width: 100px;
-  }
-
-  .actions-cell .review-actions {
+  .review-card-header {
     flex-direction: column;
-    gap: 0.25rem;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
-  .btn-edit-review,
-  .btn-delete-review {
-    padding: 0.2rem 0.4rem;
+  .review-card-rating {
     width: 100%;
   }
 
@@ -899,20 +950,12 @@
     font-size: 0.9rem;
   }
 
-  /* Improve button layout for mobile */
-  .form-actions {
-    flex-direction: row;
-    gap: 0.75rem;
-  }
-
   .form-actions .btn-primary {
     order: 2;
-    /* Submit button appears second (bottom) */
   }
 
   .form-actions .btn-secondary {
     order: 1;
-    /* Cancel button appears first (top) */
   }
 }
 
@@ -930,79 +973,39 @@
     font-size: 1.5rem;
   }
 
-  .reviews-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .reviews-cards-container {
+    gap: 0.875rem;
   }
 
-  .reviews-table {
-    min-width: 600px;
+  .review-card {
+    padding: 1rem;
+  }
+
+  .review-card-hall-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .review-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .review-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .review-card-actions .btn-edit-review,
+  .review-card-actions .btn-delete-review {
+    padding: 0.5rem 0.875rem;
     font-size: 0.8rem;
-  }
-
-  .reviews-table th,
-  .reviews-table td {
-    padding: 0.5rem 0.6rem;
-  }
-
-  .reviews-table th {
-    font-size: 0.75rem;
-  }
-
-  .hall-name-cell {
-    min-width: 140px;
-  }
-
-  .hall-name-cell .hall-info h3 {
-    font-size: 1.2rem;
-  }
-
-  .hall-name-cell .verified-badge {
-    font-size: 0.55rem;
-    padding: 0.06rem 0.25rem;
-  }
-
-  .rating-cell {
-    min-width: 80px;
-  }
-
-  .rating-cell .review-rating .star {
-    font-size: 0.8rem;
-  }
-
-  .comment-cell {
-    min-width: 200px;
-    max-width: 240px;
-  }
-
-  .comment-cell .review-comment {
-    font-size: 13px;
-    line-height: 1.25;
-  }
-
-  .date-cell {
-    min-width: 70px;
-  }
-
-  .date-cell .review-date {
-    font-size: 0.7rem;
-  }
-
-  .actions-cell {
-    min-width: 90px;
-  }
-
-  .btn-edit-review,
-  .btn-delete-review {
-    font-size: 12px;
-    padding: 0.5rem 0.6rem;
   }
 
   .btn {
     padding: 0.75rem;
     font-size: 0.875rem;
     min-height: 44px;
-    /* Smaller touch target but still accessible */
   }
 
   .btn-write-review {
@@ -1035,61 +1038,22 @@
     font-size: 1.3rem;
   }
 
-  .reviews-table {
-    min-width: 550px;
-    font-size: 0.75rem;
+  .review-card {
+    padding: 0.875rem;
   }
 
-  .reviews-table th,
-  .reviews-table td {
-    padding: 0.4rem 0.5rem;
+  .review-card-hall-info h3 {
+    font-size: 1rem;
   }
 
-  .reviews-table th {
-    font-size: 0.7rem;
+  .review-card-comment {
+    font-size: 0.875rem;
   }
 
-  .hall-name-cell {
-    min-width: 120px;
-  }
-
-  .hall-name-cell .hall-info h3 {
-    font-size: 0.7rem;
-  }
-
-  .rating-cell {
-    min-width: 70px;
-  }
-
-  .rating-cell .review-rating .star {
-    font-size: 0.75rem;
-  }
-
-  .comment-cell {
-    min-width: 180px;
-    max-width: 220px;
-  }
-
-  .comment-cell .review-comment {
-    font-size: 14px;
-  }
-
-  .date-cell {
-    min-width: 60px;
-  }
-
-  .date-cell .review-date {
-    font-size: 0.65rem;
-  }
-
-  .actions-cell {
-    min-width: 80px;
-  }
-
-  .btn-edit-review,
-  .btn-delete-review {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.25rem;
+  .review-card-actions .btn-edit-review,
+  .review-card-actions .btn-delete-review {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
   }
 
   .btn {

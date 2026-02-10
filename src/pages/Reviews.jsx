@@ -400,61 +400,48 @@ const Reviews = () => {
             </p>
           </div>
         ) : (
-          <div className="reviews-table-container">
-            <table className="reviews-table">
-              <thead>
-                <tr>
-                  <th>Hall Name</th>
-                  <th>Rating</th>
-                  <th>Comment</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reviews.map((review) => (
-                  <tr key={review._id}>
-                    <td className="hall-name-cell">
-                      <div className="hall-info">
-                        <h3>{review.hall?.name}</h3>
-                        {review.isVerified && (
-                          <span className="verified-badge">✓ Verified Review</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="rating-cell">
-                      <div className="review-rating">{renderStars(review.rating)}</div>
-                    </td>
-                    <td className="comment-cell">
-                      <p className="review-comment">{review.comment}</p>
-                    </td>
-                    <td className="date-cell">
-                      <span className="review-date">
-                        {new Date(review.createdAt).toLocaleDateString()}
-                      </span>
-                    </td>
-                    <td className="actions-cell">
-                      <div className="review-actions">
-                        <button
-                          className="btn-edit-review"
-                          onClick={() => openEditModal(review)}
-                          aria-label="Edit review"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="btn-delete-review"
-                          onClick={() => openDeleteConfirm(review)}
-                          aria-label="Delete review"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="reviews-cards-container">
+            {reviews.map((review) => (
+              <div key={review._id} className="review-card">
+                <div className="review-card-header">
+                  <div className="review-card-hall-info">
+                    <h3>{review.hall?.name}</h3>
+                    {review.isVerified && (
+                      <span className="verified-badge">✓ Verified Review</span>
+                    )}
+                  </div>
+                  <div className="review-card-rating">
+                    {renderStars(review.rating)}
+                  </div>
+                </div>
+                
+                <div className="review-card-body">
+                  <p className="review-card-comment">{review.comment}</p>
+                </div>
+                
+                <div className="review-card-footer">
+                  <span className="review-card-date">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </span>
+                  <div className="review-card-actions">
+                    <button
+                      className="btn-edit-review"
+                      onClick={() => openEditModal(review)}
+                      aria-label="Edit review"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn-delete-review"
+                      onClick={() => openDeleteConfirm(review)}
+                      aria-label="Delete review"
+                    >
+                       Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
