@@ -33,8 +33,14 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
   }, []);
 
   useEffect(() => {
+    // Validate API key
+    const isValidApiKey = GOOGLE_MAPS_API_KEY && 
+                          GOOGLE_MAPS_API_KEY !== 'your_api_key_here' && 
+                          GOOGLE_MAPS_API_KEY !== 'your_new_api_key_here' &&
+                          GOOGLE_MAPS_API_KEY.startsWith('AIza');
+    
     // Check if we should use Google Maps or OpenStreetMap
-    if (GOOGLE_MAPS_API_KEY && GOOGLE_MAPS_API_KEY !== 'your_api_key_here') {
+    if (isValidApiKey) {
       // Check if Google Maps is already loaded
       if (window.google && window.google.maps) {
         initializeGoogleServices();
@@ -50,12 +56,16 @@ const AddressAutocomplete = ({ onLocationSelect, initialValue = '' }) => {
           setUseGoogleMaps(true);
         };
         script.onerror = () => {
-          // Google Maps failed to load, falling back to OpenStreetMap
+          console.error('Failed to load Google Maps. Falling back to OpenStreetMap.');
           setUseGoogleMaps(false);
         };
         document.head.appendChild(script);
       }
     } else {
+      // Use OpenStreetMap if no valid API key
+      if (!isValidApiKey && GOOGLE_MAPS_API_KEY) {
+        console.warn('Invalid Google Maps API key. Using OpenStreetMap instead.');
+      }
       setUseGoogleMaps(false);
     }
   }, [GOOGLE_MAPS_API_KEY]);
