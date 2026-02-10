@@ -144,7 +144,7 @@ function App() {
 
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/register" element={<AdminRegister />} />
+                {/* Admin registration disabled - use backend script to create admin accounts */}
                 <Route
                   path="/admin/dashboard"
                   element={

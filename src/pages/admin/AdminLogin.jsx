@@ -380,11 +380,8 @@ const AdminLogin = () => {
           </button>
         </form>
         <div className="auth-footer">
-          <p>
-            Don't have an admin account?{" "}
-            <Link to="/admin/register" className="auth-link">
-              Register here
-            </Link>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+            Admin accounts can only be created by system administrators.
           </p>
           <p style={{ marginTop: "1rem" }}>
             <Link to="/" className="auth-link">
