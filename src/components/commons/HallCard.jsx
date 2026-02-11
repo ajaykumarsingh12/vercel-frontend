@@ -9,6 +9,8 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
   const { user, toggleFavorite, isAuthenticated, favorites } = useAuth();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showBigHeart, setShowBigHeart] = useState(false);
   const images =
     hall.images && hall.images.length > 0
       ? hall.images.map((img) =>
@@ -146,8 +148,8 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
         </div>
 
         <button
-          className={`browse-hall-card__favorite-btn ${favorites?.includes(hall._id) ? "browse-hall-card__favorite-btn--active" : ""}`}
-          onClick={(e) => {
+          className={`browse-hall-card__favorite-btn ${favorites?.includes(hall._id) ? "browse-hall-card__favorite-btn--active" : ""} ${isAnimating ? "animating" : ""}`}
+          onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (!isAuthenticated) {
@@ -158,7 +160,23 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
               toast.info("Only users can add favorites");
               return;
             }
-            toggleFavorite(hall._id);
+            
+            // Trigger animation
+            setIsAnimating(true);
+            
+            // Show big heart animation only when liking (not unliking)
+            if (!favorites?.includes(hall._id)) {
+              setShowBigHeart(true);
+              setTimeout(() => setShowBigHeart(false), 800);
+            }
+            
+            // Call toggle favorite
+            await toggleFavorite(hall._id);
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+              setIsAnimating(false);
+            }, 600);
           }}
           title={favorites?.includes(hall._id) ? "Remove from Favorites" : "Add to Favorites"}
         >
@@ -176,6 +194,23 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
         </button>
+
+        {/* Big Heart Animation (Instagram-style) */}
+        {showBigHeart && (
+          <div className="browse-hall-card__big-heart">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="100"
+              height="100"
+              viewBox="0 0 24 24"
+              fill="white"
+              stroke="white"
+              strokeWidth="1"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </div>
+        )}
 
         {/* Share Button - Only show on browse page */}
         {showShare && (

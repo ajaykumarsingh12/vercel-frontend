@@ -196,27 +196,122 @@
 .browse-hall-card__favorite-btn--active {
   background: #ffffff;
   color: #ef4444;
-  animation: heartPulse 0.6s ease-out;
+  animation: likePopInstagram 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes heartPulse {
+/* Instagram-like Pop Animation */
+@keyframes likePopInstagram {
   0% {
     transform: scale(1);
   }
-
-  50% {
-    transform: scale(1.2);
+  15% {
+    transform: scale(1.3);
   }
-
+  30% {
+    transform: scale(0.95);
+  }
+  45% {
+    transform: scale(1.15);
+  }
+  60% {
+    transform: scale(0.98);
+  }
+  75% {
+    transform: scale(1.05);
+  }
   100% {
     transform: scale(1);
   }
+}
+
+/* Unlike Animation */
+@keyframes unlikeAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.browse-hall-card__favorite-btn.unliking {
+  animation: unlikeAnimation 0.3s ease-out;
 }
 
 .browse-hall-card__favorite-btn svg {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
   width: 16px;
   height: 16px;
+  transition: all 0.2s ease;
+}
+
+/* Heart fill animation */
+.browse-hall-card__favorite-btn--active svg {
+  animation: heartFillInstagram 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartFillInstagram {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Big Heart Animation (Instagram-style center pop) */
+.browse-hall-card__big-heart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  pointer-events: none;
+  animation: bigHeartPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bigHeartPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  15% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.browse-hall-card__big-heart svg {
+  filter: drop-shadow(0 4px 20px rgba(239, 68, 68, 0.6));
 }
 
 /* Share Button */
