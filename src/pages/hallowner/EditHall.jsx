@@ -12,6 +12,7 @@ const EditHall = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [initialApprovalStatus, setInitialApprovalStatus] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -62,6 +63,9 @@ const EditHall = () => {
     try {
       const response = await axios.get(`/api/halls/${id}`);
       const hall = response.data;
+
+      // Store initial approval status
+      setInitialApprovalStatus(hall.isApproved);
 
       // Categorize existing images based on their position/order
       const existingImages = hall.images || [];
@@ -296,7 +300,13 @@ const EditHall = () => {
         },
       });
 
-      toast.success("Hall updated successfully!");
+      // Show different message based on initial status
+      if (initialApprovalStatus === "rejected" || initialApprovalStatus === false) {
+        toast.success("Hall updated and resubmitted for admin review!");
+      } else {
+        toast.success("Hall updated successfully!");
+      }
+      
       navigate("/hall-owner/halls");
     } catch (error) {
       console.error(error);

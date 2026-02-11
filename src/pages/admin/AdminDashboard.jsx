@@ -6,6 +6,203 @@ import Loader from "../../components/commons/Loader";
 import Sidebar from "../../components/commons/Sidebar";
 import "./AdminDashboard.css";
 
+// Hall Details Dialog Component
+const HallDetailsDialog = ({ hall, onClose }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  if (!hall) return null;
+
+  const images =
+    hall.images && hall.images.length > 0
+      ? hall.images.map((img) =>
+          img.startsWith("http") ? img : `http://localhost:5000/${img}`
+        )
+      : ["https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800"];
+
+  return (
+    <div className="hall-details-dialog-overlay" onClick={onClose}>
+      <div className="hall-details-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="dialog-header">
+          <h2>Hall Details Report</h2>
+          <button className="dialog-close-btn" onClick={onClose}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div className="dialog-content">
+          {/* Images Section */}
+          <div className="dialog-section">
+            <h3 className="section-title">Hall Images</h3>
+            <div className="dialog-image-gallery">
+              <div className="main-image-container">
+                <img
+                  src={images[currentImageIndex]}
+                  alt={hall.name}
+                  className="main-image"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800";
+                  }}
+                />
+                {images.length > 1 && (
+                  <div className="image-counter">
+                    {currentImageIndex + 1} / {images.length}
+                  </div>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="thumbnail-grid">
+                  {images.map((img, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      alt={`${hall.name} ${index + 1}`}
+                      className={`thumbnail ${index === currentImageIndex ? "active" : ""}`}
+                      onClick={() => setCurrentImageIndex(index)}
+                      onError={(e) => {
+                        e.target.src = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800";
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Basic Information */}
+          <div className="dialog-section">
+            <h3 className="section-title">Basic Information</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="info-label">Hall Name:</span>
+                <span className="info-value">{hall.name}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Owner Name:</span>
+                <span className="info-value">{hall.owner?.name || "N/A"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Owner Email:</span>
+                <span className="info-value">{hall.owner?.email || "N/A"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Owner Phone:</span>
+                <span className="info-value">{hall.owner?.phone || "N/A"}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing & Capacity */}
+          <div className="dialog-section">
+            <h3 className="section-title">Pricing & Capacity</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="info-label">Price Per Hour:</span>
+                <span className="info-value highlight-price">₹{hall.pricePerHour}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Capacity:</span>
+                <span className="info-value highlight-capacity">{hall.capacity} people</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="dialog-section">
+            <h3 className="section-title">Location</h3>
+            <div className="info-grid">
+              <div className="info-item full-width">
+                <span className="info-label">Address:</span>
+                <span className="info-value">{hall.location?.address || "N/A"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">City:</span>
+                <span className="info-value">{hall.location?.city || "N/A"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">State:</span>
+                <span className="info-value">{hall.location?.state || "N/A"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Pincode:</span>
+                <span className="info-value">{hall.location?.pincode || "N/A"}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="dialog-section">
+            <h3 className="section-title">Description</h3>
+            <p className="description-text">{hall.description || "No description provided"}</p>
+          </div>
+
+          {/* Amenities */}
+          <div className="dialog-section">
+            <h3 className="section-title">Amenities</h3>
+            <div className="amenities-grid">
+              {hall.amenities && hall.amenities.length > 0 ? (
+                hall.amenities.map((amenity, index) => (
+                  <div key={index} className="amenity-tag">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    {amenity}
+                  </div>
+                ))
+              ) : (
+                <p className="no-data">No amenities listed</p>
+              )}
+            </div>
+          </div>
+
+          {/* Availability */}
+          <div className="dialog-section">
+            <h3 className="section-title">Availability</h3>
+            <div className="availability-info">
+              {hall.availability && hall.availability.length > 0 ? (
+                <div className="availability-grid">
+                  {hall.availability.map((slot, index) => (
+                    <div key={index} className="availability-slot">
+                      <span className="slot-day">{slot.day}</span>
+                      <span className="slot-time">
+                        {slot.startTime} - {slot.endTime}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="no-data">No availability information</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StatsTableRow = ({ label, value, icon, color }) => {
   return (
     <tr className="simple-stats-row">
@@ -24,7 +221,7 @@ const StatsTableRow = ({ label, value, icon, color }) => {
   );
 };
 
-const AdminHallCard = ({ hall, handleApproveHall }) => {
+const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images =
     hall.images && hall.images.length > 0
@@ -107,6 +304,32 @@ const AdminHallCard = ({ hall, handleApproveHall }) => {
               {images.length > 1 ? `Photo ${currentImageIndex + 1}/${images.length}` : "Pending Approval"}
             </span>
           </div>
+
+          {/* View Details Button - Top Right Corner */}
+          <button
+            className="view-details-icon-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onViewDetails(hall);
+            }}
+            title="View Full Details"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -136,40 +359,10 @@ const AdminHallCard = ({ hall, handleApproveHall }) => {
 
         <div className="hall-details">
           <div className="detail-item">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-            <span>Capacity: {hall.capacity} people</span>
+            <span><b style={{'color':'orange'}}>Capacity:</b> {hall.capacity} people</span>
           </div>
           <div className="detail-item">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-            <span>₹{hall.pricePerHour}/hr</span>
+            <span><b style={{'color':'orange'}}>Price:₹</b>{hall.pricePerHour}/hr</span>
           </div>
         </div>
 
@@ -191,7 +384,7 @@ const AdminHallCard = ({ hall, handleApproveHall }) => {
             </svg>
           </div>
           <div className="owner-details">
-            <span className="owner-label">Owner </span>
+            <span className="owner-label">Owner  </span>
             <span className="owner-name">
               {hall.owner?.name}
             </span>
@@ -204,39 +397,12 @@ const AdminHallCard = ({ hall, handleApproveHall }) => {
           onClick={() => handleApproveHall(hall._id, true)}
           className="btn btn-approve"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20,6 9,17 4,12"></polyline>
-          </svg>
           Approve
         </button>
         <button
           onClick={() => handleApproveHall(hall._id, false)}
           className="btn btn-reject"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
           Reject
         </button>
       </div>
@@ -537,6 +703,8 @@ const AdminDashboard = () => {
   const [hallsViewMode, setHallsViewMode] = useState("grid"); // "grid" or "list" for halls
   const [usersViewMode, setUsersViewMode] = useState("grid"); // "grid" or "list" for users
   const [unblockRequests, setUnblockRequests] = useState([]);
+  const [selectedHall, setSelectedHall] = useState(null); // For dialog
+  const [showHallDialog, setShowHallDialog] = useState(false); // Dialog visibility
 
   useEffect(() => {
     fetchStats();
@@ -595,6 +763,16 @@ const AdminDashboard = () => {
       console.error(error);
       toast.error("Failed to update hall status");
     }
+  };
+
+  const handleViewDetails = (hall) => {
+    setSelectedHall(hall);
+    setShowHallDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setShowHallDialog(false);
+    setSelectedHall(null);
   };
 
   const handleDeleteUser = async (id) => {
@@ -1000,6 +1178,7 @@ const AdminDashboard = () => {
                         key={hall._id}
                         hall={hall}
                         handleApproveHall={handleApproveHall}
+                        onViewDetails={handleViewDetails}
                       />
                     ))}
                   </div>
@@ -1705,6 +1884,11 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Hall Details Dialog */}
+      {showHallDialog && selectedHall && (
+        <HallDetailsDialog hall={selectedHall} onClose={handleCloseDialog} />
+      )}
     </div >
   );
 };

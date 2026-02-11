@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/commons/Navbar";
+import Loader from "../../components/commons/Loader";
 import "./EditProfile.css";
 
 const EditProfile = () => {
@@ -383,10 +384,10 @@ const EditProfile = () => {
               disabled={loading}
             >
               {loading ? (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <div className="spinner"></div>
-                  Updating...
-                </>
+                  <span>Updating...</span>
+                </div>
               ) : (
                 <>
                   <svg

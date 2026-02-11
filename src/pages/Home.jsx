@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroSection from "../components/commons/HeroSection";
-import Loader from "../components/commons/Loader";
+import HallCard from "../components/commons/HallCard";
+import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css";
-import HallCard from "../components/commons/HallCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,8 +27,8 @@ const Home = () => {
 
   const fetchFeaturedHalls = async () => {
     try {
-      const response = await axios.get("/api/halls?limit=10");
-      setFeaturedHalls(response.data.slice(0, 10));
+      const response = await axios.get("/api/halls?limit=6");
+      setFeaturedHalls(response.data.slice(0, 6));
     } catch (error) {
             console.error(error);
             toast.error("Failed to load featured halls");
@@ -105,13 +105,19 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="loading-container">
-              <Loader />
+            <div className="halls-grid-container">
+              <div className="halls-grid">
+                {[1, 2, 3, 4, 5, 6].map((index) => (
+                  <div key={index} className="hall-grid-item">
+                    <HallCardSkeleton />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="halls-grid-container">
               <div className="halls-grid">
-                {featuredHalls.slice(0, 8).map((hall) => (
+                {featuredHalls.slice(0, 6).map((hall) => (
                   <div key={hall._id} className="hall-grid-item">
                     <HallCard hall={hall} renderStars={renderStars} />
                   </div>

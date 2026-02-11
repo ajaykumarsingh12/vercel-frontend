@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Loader from "../../components/commons/Loader";
+import HallCardSkeleton from "../../components/commons/HallCardSkeleton";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import "./Favorites.css";
@@ -34,7 +34,21 @@ const Favorites = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="favorites-page">
+        <div className="favorites-header">
+          <h1>My Favorite Halls</h1>
+          <p>Keep track of the venues you love most for your special day.</p>
+        </div>
+        <div className="favorites-grid">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <HallCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="favorites-page">

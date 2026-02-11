@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Loader from "../components/commons/Loader";
 import { useAuth } from "../context/AuthContext";
 import HallCard from "../components/commons/HallCard";
+import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import "./Halls.css";
 
 const Halls = () => {
@@ -197,7 +197,23 @@ const Halls = () => {
     );
   };
 
-  if (loading) return <Loader />;
+  // Render skeleton loaders
+  const renderSkeletonCategory = (categoryTitle) => {
+    return (
+      <div className="category-section" key={categoryTitle}>
+        <div className="category-header">
+          <div className="category-title-wrapper">
+            <h3 className="category-title">{categoryTitle}</h3>
+          </div>
+        </div>
+        <div className="halls-grid">
+          {[1, 2, 3, 4].map((index) => (
+            <HallCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="halls-page">
@@ -386,25 +402,31 @@ const Halls = () => {
         </div>
 
         {halls.length === 0 ? (
-          <div className="no-results">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="no-results-icon"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <h3>No venues found</h3>
-            <p>We couldn't find any halls matching your current filters.</p>
-          </div>
+          loading ? (
+            <div className="categorized-halls">
+              {renderSkeletonCategory("Loading Venues...")}
+            </div>
+          ) : (
+            <div className="no-results">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="no-results-icon"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              <h3>No venues found</h3>
+              <p>We couldn't find any halls matching your current filters.</p>
+            </div>
+          )
         ) : (
           <div className="categorized-halls">
             {/* Budget Category */}

@@ -1,0 +1,214 @@
+.booking-card-skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.booking-card-skeleton:hover {
+  transform: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Match the actual card structure */
+.booking-card-skeleton .hall-header h3 {
+  margin: 0;
+}
+
+.booking-card-skeleton .location,
+.booking-card-skeleton .contact {
+  margin: 0;
+}
+
+.booking-card-skeleton .detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.booking-card-skeleton .detail-label,
+.booking-card-skeleton .detail-value {
+  display: block;
+}
+
+/* Responsive skeleton adjustments */
+@media (max-width: 768px) {
+  .booking-card-skeleton .hall-header > span:first-child {
+    height: 24px !important;
+  }
+
+  .booking-card-skeleton .hall-header > span:last-child {
+    height: 28px !important;
+    width: 90px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-card-skeleton .hall-header > span:first-child {
+    height: 20px !important;
+    width: 70% !important;
+  }
+
+  .booking-card-skeleton .hall-header > span:last-child {
+    height: 26px !important;
+    width: 85px !important;
+  }
+
+  .booking-card-skeleton .location,
+  .booking-card-skeleton .contact {
+    gap: 6px !important;
+  }
+
+  .booking-card-skeleton .location .react-loading-skeleton:first-child,
+  .booking-card-skeleton .contact .react-loading-skeleton:first-child {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* Detail cards in horizontal layout on mobile */
+  .booking-card-skeleton .detail-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .booking-card-skeleton .detail-label {
+    text-align: left;
+  }
+
+  .booking-card-skeleton .detail-value {
+    text-align: right;
+  }
+}
+
+@media (max-width: 360px) {
+  .booking-card-skeleton .hall-header > span:first-child {
+    height: 18px !important;
+  }
+
+  .booking-card-skeleton .hall-header > span:last-child {
+    height: 24px !important;
+    width: 80px !important;
+  }
+}
+
+/* Responsive Design - Match MyBookings.css breakpoints */
+
+/* Large Tablets (iPad Pro) */
+@media (max-width: 1200px) {
+  .booking-card-skeleton .booking-center-section {
+    min-width: 280px;
+  }
+
+  .booking-card-skeleton .booking-actions {
+    min-width: 180px;
+  }
+}
+
+/* Standard Tablets (iPad) */
+@media (max-width: 1024px) {
+  .booking-card-skeleton .booking-center-section {
+    min-width: auto;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .booking-card-skeleton .booking-actions {
+    min-width: auto;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .booking-card-skeleton .detail-card {
+    padding: 1rem;
+  }
+}
+
+/* Mobile Phones (Portrait) */
+@media (max-width: 768px) {
+  .booking-card-skeleton {
+    border-radius: 20px;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .booking-card-skeleton .hall-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .booking-card-skeleton .booking-center-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .booking-card-skeleton .detail-card {
+    padding: 0.75rem;
+    min-height: 60px;
+  }
+
+  .booking-card-skeleton .booking-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 640px) {
+  .booking-card-skeleton {
+    border-radius: 18px;
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .booking-card-skeleton .booking-center-section {
+    gap: 0.6rem;
+  }
+
+  .booking-card-skeleton .detail-card {
+    padding: 0.6rem;
+    min-height: 55px;
+  }
+}
+
+/* Extra Small Mobile Phones */
+@media (max-width: 480px) {
+  .booking-card-skeleton {
+    border-radius: 16px;
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+
+  .booking-card-skeleton .booking-center-section {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .booking-card-skeleton .detail-card {
+    padding: 0.75rem;
+    min-height: 50px;
+  }
+}
+
+/* Very Small Mobile Phones */
+@media (max-width: 360px) {
+  .booking-card-skeleton {
+    padding: 0.875rem;
+    gap: 1rem;
+    border-radius: 14px;
+  }
+
+  .booking-card-skeleton .detail-card {
+    padding: 0.6rem;
+    min-height: 45px;
+  }
+}

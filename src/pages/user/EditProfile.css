@@ -310,6 +310,12 @@
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.btn .spinner {
+  margin-right: 0;
 }
 
 @keyframes spin {

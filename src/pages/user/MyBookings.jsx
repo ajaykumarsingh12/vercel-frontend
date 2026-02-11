@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../../components/commons/Loader";
+import BookingCardSkeleton from "../../components/commons/BookingCardSkeleton";
 import "./MyBookings.css";
 
 const MyBookings = () => {
@@ -10,6 +10,7 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [filterLoading, setFilterLoading] = useState(false);
   const [reviewedBookingIds, setReviewedBookingIds] = useState(new Set());
 
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -130,6 +131,16 @@ const MyBookings = () => {
     return booking.status === filter;
   });
 
+  const handleFilterChange = (newFilter) => {
+    if (newFilter === filter) return;
+    setFilterLoading(true);
+    setFilter(newFilter);
+    // Simulate filter processing time for skeleton display
+    setTimeout(() => {
+      setFilterLoading(false);
+    }, 300);
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case "pending":
@@ -209,8 +220,6 @@ const MyBookings = () => {
     }
   };
 
-  if (loading) return <Loader />;
-
   return (
     <div className="my-bookings">
       <div className="bookings-header">
@@ -227,7 +236,7 @@ const MyBookings = () => {
             <button
               key={status}
               className={`filter-tab ${filter === status ? "active" : ""}`}
-              onClick={() => setFilter(status)}
+              onClick={() => handleFilterChange(status)}
             >
               {status === "all"
                 ? "All Bookings"
@@ -242,7 +251,13 @@ const MyBookings = () => {
         )}
       </div>
 
-      {filteredBookings.length === 0 ? (
+      {loading || filterLoading ? (
+        <div className="bookings-list">
+          {[1, 2, 3].map((i) => (
+            <BookingCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : filteredBookings.length === 0 ? (
         <div className="no-bookings">
           <div className="no-bookings-icon">
             {filter === "all" ? "📅" : "🔍"}
