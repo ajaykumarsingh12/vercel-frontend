@@ -37,16 +37,26 @@ const Home = () => {
     try {
       console.log('🔄 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
       const response = await axios.get("/api/halls?limit=6");
-      console.log('✅ API Response:', response.data);
+      console.log('✅ Full API Response:', response);
+      console.log('✅ Response Data:', response.data);
+      console.log('✅ Response Data Type:', typeof response.data);
+      console.log('✅ Is Array?:', Array.isArray(response.data));
       
       // Ensure response.data is an array
       const hallsData = Array.isArray(response.data) ? response.data : [];
+      console.log('✅ Processed halls data:', hallsData);
       console.log('✅ Number of halls:', hallsData.length);
+      
+      if (hallsData.length === 0) {
+        console.warn('⚠️ No halls returned from API');
+      }
+      
       setFeaturedHalls(hallsData.slice(0, 6));
     } catch (error) {
       console.error('❌ API Error:', error);
-      console.error('❌ Error details:', error.response?.data || error.message);
-      toast.error("Failed to load featured halls");
+      console.error('❌ Error Response:', error.response);
+      console.error('❌ Error Message:', error.message);
+      toast.error("Failed to load featured halls: " + (error.response?.data?.message || error.message));
       setFeaturedHalls([]); // Set empty array on error
     } finally {
       console.log('✅ Setting loading to false');
@@ -132,15 +142,30 @@ const Home = () => {
               </div>
             </div>
           ) : featuredHalls.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
-              <h3>No halls available at the moment</h3>
-              <p>Please check back later or contact support</p>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '4rem 2rem', 
+              background: 'white',
+              borderRadius: '16px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+              margin: '2rem 0'
+            }}>
+              <p style={{ color: '#666', marginBottom: '1.5rem' }}>
+               No halls available at the moment
+Please check back later or contact support
+              </p>
+             
             </div>
           ) : (
             <div className="halls-grid-container">
               <div className="halls-grid">
                 {featuredHalls.slice(0, 6).map((hall) => (
-                  <div key={hall._id} className="hall-grid-item">
+                  <div key={hall._id} className="hall-grid-item" style={{ border: '2px solid red', minHeight: '400px', background: '#f0f0f0' }}>
+                    <div style={{ padding: '1rem' }}>
+                      <h3>Testing: {hall.name || 'No name'}</h3>
+                      <p>ID: {hall._id}</p>
+                      <p>Location: {hall.location?.city}</p>
+                    </div>
                     <HallCard hall={hall} renderStars={renderStars} />
                   </div>
                 ))}
