@@ -167,7 +167,7 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
             // Show big heart animation only when liking (not unliking)
             if (!favorites?.includes(hall._id)) {
               setShowBigHeart(true);
-              setTimeout(() => setShowBigHeart(false), 800);
+              setTimeout(() => setShowBigHeart(false), 1000);
             }
             
             // Call toggle favorite
@@ -200,14 +200,18 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
           <div className="browse-hall-card__big-heart">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="100"
-              height="100"
-              viewBox="0 0 24 24"
+              width="120"
+              height="120"
+              viewBox="0 0 100 100"
               fill="white"
-              stroke="white"
-              strokeWidth="1"
             >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              <path 
+                d="M50,85 C50,85 15,60 15,40 C15,30 20,25 27.5,25 C35,25 40,30 50,40 C60,30 65,25 72.5,25 C80,25 85,30 85,40 C85,60 50,85 50,85 Z"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
             </svg>
           </div>
         )}
