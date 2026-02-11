@@ -45,9 +45,16 @@ const Halls = () => {
       });
 
       const response = await axios.get(`/api/halls?${params.toString()}`);
-      setHalls(response.data);
+      console.log('✅ Halls API Response:', response.data);
+      
+      // Ensure response.data is an array
+      const hallsData = Array.isArray(response.data) ? response.data : [];
+      console.log('✅ Number of halls:', hallsData.length);
+      setHalls(hallsData);
     } catch (error) {
-          } finally {
+      console.error("❌ Error fetching halls:", error);
+      setHalls([]); // Set empty array on error
+    } finally {
       setLoading(false);
     }
   };

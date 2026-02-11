@@ -99,8 +99,8 @@ const HeroSection = () => {
     // Auto-play video when component mounts
     if (showVideo && videoRef.current) {
       setTimeout(() => {
-        videoRef.current.play().catch((error) => {
-          // Video autoplay failed
+        videoRef.current?.play().catch((error) => {
+          console.log('Video autoplay blocked:', error);
           // Fallback to images if autoplay fails
           setShowVideo(false);
         });

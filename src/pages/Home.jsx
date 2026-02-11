@@ -25,14 +25,31 @@ const Home = () => {
     fetchFeaturedHalls();
   }, []);
 
+  useEffect(() => {
+    console.log('🔍 State Update:', {
+      loading,
+      featuredHallsCount: featuredHalls.length,
+      featuredHalls: featuredHalls
+    });
+  }, [loading, featuredHalls]);
+
   const fetchFeaturedHalls = async () => {
     try {
+      console.log('🔄 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
       const response = await axios.get("/api/halls?limit=6");
-      setFeaturedHalls(response.data.slice(0, 6));
+      console.log('✅ API Response:', response.data);
+      
+      // Ensure response.data is an array
+      const hallsData = Array.isArray(response.data) ? response.data : [];
+      console.log('✅ Number of halls:', hallsData.length);
+      setFeaturedHalls(hallsData.slice(0, 6));
     } catch (error) {
-            console.error(error);
-            toast.error("Failed to load featured halls");
+      console.error('❌ API Error:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      toast.error("Failed to load featured halls");
+      setFeaturedHalls([]); // Set empty array on error
     } finally {
+      console.log('✅ Setting loading to false');
       setLoading(false);
     }
   };
@@ -113,6 +130,11 @@ const Home = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          ) : featuredHalls.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+              <h3>No halls available at the moment</h3>
+              <p>Please check back later or contact support</p>
             </div>
           ) : (
             <div className="halls-grid-container">
