@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./HallCard.css";
 
 const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
-  const { user, toggleFavorite, isAuthenticated } = useAuth();
+  const { user, toggleFavorite, isAuthenticated, favorites } = useAuth();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const images =
@@ -146,7 +146,7 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
         </div>
 
         <button
-          className={`browse-hall-card__favorite-btn ${user?.favorites?.includes(hall._id) ? "browse-hall-card__favorite-btn--active" : ""}`}
+          className={`browse-hall-card__favorite-btn ${favorites?.includes(hall._id) ? "browse-hall-card__favorite-btn--active" : ""}`}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -160,14 +160,14 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
             }
             toggleFavorite(hall._id);
           }}
-          title={user?.favorites?.includes(hall._id) ? "Remove from Favorites" : "Add to Favorites"}
+          title={favorites?.includes(hall._id) ? "Remove from Favorites" : "Add to Favorites"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
             height="20"
             viewBox="0 0 24 24"
-            fill={user?.favorites?.includes(hall._id) ? "currentColor" : "none"}
+            fill={favorites?.includes(hall._id) ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"

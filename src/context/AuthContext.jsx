@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [favorites, setFavorites] = useState([]); // Store favorite hall IDs
 
   useEffect(() => {
     if (token) {
@@ -45,10 +46,26 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get("/api/favourites");
+      const favoriteIds = response.data.favourites.map(fav => fav.hall._id || fav.hall);
+      setFavorites(favoriteIds);
+    } catch (error) {
+      console.error("Failed to fetch favorites:", error);
+      setFavorites([]);
+    }
+  };
+
   const fetchUser = async () => {
     try {
       const response = await axios.get("/api/auth/me");
       setUser(response.data.user);
+      
+      // Fetch favorites only for regular users
+      if (response.data.user.role === "user") {
+        await fetchFavorites();
+      }
     } catch (error) {
       console.error(error);
       logout();
@@ -69,6 +86,11 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(userData);
       axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+
+      // Fetch favorites for regular users
+      if (userData.role === "user") {
+        await fetchFavorites();
+      }
 
       return { success: true, user: userData };
     } catch (error) {
@@ -104,6 +126,11 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       setUser(user);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // Fetch favorites for regular users
+      if (user.role === "user") {
+        await fetchFavorites();
+      }
 
       return { success: true, user };
     } catch (error) {
@@ -150,6 +177,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    setFavorites([]);
     delete axios.defaults.headers.common["Authorization"];
   };
 
@@ -159,22 +187,21 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await axios.post(
-        `/api/halls/${hallId}/favorite`,
+        `/api/favourites/toggle/${hallId}`,
       );
-      const { isFavorite } = response.data;
+      const { favorited } = response.data;
 
-      // Update local user state
-      setUser((prevUser) => ({
-        ...prevUser,
-        favorites: isFavorite
-          ? [...(prevUser.favorites || []), hallId]
-          : (prevUser.favorites || []).filter((id) => id !== hallId),
-      }));
+      // Update local favorites state
+      if (favorited) {
+        setFavorites(prev => [...prev, hallId]);
+      } else {
+        setFavorites(prev => prev.filter(id => id !== hallId));
+      }
 
-      return { success: true, isFavorite };
+      return { success: true, isFavorite: favorited };
     } catch (error) {
       console.error(error);
-      return { success: false, message: "Failed to toggle favorite" };
+      return { success: false, message: error.response?.data?.message || "Failed to toggle favorite" };
     }
   };
 
@@ -294,6 +321,7 @@ export const AuthProvider = ({ children }) => {
     googleLogin,
     appleLogin,
     isAuthenticated: !!user,
+    favorites, // Expose favorites array
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

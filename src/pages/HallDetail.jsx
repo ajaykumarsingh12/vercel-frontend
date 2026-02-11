@@ -22,7 +22,7 @@ import "./HallDetail.css";
 const HallDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, user, toggleFavorite } = useAuth();
+  const { isAuthenticated, user, toggleFavorite, favorites } = useAuth();
   const [hall, setHall] = useState(null);
   const [loading, setLoading] = useState(true);
   const [bookingData, setBookingData] = useState({
@@ -485,7 +485,7 @@ const HallDetail = () => {
             <div className="title-favorite-wrapper">
               <h1 className="hall-title">{hall.name}</h1>
               <button
-                className={`favorite-btn-detail ${user?.favorites?.includes(hall._id) ? "active" : ""}`}
+                className={`favorite-btn-detail ${favorites?.includes(hall._id) ? "active" : ""}`}
                 onClick={() => {
                   if (!isAuthenticated) {
                     toast.info("Please login to add favorites");
@@ -498,7 +498,7 @@ const HallDetail = () => {
                   toggleFavorite(hall._id);
                 }}
                 title={
-                  user?.favorites?.includes(hall._id)
+                  favorites?.includes(hall._id)
                     ? "Remove from Favorites"
                     : "Add to Favorites"
                 }
@@ -509,7 +509,7 @@ const HallDetail = () => {
                   height="24"
                   viewBox="0 0 24 24"
                   fill={
-                    user?.favorites?.includes(hall._id)
+                    favorites?.includes(hall._id)
                       ? "currentColor"
                       : "none"
                   }
@@ -521,7 +521,7 @@ const HallDetail = () => {
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 <span>
-                  {user?.favorites?.includes(hall._id)
+                  {favorites?.includes(hall._id)
                     ? "Favorited"
                     : "Add to Favorites"}
                 </span>
@@ -1100,7 +1100,7 @@ const HallDetail = () => {
                     {/* Like and Share Icons */}
                     <div className="similar-hall-actions">
                       <button
-                        className={`similar-hall-favorite ${user?.favorites?.includes(similarHall._id) ? "active" : ""}`}
+                        className={`similar-hall-favorite ${favorites?.includes(similarHall._id) ? "active" : ""}`}
                         onClick={(e) => {
                           e.preventDefault();
                           if (!isAuthenticated) {
@@ -1113,9 +1113,9 @@ const HallDetail = () => {
                           }
                           toggleFavorite(similarHall._id);
                         }}
-                        title={user?.favorites?.includes(similarHall._id) ? "Remove from Favorites" : "Add to Favorites"}
+                        title={favorites?.includes(similarHall._id) ? "Remove from Favorites" : "Add to Favorites"}
                       >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill={user?.favorites?.includes(similarHall._id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill={favorites?.includes(similarHall._id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
                       </button>

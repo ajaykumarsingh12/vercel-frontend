@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "./Favorites.css";
 
 const Favorites = () => {
-  const { user, toggleFavorite, isAuthenticated } = useAuth();
+  const { user, toggleFavorite, isAuthenticated, favorites: favoriteIds } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,13 +15,17 @@ const Favorites = () => {
     if (isAuthenticated) {
       fetchFavorites();
     }
-  }, [isAuthenticated, user?.favorites]); // Refetch if favorites array changes
+  }, [isAuthenticated, favoriteIds]); // Refetch if favorites array changes
 
   const fetchFavorites = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/halls/favorites/all");
-      setFavorites(response.data);
+      const response = await axios.get("/api/favourites");
+      // Extract hall data from favourites
+      const halls = response.data.favourites
+        .filter(fav => fav.hall) // Filter out any null halls
+        .map(fav => fav.hall);
+      setFavorites(halls);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load favorites");
