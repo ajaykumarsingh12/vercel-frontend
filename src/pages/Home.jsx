@@ -26,7 +26,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('🔍 State Update:', {
+    console.log('State Update:', {
       loading,
       featuredHallsCount: featuredHalls.length,
       featuredHalls: featuredHalls
@@ -35,7 +35,7 @@ const Home = () => {
 
   const fetchFeaturedHalls = async () => {
     try {
-      console.log('🔄 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
+      console.log('🔍 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
       const response = await axios.get("/api/halls?limit=6");
       console.log('✅ Full API Response:', response);
       console.log('✅ Response Data:', response.data);
@@ -49,6 +49,8 @@ const Home = () => {
       
       if (hallsData.length === 0) {
         console.warn('⚠️ No halls returned from API');
+      } else {
+        console.log('✅ First hall:', hallsData[0]);
       }
       
       setFeaturedHalls(hallsData.slice(0, 6));
@@ -152,7 +154,7 @@ const Home = () => {
             }}>
               <p style={{ color: '#666', marginBottom: '1.5rem' }}>
                No halls available at the moment
-Please check back later or contact support
+                Please check back later or contact support
               </p>
              
             </div>
@@ -160,12 +162,7 @@ Please check back later or contact support
             <div className="halls-grid-container">
               <div className="halls-grid">
                 {featuredHalls.slice(0, 6).map((hall) => (
-                  <div key={hall._id} className="hall-grid-item" style={{ border: '2px solid red', minHeight: '400px', background: '#f0f0f0' }}>
-                    <div style={{ padding: '1rem' }}>
-                      <h3>Testing: {hall.name || 'No name'}</h3>
-                      <p>ID: {hall._id}</p>
-                      <p>Location: {hall.location?.city}</p>
-                    </div>
+                  <div key={hall._id} className="hall-grid-item">
                     <HallCard hall={hall} renderStars={renderStars} />
                   </div>
                 ))}

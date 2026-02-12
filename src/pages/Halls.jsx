@@ -44,15 +44,28 @@ const Halls = () => {
         if (appliedFilters[key]) params.append(key, appliedFilters[key]);
       });
 
+      console.log('🔍 Fetching halls from:', axios.defaults.baseURL + `/api/halls?${params.toString()}`);
       const response = await axios.get(`/api/halls?${params.toString()}`);
-      console.log('✅ Halls API Response:', response.data);
+      console.log('✅ Halls API Response:', response);
+      console.log('✅ Response Data:', response.data);
+      console.log('✅ Response Data Type:', typeof response.data);
+      console.log('✅ Is Array?:', Array.isArray(response.data));
       
       // Ensure response.data is an array
       const hallsData = Array.isArray(response.data) ? response.data : [];
       console.log('✅ Number of halls:', hallsData.length);
+      
+      if (hallsData.length === 0) {
+        console.warn('⚠️ No halls returned from API');
+      } else {
+        console.log('✅ First hall:', hallsData[0]);
+      }
+      
       setHalls(hallsData);
     } catch (error) {
       console.error("❌ Error fetching halls:", error);
+      console.error('❌ Error Response:', error.response);
+      console.error('❌ Error Message:', error.message);
       setHalls([]); // Set empty array on error
     } finally {
       setLoading(false);
