@@ -28,31 +28,25 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('State Update:', {
-      loading,
-      featuredHallsCount: featuredHalls.length,
-      featuredHalls: featuredHalls
-    });
+    // console.log('State Update:', {
+    //   loading,
+    //   featuredHallsCount: featuredHalls.length,
+    //   featuredHalls: featuredHalls
+    // });
   }, [loading, featuredHalls]);
 
   const fetchFeaturedHalls = async () => {
     try {
-      console.log('🔍 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
+     // console.log('🔍 Fetching halls from:', axios.defaults.baseURL + '/api/halls?limit=6');
       const response = await axios.get("/api/halls?limit=6");
-      console.log('✅ Full API Response:', response);
-      console.log('✅ Response Data:', response.data);
-      console.log('✅ Response Data Type:', typeof response.data);
-      console.log('✅ Is Array?:', Array.isArray(response.data));
       
       // Ensure response.data is an array
       const hallsData = Array.isArray(response.data) ? response.data : [];
-      console.log('✅ Processed halls data:', hallsData);
-      console.log('✅ Number of halls:', hallsData.length);
+
       
       if (hallsData.length === 0) {
         console.warn('⚠️ No halls returned from API');
       } else {
-        console.log('✅ First hall:', hallsData[0]);
       }
       
       setFeaturedHalls(hallsData.slice(0, 6));
@@ -63,7 +57,7 @@ const Home = () => {
       toast.error("Failed to load featured halls: " + (error.response?.data?.message || error.message));
       setFeaturedHalls([]); // Set empty array on error
     } finally {
-      console.log('✅ Setting loading to false');
+      //console.log('✅ Setting loading to false');
       setLoading(false);
     }
   };

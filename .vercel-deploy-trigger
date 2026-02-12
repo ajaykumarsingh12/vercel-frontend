@@ -1,0 +1,3 @@
+Deploy timestamp: 2026-02-12T10:30:00Z
+Reason: Fix Google OAuth Client ID environment variable loading
+Changes: Added debug logging to verify VITE_GOOGLE_CLIENT_ID is loaded correctly
