@@ -545,9 +545,8 @@
 }
 
 .social-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
 .btn-social {
@@ -564,6 +563,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
+  max-width: 300px;
 }
 
 [data-theme="dark"] .btn-social {
@@ -591,17 +592,6 @@
 .btn-google svg {
   width: 20px;
   height: 20px;
-}
-
-.btn-apple svg {
-  width: 20px;
-  height: 20px;
-}
-
-@media (max-width: 480px) {
-  .social-buttons {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Modal Styles */
