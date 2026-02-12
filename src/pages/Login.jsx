@@ -36,9 +36,6 @@ const Login = () => {
     googleScript.onload = () => {
       if (window.google) {
         const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '274529260120-odem5g4vkc4qppt86s4n3vcs5e5h56kd.apps.googleusercontent.com';
-        console.log('🔑 Google Client ID:', clientId);
-        console.log('🌍 Environment:', import.meta.env.MODE);
-        console.log('📦 All VITE vars:', Object.keys(import.meta.env).filter(k => k.startsWith('VITE_')));
         window.google.accounts.id.initialize({
           client_id: clientId,
           callback: handleGoogleResponse,
