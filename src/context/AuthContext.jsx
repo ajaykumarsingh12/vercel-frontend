@@ -259,11 +259,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (credential, role = "user") => {
+  const googleLogin = async (credential, role = "user", sessionId = null) => {
     try {
       const response = await axios.post(
         "/api/auth/google",
-        { credential, role }
+        { credential, role, sessionId }
       );
       
       const { token: newToken, user: userData } = response.data;
