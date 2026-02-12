@@ -24,7 +24,6 @@ import UserEditProfile from "./pages/user/EditProfile";
 import Payment from "./pages/Payment";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminRegister from "./pages/admin/AdminRegister";
 import AdminEditProfile from "./pages/admin/EditProfile";
 import HallOwnerDashboard from "./pages/hallowner/HallOwnerDashboard";
 import MyHalls from "./pages/hallowner/MyHalls";

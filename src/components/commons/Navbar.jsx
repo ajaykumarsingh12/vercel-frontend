@@ -867,10 +867,7 @@ c14 0 27 9 34 23 9 19 11 16 11 -25 1 -27 -3 -48 -9 -48 -5 0 -10 9 -10 20 0
                 <Link
                   to="/admin/login"
                   onClick={closeMenu}
-                  className={`btn-admin ${isActive("/admin/login") || isActive("/admin/register")
-                    ? "active"
-                    : ""
-                    }`}
+                  className={`btn-admin ${isActive("/admin/login") ? "active" : ""}`}
                 >
                   Admin
                 </Link>

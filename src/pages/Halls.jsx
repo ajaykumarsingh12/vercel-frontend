@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import HallCard from "../components/commons/HallCard";
 import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import "./Halls.css";
 
 const Halls = () => {
   const { user, toggleFavorite, isAuthenticated } = useAuth();
+  const { theme } = useTheme();
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({

@@ -35,8 +35,10 @@ const Login = () => {
 
     googleScript.onload = () => {
       if (window.google) {
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '274529260120-odem5g4vkc4qppt86s4n3vcs5e5h56kd.apps.googleusercontent.com';
+        console.log('🔑 Google Client ID:', clientId);
         window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com',
+          client_id: clientId,
           callback: handleGoogleResponse,
         });
       }

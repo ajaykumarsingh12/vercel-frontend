@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../../components/commons/Loader";
 import Calendar from "../../components/commons/Calendar";
+import HallTableSkeleton from "../../components/commons/HallTableSkeleton";
 
 import "./HallOwnerDashboard.css";
 
@@ -483,7 +484,9 @@ const HallOwnerDashboard = () => {
                   <h2>Recent Bookings</h2>
                 </div>
 
-                {bookings.length === 0 ? (
+                {loading ? (
+                  <HallTableSkeleton rows={10} />
+                ) : bookings.length === 0 ? (
                   <div className="no-bookings-owner">
                     <div className="no-bookings-icon">📅</div>
                     <h3>No bookings yet</h3>

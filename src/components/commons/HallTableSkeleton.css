@@ -1,0 +1,112 @@
+/* Hall Table Skeleton Styles */
+
+.skeleton-row {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.skeleton-table-image {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-text {
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-text-lg {
+  width: 180px;
+  height: 18px;
+}
+
+.skeleton-text-md {
+  width: 140px;
+}
+
+.skeleton-text-sm {
+  width: 80px;
+}
+
+.skeleton-badge {
+  width: 90px;
+  height: 24px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  display: inline-block;
+}
+
+.skeleton-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.skeleton-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .skeleton-table-image,
+[data-theme="dark"] .skeleton-text,
+[data-theme="dark"] .skeleton-badge,
+[data-theme="dark"] .skeleton-btn {
+  background: linear-gradient(90deg, #2d3748 25%, #1a202c 50%, #2d3748 75%);
+  background-size: 200% 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skeleton-text-lg {
+    width: 120px;
+  }
+  
+  .skeleton-text-md {
+    width: 100px;
+  }
+  
+  .skeleton-text-sm {
+    width: 60px;
+  }
+  
+  .skeleton-badge {
+    width: 70px;
+    height: 20px;
+  }
+  
+  .skeleton-btn {
+    width: 32px;
+    height: 32px;
+  }
+}

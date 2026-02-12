@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import Loader from "../components/commons/Loader";
 import HallCard from "../components/commons/HallCard";
+import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import AvailabilityCalendar from "../components/commons/AvailabilityCalendar";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, Pagination, Mousewheel } from 'swiper/modules';
@@ -37,6 +38,7 @@ const HallDetail = () => {
   const [availabilityMsg, setAvailabilityMsg] = useState("");
   const [detailedDuration, setDetailedDuration] = useState(null);
   const [similarHalls, setSimilarHalls] = useState([]);
+  const [similarHallsLoading, setSimilarHallsLoading] = useState(false);
   const [reviewsData, setReviewsData] = useState({
     reviews: [],
     averageRating: 0,
@@ -163,6 +165,8 @@ const HallDetail = () => {
     try {
       if (!hall) return;
 
+      setSimilarHallsLoading(true);
+
       // Fetch all halls
       const response = await axios.get("/api/halls");
       const allHalls = response.data;
@@ -182,6 +186,8 @@ const HallDetail = () => {
 
       setSimilarHalls(similar);
     } catch (error) {
+    } finally {
+      setSimilarHallsLoading(false);
     }
   };
 
@@ -1028,40 +1034,47 @@ const HallDetail = () => {
       </div>
 
       {/* Similar Halls Section */}
-      {similarHalls.length > 0 && (
+      {(similarHallsLoading || similarHalls.length > 0) && (
         <div className="similar-halls-section">
           <div className="section-header-similar">
             <h2>Similar Halls</h2>
             <p>Based on price and capacity</p>
           </div>
-          <Swiper
-            modules={[Navigation, Autoplay, Pagination, Mousewheel]}
-            spaceBetween={30}
-            slidesPerView={1}
-            navigation
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            pagination={{ clickable: true }}
-            mousewheel={{
-              forceToAxis: true,
-              sensitivity: 1,
-              releaseOnEdges: true,
-            }}
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-              },
-            }}
-            className="similar-halls-swiper"
-          >
-            {similarHalls.map((similarHall) => (
+          {similarHallsLoading ? (
+            <div className="similar-halls-grid">
+              {[1, 2, 3].map((i) => (
+                <HallCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <Swiper
+              modules={[Navigation, Autoplay, Pagination, Mousewheel]}
+              spaceBetween={30}
+              slidesPerView={1}
+              navigation
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              pagination={{ clickable: true }}
+              mousewheel={{
+                forceToAxis: true,
+                sensitivity: 1,
+                releaseOnEdges: true,
+              }}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 20,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 30,
+                },
+              }}
+              className="similar-halls-swiper"
+            >
+              {similarHalls.map((similarHall) => (
               <SwiperSlide key={similarHall._id}>
                 <div className="similar-hall-card">
                   <div className="similar-hall-image">
@@ -1214,6 +1227,7 @@ const HallDetail = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+          )}
         </div>
       )}
       {/* Booking Modal */}

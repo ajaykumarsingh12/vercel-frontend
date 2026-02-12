@@ -9,12 +9,14 @@ import HeroSection from "../components/commons/HeroSection";
 import HallCard from "../components/commons/HallCard";
 import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import "./Home.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
   const { user, toggleFavorite, isAuthenticated } = useAuth();
+  const { theme } = useTheme();
   const [featuredHalls, setFeaturedHalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
@@ -147,16 +149,23 @@ const Home = () => {
             <div style={{ 
               textAlign: 'center', 
               padding: '4rem 2rem', 
-              background: 'white',
+              background: theme === 'dark' ? 'var(--card-bg)' : 'white',
               borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-              margin: '2rem 0'
+              boxShadow: theme === 'dark' 
+                ? '0 4px 20px rgba(0,0,0,0.3)' 
+                : '0 4px 20px rgba(0,0,0,0.1)',
+              margin: '2rem 0',
+              border: theme === 'dark' ? '1px solid var(--border-color)' : 'none'
             }}>
-              <p style={{ color: '#666', marginBottom: '1.5rem' }}>
-               No halls available at the moment
-                Please check back later or contact support
+              <p style={{ 
+                color: theme === 'dark' ? 'var(--text-secondary)' : '#666', 
+                marginBottom: '1.5rem',
+                fontSize: '1.1rem',
+                lineHeight: '1.6'
+              }}>
+                No halls available at the moment.<br />
+                Please check back later or contact support.
               </p>
-             
             </div>
           ) : (
             <div className="halls-grid-container">

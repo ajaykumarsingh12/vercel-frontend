@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import HallCardSkeleton from "../../components/commons/HallCardSkeleton";
+import HallTableSkeleton from "../../components/commons/HallTableSkeleton";
 import "./MyHalls.css";
 
 const MyHallCard = ({ hall, handleDelete }) => {
@@ -392,10 +393,96 @@ const MyHalls = () => {
                 Add New Hall
               </Link>
             </div>
-            <div className="halls-container grid">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <HallCardSkeleton key={i} />
-              ))}
+            
+            <div className="halls-section">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <circle cx="9" cy="9" r="2"></circle>
+                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                    </svg>
+                    Your Hall Listings
+                  </h2>
+                  <p>Manage and monitor your venue portfolio</p>
+                </div>
+                <div className="view-toggle">
+                  <button
+                    className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                    title="Grid View"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                  </button>
+                  <button
+                    className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
+                    onClick={() => setViewMode('table')}
+                    title="Table View"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="8" y1="6" x2="21" y2="6"></line>
+                      <line x1="8" y1="12" x2="21" y2="12"></line>
+                      <line x1="8" y1="18" x2="21" y2="18"></line>
+                      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {viewMode === 'grid' ? (
+                <div className="halls-container grid">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <HallCardSkeleton key={i} />
+                  ))}
+                </div>
+              ) : (
+                <HallTableSkeleton rows={6} />
+              )}
             </div>
           </div>
         </div>
@@ -581,8 +668,7 @@ const MyHalls = () => {
                               ];
 
                         return (
-                          <>
-                            <tr key={hall._id}>
+                          <tr key={hall._id}>
                               <td>
                                 <div className="table-image">
                                 <img
@@ -837,7 +923,6 @@ const MyHalls = () => {
                               </div>
                             </td>
                           </tr>
-                          </>
                         );
                       })}
                     </tbody>
