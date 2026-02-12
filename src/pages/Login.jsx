@@ -74,19 +74,25 @@ const Login = () => {
 
   const handleGoogleResponse = async (response) => {
     setLoading(true);
+    console.log('🔵 Selected role:', socialLoginRole);
     const result = await googleLogin(response.credential, socialLoginRole);
+    console.log('🔵 Backend response:', result);
 
     if (result.success) {
       toast.success("Google login successful!");
       const currentUser = result.user;
+      console.log('🔵 Current user role:', currentUser.role);
 
       if (location.state?.from) {
         navigate(location.state.from);
       } else if (currentUser.role === "admin") {
+        console.log('🔵 Navigating to: /admin/dashboard');
         navigate("/admin/dashboard");
       } else if (currentUser.role === "hall_owner") {
+        console.log('🔵 Navigating to: /hall-owner/dashboard');
         navigate("/hall-owner/dashboard");
       } else {
+        console.log('🔵 Navigating to: / (home)');
         navigate("/");
       }
     } else {
