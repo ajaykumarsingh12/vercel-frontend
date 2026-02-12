@@ -1,6 +1,0 @@
-Deploy timestamp: 2026-02-12T10:46:00Z
-Reason: Force fresh deployment after setting VITE_GOOGLE_CLIENT_ID in Vercel
-Changes: Environment variable confirmed set in Vercel dashboard
-Action: Deploy without cache to pick up new environment variable
-Client ID: 274529260120-odem5g4vkc4qppt86s4n3vcs5e5h56kd.apps.googleusercontent.com
-Status: Triggering fresh deployment

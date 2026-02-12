@@ -466,6 +466,84 @@
   color: #9ca3af;
 }
 
+/* Role Selector for Social Login */
+.social-role-selector {
+  margin: 1.5rem 0;
+}
+
+.social-role-selector label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+
+[data-theme="dark"] .social-role-selector label {
+  color: #d1d5db;
+}
+
+.role-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .role-option {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+.role-option:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+[data-theme="dark"] .role-option:hover {
+  border-color: #4b5563;
+  background-color: #374151;
+}
+
+.role-option.active {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+[data-theme="dark"] .role-option.active {
+  border-color: #3b82f6;
+  background-color: #1e3a8a;
+  color: #60a5fa;
+}
+
+.role-option svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 480px) {
+  .role-options {
+    grid-template-columns: 1fr;
+  }
+}
+
 .social-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;

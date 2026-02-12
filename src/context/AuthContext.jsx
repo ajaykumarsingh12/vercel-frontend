@@ -259,11 +259,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (credential) => {
+  const googleLogin = async (credential, role = "user") => {
     try {
       const response = await axios.post(
         "/api/auth/google",
-        { credential }
+        { credential, role }
       );
       
       const { token: newToken, user: userData } = response.data;
@@ -283,11 +283,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const appleLogin = async (identityToken, user) => {
+  const appleLogin = async (identityToken, user, role = "user") => {
     try {
       const response = await axios.post(
         "/api/auth/apple",
-        { identityToken, user }
+        { identityToken, user, role }
       );
       
       const { token: newToken, user: userData } = response.data;
