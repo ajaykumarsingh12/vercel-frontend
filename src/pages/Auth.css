@@ -6,7 +6,8 @@
   padding: 2rem;
   position: relative;
   overflow: hidden;
-  background-image: url('public/images/wedding-hall-bg.webp');
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-image: url('/images/wedding-hall-bg.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
