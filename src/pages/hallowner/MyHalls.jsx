@@ -336,18 +336,13 @@ const MyHalls = () => {
 
   const fetchHalls = async () => {
     try {
-
-      // Try the main endpoint first
-      let response = await axios.get("/api/halls/my-halls");
-
-      // If no halls returned, try the all-my-halls endpoint
-      if (response.data.length === 0) {
-        response = await axios.get("/api/halls/all-my-halls");
-      }
-
+      // Fetch only current user's halls
+      const response = await axios.get("/api/halls/my-halls");
+      
+      console.log('📊 [Frontend] Fetched halls:', response.data.length);
       setHalls(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('❌ [Frontend] Failed to fetch halls:', error);
       toast.error("Failed to load halls");
     } finally {
       setLoading(false);
