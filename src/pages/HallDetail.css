@@ -1581,80 +1581,43 @@
   margin: 0;
 }
 
-/* Swiper Container */
-.similar-halls-swiper {
-  padding: 1rem 0 3rem 0;
+/* Scrollable Grid Container */
+.similar-halls-grid-scrollable {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 1rem 0.5rem 1.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.5) rgba(0, 0, 0, 0.1);
 }
 
-/* Custom Swiper Navigation Buttons */
-.similar-halls-swiper .swiper-button-next,
-.similar-halls-swiper .swiper-button-prev {
-  width: 0px;
-  height: 0px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.similar-halls-grid-scrollable::-webkit-scrollbar {
+  height: 8px;
 }
 
-.similar-halls-swiper .swiper-button-next:after,
-.similar-halls-swiper .swiper-button-prev:after {
-  content: '';
-  display: none;
+.similar-halls-grid-scrollable::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
 }
 
-/* Custom Arrow SVG Styling */
-.similar-halls-swiper .swiper-button-prev::before,
-.similar-halls-swiper .swiper-button-next::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: all 0.3s ease;
+.similar-halls-grid-scrollable::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 10px;
+  transition: background 0.3s ease;
 }
 
-.similar-halls-swiper .swiper-button-prev::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 18L9 12L15 6' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.similar-halls-grid-scrollable::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
 }
 
-.similar-halls-swiper .swiper-button-next::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 18L15 12L9 6' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.similar-halls-swiper .swiper-button-next:hover,
-.similar-halls-swiper .swiper-button-prev:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-}
-
-.similar-halls-swiper .swiper-button-prev:hover::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 18L9 12L15 6' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.similar-halls-swiper .swiper-button-next:hover::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 18L15 12L9 6' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-/* Swiper Pagination */
-.similar-halls-swiper .swiper-pagination-bullet {
-  width: 10px;
-  height: 10px;
-  background: #cbd5e1;
-  opacity: 1;
-  transition: all 0.3s ease;
-}
-
-.similar-halls-swiper .swiper-pagination-bullet-active {
-  background: #6366f1;
-  width: 24px;
-  border-radius: 5px;
+/* Wrapper for each hall card */
+.similar-hall-wrapper {
+  min-width: 320px;
+  flex-shrink: 0;
 }
 
 /* Custom Similar Hall Card */
@@ -2009,16 +1972,9 @@
     height: 180px;
   }
 
-  .similar-halls-swiper .swiper-button-next,
-  .similar-halls-swiper .swiper-button-prev {
-    width: 0px;
-    height: 0px;
-  }
-
-  .similar-halls-swiper .swiper-button-prev::before,
-  .similar-halls-swiper .swiper-button-next::before {
-    width: 39px;
-    height: 45px;
+  .similar-halls-grid-scrollable {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
 
   .capacity-badge,
@@ -2059,20 +2015,10 @@
     height: 160px;
   }
 
-  .similar-halls-swiper {
-    padding: 0.5rem 0 2.5rem 0;
-  }
-
-  .similar-halls-swiper .swiper-button-next,
-  .similar-halls-swiper .swiper-button-prev {
-    width: 0px;
-    height: 0px;
-  }
-
-  .similar-halls-swiper .swiper-button-prev::before,
-  .similar-halls-swiper .swiper-button-next::before {
-    width: 50px;
-    height: 50px;
+  .similar-halls-grid-scrollable {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 0.5rem 0.25rem 1rem;
   }
 
   .similar-hall-badges {
@@ -2153,24 +2099,12 @@
 }
 
 /* Dark Mode Styles for Hall Detail */
-[data-theme="dark"] .similar-halls-swiper .swiper-button-next,
-[data-theme="dark"] .similar-halls-swiper .swiper-button-prev {
-  background: var(--card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+[data-theme="dark"] .similar-halls-grid-scrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-[data-theme="dark"] .similar-halls-swiper .swiper-button-prev::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 18L9 12L15 6' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-[data-theme="dark"] .similar-halls-swiper .swiper-button-next::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 18L15 12L9 6' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-[data-theme="dark"] .similar-halls-swiper .swiper-button-next:hover,
-[data-theme="dark"] .similar-halls-swiper .swiper-button-prev:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+[data-theme="dark"] .similar-halls-grid-scrollable::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
 }
 
 /* Glassmorphism Booking Summary Card */
@@ -4542,5 +4476,795 @@ input[type="time"] {
   .view-on-maps-btn {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* Wedding Hall Booking Form - Elegant Theme */
+.booking-form-irctc {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  border-radius: 2px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: visible;
+}
+
+.booking-form-irctc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d4af37 0%, #f4e5c3 50%, #d4af37 100%);
+  border-radius: 20px 20px 0 0;
+}
+.form-header-irctc {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.form-header-irctc h2 {
+  color: #2d3748;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #d4af37 0%, #8b7355 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-header-irctc p {
+  color: #718096;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.form-content-irctc {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-group-irctc {
+  flex: 0 1 auto;
+  min-width: 220px;
+  max-width: 340px;
+  overflow: visible;
+}
+
+.form-group-irctc label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-weight: 600;
+  margin-bottom: 0.625rem;
+  font-size: 0.9rem;
+}
+
+.form-group-irctc label svg {
+  color: #d4af37;
+}
+
+.date-input-irctc {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  color: #2d3748;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.date-input-irctc:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.date-input-irctc:hover {
+  border-color: #cbd5e0;
+}
+
+.search-btn-irctc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  white-space: nowrap;
+  width: auto;
+  max-width: fit-content;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-btn-irctc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.search-btn-irctc:hover::before {
+  left: 100%;
+}
+
+.search-btn-irctc svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.search-btn-irctc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+  background: linear-gradient(135deg, #e0bb44 0%, #c9a52b 100%);
+}
+
+.search-btn-irctc:active {
+  transform: translateY(0);
+}
+
+/* Dark mode support */
+[data-theme="dark"] .booking-form-irctc {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .booking-form-irctc::before {
+  background: linear-gradient(90deg, #d4af37 0%, #f4e5c3 50%, #d4af37 100%);
+}
+
+[data-theme="dark"] .form-header-irctc h2 {
+  color: #e2e8f0;
+  background: linear-gradient(135deg, #f4e5c3 0%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="dark"] .form-header-irctc p {
+  color: #a0aec0;
+}
+
+[data-theme="dark"] .form-group-irctc label {
+  color: #cbd5e0;
+}
+
+[data-theme="dark"] .date-input-irctc {
+  background: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .date-input-irctc:focus {
+  border-color: #d4af37;
+  background: #374151;
+}
+
+[data-theme="dark"] .date-input-irctc:hover {
+  border-color: #718096;
+}
+
+/* Availability Results Section */
+.availability-results-section {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slots Grid - IRCTC Style */
+.slots-grid-irctc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Swiper Carousel for Slots */
+.slots-swiper-irctc {
+  margin-top: 1.5rem;
+  padding: 1rem 0 3rem 0;
+}
+
+.slots-swiper-irctc .swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+.slots-swiper-irctc .swiper-button-next,
+.slots-swiper-irctc .swiper-button-prev {
+  background: var(--card-bg);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--input-border);
+  transition: all 0.3s ease;
+}
+
+.slots-swiper-irctc .swiper-button-next:after,
+.slots-swiper-irctc .swiper-button-prev:after {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.slots-swiper-irctc .swiper-button-next:hover,
+.slots-swiper-irctc .swiper-button-prev:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: scale(1.05);
+}
+
+.slots-swiper-irctc .swiper-button-next:hover:after,
+.slots-swiper-irctc .swiper-button-prev:hover:after {
+  color: white;
+}
+
+.slots-swiper-irctc .swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slots-swiper-irctc .swiper-button-disabled:hover {
+  transform: none;
+  background: var(--card-bg);
+  border-color: var(--input-border);
+}
+
+.slots-swiper-irctc .swiper-button-disabled:hover:after {
+  color: var(--text-color);
+}
+
+.slots-swiper-irctc .swiper-pagination {
+  bottom: 0;
+}
+
+.slots-swiper-irctc .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: var(--text-color);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.slots-swiper-irctc .swiper-pagination-bullet-active {
+  background: var(--primary-color);
+  opacity: 1;
+  width: 24px;
+  border-radius: 5px;
+}
+
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-next,
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-prev {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-next:after,
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-prev:after {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-next:hover,
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-prev:hover {
+  background: #8b9dff;
+  border-color: #8b9dff;
+  box-shadow: 0 4px 12px rgba(139, 157, 255, 0.3);
+}
+
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-next:hover:after,
+[data-theme="dark"] .slots-swiper-irctc .swiper-button-prev:hover:after {
+  color: white;
+}
+
+.slot-card-irctc {
+  background: var(--card-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-card-irctc.available {
+  border-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+}
+
+.slot-card-irctc.available:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+  border-color: #059669;
+}
+
+.slot-card-irctc.booked {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
+  opacity: 0.7;
+}
+
+.slot-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.slot-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #10b981;
+}
+
+.slot-checkbox input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.slot-time-display {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color:#f3f2f2;
+}
+
+.slot-status-badge {
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.slot-status-badge.available {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.slot-status-badge.booked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+[data-theme="dark"] .slot-status-badge.available {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] .slot-status-badge.booked {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.slot-booking-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.instant-book-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.instant-book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Select Date Prompt */
+.select-date-prompt {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: white;
+  opacity: 0.7;
+}
+
+.select-date-prompt svg {
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.select-date-prompt h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #fafcfe;
+}
+
+.select-date-prompt p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* No Slots Message */
+.no-slots-message {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 2px dashed var(--input-border);
+  margin-top: 1.5rem;
+}
+
+.no-slots-icon {
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.no-slots-message h4 {
+  font-size: 1.3rem;
+  color: var(--secondary-color);
+  margin-bottom: 0.75rem;
+}
+
+.no-slots-message p {
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 1.5rem;
+}
+
+.contact-owner-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .booking-form-irctc {
+    padding: 2rem 1.5rem;
+  }
+
+  .booking-form-irctc::after {
+    font-size: 2rem;
+    top: 15px;
+    right: 15px;
+  }
+
+  .form-header-irctc h2 {
+    font-size: 1.6rem;
+  }
+
+  .form-header-irctc p {
+    font-size: 0.9rem;
+  }
+
+  .form-content-irctc {
+    flex-direction: column;
+  }
+
+  .form-group-irctc {
+    min-width: 100%;
+  }
+
+  .search-btn-irctc {
+    width: auto;
+    max-width: 200px;
+    margin: 0 auto;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .slots-grid-irctc {
+    grid-template-columns: 1fr;
+  }
+
+  .slot-card-header {
+    flex-wrap: wrap;
+  }
+
+  .slot-time-display {
+    font-size: 1rem;
+  }
+}
+
+/* Multi-Day Booking Form Layout */
+@media (min-width: 1025px) {
+  .form-content-irctc {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 1rem;
+  }
+  
+  .form-group-irctc {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 280px;
+  }
+  
+  .search-btn-irctc {
+    width: auto;
+    max-width: 220px;
+    margin-left: auto;
+  }
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .search-btn-irctc {
+    width: auto;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .search-btn-irctc {
+    width: auto;
+    max-width: 180px;
+    margin: 0 auto;
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+  }
+  
+  .search-btn-irctc svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Multi-day booking info banner */
+.multi-day-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.multi-day-info-banner svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.multi-day-info-banner strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.multi-day-info-banner p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .multi-day-info-banner {
+  background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+}
+
+/* Unavailable slot message */
+.unavailable-message {
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: var(--danger-color);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 8px;
+}
+
+[data-theme="dark"] .unavailable-message {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Update slot card booked state for multi-day */
+.slot-card-irctc.booked {
+  opacity: 0.7;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+}
+
+[data-theme="dark"] .slot-card-irctc.booked {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+}
+
+.slot-card-irctc.booked .slot-status-badge.booked {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger-color);
+}
+
+/* Smooth Scrollable Grid for Slots - Hand Swipe Enabled */
+.slots-grid-scrollable {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 20px 0 30px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+  cursor: grab;
+}
+
+.slots-grid-scrollable:active {
+  cursor: grabbing;
+}
+
+.slots-grid-scrollable::-webkit-scrollbar {
+  height: 8px;
+}
+
+.slots-grid-scrollable::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin: 0 1rem;
+}
+
+.slots-grid-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.slots-grid-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+.slots-grid-scrollable::-webkit-scrollbar-thumb:active {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+[data-theme="dark"] .slots-grid-scrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .slots-grid-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.4);
+}
+
+[data-theme="dark"] .slots-grid-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 140, 248, 0.6);
+}
+
+/* Slot Card in Scrollable Grid */
+.slots-grid-scrollable > * {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Responsive grid */
+@media (max-width: 1440px) {
+  .slots-grid-scrollable > * {
+    flex: 0 0 300px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .slots-grid-scrollable > * {
+    flex: 0 0 280px;
+  }
+  
+  .slots-grid-scrollable {
+    gap: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .slots-grid-scrollable > * {
+    flex: 0 0 240px;
+  }
+  
+  .slots-grid-scrollable {
+    gap: 12px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .slots-grid-scrollable > * {
+    flex: 0 0 85vw;
+    max-width: 320px;
+  }
+  
+  .slots-grid-scrollable {
+    gap: 12px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Slot card adjustments for grid */
+.slots-grid-scrollable .slot-card-irctc {
+  width: 100%;
+  min-height: 140px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slots-grid-scrollable .slot-card-irctc:hover {
+  transform: translateY(-2px);
+}
+
+.slots-grid-scrollable .slot-card-irctc.available:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Touch-friendly spacing on mobile */
+@media (max-width: 640px) {
+  .slots-grid-scrollable .slot-card-irctc {
+    min-height: 130px;
   }
 }

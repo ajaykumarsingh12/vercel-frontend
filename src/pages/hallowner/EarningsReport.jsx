@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../../components/commons/Loader";
+import EarningsReportSkeleton from "../../components/commons/EarningsReportSkeleton";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -390,7 +390,7 @@ const EarningsReport = () => {
   const totalWeeks = getTotalWeeks();
   const startDayOfWeek = currentWeek * 7 + 1;
 
-  if (loading) return <Loader />;
+  if (loading) return <EarningsReportSkeleton />;
 
   return (
     <div className="earnings-report-page">

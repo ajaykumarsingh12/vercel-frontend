@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../../components/commons/Loader";
 import Calendar from "../../components/commons/Calendar";
 import HallTableSkeleton from "../../components/commons/HallTableSkeleton";
+import DashboardStatsSkeleton from "../../components/commons/DashboardStatsSkeleton";
+import HallSelectionSkeleton from "../../components/commons/HallSelectionSkeleton";
 
 import "./HallOwnerDashboard.css";
 
@@ -14,6 +15,7 @@ const HallOwnerDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hallsLoading, setHallsLoading] = useState(false);
   const [selectedHall, setSelectedHall] = useState(null);
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, slots
   const [slots, setSlots] = useState([]);
@@ -109,6 +111,9 @@ const HallOwnerDashboard = () => {
     try {
       const response = await axios.get("/api/bookings");
       setBookings(response.data);
+      
+      // Also refresh earnings when bookings are fetched
+      fetchTotalEarnings();
     } catch (error) {
       console.error(error);
     } finally {
@@ -118,10 +123,13 @@ const HallOwnerDashboard = () => {
 
   const fetchHalls = async () => {
     try {
+      setHallsLoading(true);
       const response = await axios.get("/api/halls/my-halls");
       setHalls(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setHallsLoading(false);
     }
   };
 
@@ -271,15 +279,14 @@ const HallOwnerDashboard = () => {
           occurrences: null
         } : null,
         recurringDays: slotForm.recurringDays,
-        // For availability slots, we'll use these default values
-        user: null, // No user for availability slots
-        booking: null, // No booking for availability slots
-        totalAmount: 0, // No amount for availability slots
+        user: null,
+        booking: null,
+        totalAmount: 0,
         duration: calculateDuration(slotForm.startTime, slotForm.endTime),
-        status: "available", // Custom status for availability slots
-        paymentStatus: "not_applicable", // Not applicable for availability slots
+        status: "available",
+        paymentStatus: "not_applicable",
         notes: "Availability slot created by hall owner",
-        isAvailabilitySlot: true // Custom field to distinguish from actual bookings
+        isAvailabilitySlot: true
       };
 
       if (editingSlot) {
@@ -373,20 +380,16 @@ const HallOwnerDashboard = () => {
   const handleStatusUpdate = async (bookingId, status, amount = 0) => {
     try {
       if (status === "completed") {
-        
-
-        // Use the new endpoint to create revenue record without updating booking status
+        // Use the endpoint to create revenue record AND update booking status to completed
         const response = await axios.post('/api/owner-revenue/complete-booking', {
           bookingId
         });
 
-        
-
-        // Add booking to completed set to hide the complete button
+        // Add booking to completed set to show "Payment Successful" text
         setCompletedBookings(prev => new Set([...prev, bookingId]));
 
         // Show success message
-        toast.success(`Revenue record created! ₹${response.data.details.commission.toLocaleString('en-IN')} added to earnings.`);
+        toast.success(`Booking completed! ₹${response.data.details.commission.toLocaleString('en-IN')} added to earnings.`);
 
         // Refresh earnings and bookings to reflect status change
         fetchTotalEarnings();
@@ -396,7 +399,6 @@ const HallOwnerDashboard = () => {
       }
 
       // For other status updates (confirm, cancel), use the original booking endpoint
-      
       await axios.put(`/api/bookings/${bookingId}/status`, { status });
 
       // Refresh bookings list
@@ -415,7 +417,34 @@ const HallOwnerDashboard = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="hall-owner-dashboard">
+        <div className="dashboard-header"></div>
+        <div className="dashboard-layout">
+          <div className="dashboard-content">
+            {/* Action Buttons Skeleton */}
+            <div className="action-buttons-section">
+              <div className="skeleton-button"></div>
+              <div className="skeleton-button"></div>
+              <div className="skeleton-button"></div>
+            </div>
+
+            {/* Stats Skeleton */}
+            <DashboardStatsSkeleton />
+
+            {/* Bookings Table Skeleton */}
+            <div className="bookings-section">
+              <div className="section-header">
+                <div className="skeleton-heading"></div>
+              </div>
+              <HallTableSkeleton rows={8} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const pendingBookings = bookings.filter((b) => b.status === "pending");
   const confirmedBookings = bookings.filter((b) => b.status === "confirmed");
@@ -484,9 +513,7 @@ const HallOwnerDashboard = () => {
                   <h2>Recent Bookings</h2>
                 </div>
 
-                {loading ? (
-                  <HallTableSkeleton rows={10} />
-                ) : bookings.length === 0 ? (
+                {bookings.length === 0 ? (
                   <div className="no-bookings-owner">
                     <div className="no-bookings-icon">📅</div>
                     <h3>No bookings yet</h3>
@@ -568,22 +595,12 @@ const HallOwnerDashboard = () => {
                             </td>
                             <td className="actions-cell">
                               {booking.status === "cancelled" ? (
-                                <span className="user-cancelled-text">User Cancelled</span>
-                              ) : !completedBookings.has(booking._id) ? (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const bookingAmount = Math.abs(booking.totalAmount);
-                                    handleStatusUpdate(booking._id, "completed", bookingAmount);
-                                  }}
-                                  className="btn-table btn-complete-table"
-                                  title={`Complete booking and add ₹${Math.abs(booking.totalAmount)} to revenue`}
-                                >
-                                  Complete
-                                </button>
-                              ) : null}
+                                <span className="user-cancelled-text">🔴 User Cancelled</span>
+                              ) : booking.status === "completed" || booking.paymentStatus === "paid" ? (
+                                <span className="payment-successful-text">✅ Payment Successful</span>
+                              ) : (
+                                <span className="pending-payment-text">🟠 Pending Payment</span>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -630,7 +647,9 @@ const HallOwnerDashboard = () => {
                     </div>
                   </div>
 
-                  {hallView === "table" ? (
+                  {hallsLoading ? (
+                    <HallSelectionSkeleton view={hallView} count={3} />
+                  ) : hallView === "table" ? (
                     <div className="halls-table-container">
                       <table className="halls-table">
                         <thead>
@@ -755,7 +774,7 @@ const HallOwnerDashboard = () => {
                               </p>
                             </div>
                           </div>
-                          <div className="hall-action-1">
+                          <div className="hall-action-1" >
                             <button className="manage-slots-btn-1">
                               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -772,7 +791,7 @@ const HallOwnerDashboard = () => {
                     </div>
                   )}
 
-                  {halls.length === 0 && (
+                  {!hallsLoading && halls.length === 0 && (
                     <div className="no-halls-message">
                       <div className="no-halls-icon">🏢</div>
                       <h3>No halls found</h3>
@@ -871,7 +890,11 @@ const HallOwnerDashboard = () => {
                                 name="date"
                                 value={slotForm.date}
                                 onChange={handleSlotFormChange}
-                                min={new Date().toISOString().split('T')[0]}
+                                min={(() => {
+                                  const tomorrow = new Date();
+                                  tomorrow.setDate(tomorrow.getDate() + 1);
+                                  return tomorrow.toISOString().split('T')[0];
+                                })()}
                                 required
                                 onClick={(e) => e.target.showPicker && e.target.showPicker()}
                               />

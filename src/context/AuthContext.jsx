@@ -307,6 +307,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const facebookLogin = async (accessToken, role = "user", sessionId = null) => {
+    try {
+      const response = await axios.post(
+        "/api/auth/facebook",
+        { accessToken, role, sessionId }
+      );
+      
+      const { token: newToken, user: userData } = response.data;
+      
+      localStorage.setItem("token", newToken);
+      setToken(newToken);
+      setUser(userData);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+      
+      return { success: true, user: userData };
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Facebook login failed",
+      };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -320,6 +344,7 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     googleLogin,
     appleLogin,
+    facebookLogin,
     isAuthenticated: !!user,
     favorites, // Expose favorites array
   };

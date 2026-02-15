@@ -1,20 +1,32 @@
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2c3e50;
-  --accent-color: #e74c3c;
-  --text-color: #000000;
+  /* Wedding Theme - Golden Elegance */
+  --primary-color: #d4af37;
+  --primary-light: #f4e5c3;
+  --primary-dark: #b8941f;
+  --secondary-color: #2d3748;
+  --accent-color: #8b7355;
+  --text-color: #2d3748;
+  --text-secondary: #718096;
   --bg-color: #ffffff;
-  --bg-gradient: linear-gradient(135deg, #fff5f5 0%, #fff0f5 20%, #fff8f0 40%, #fffef5 60%, #fef9f3 80%, #ffffff 100%);
+  --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8f4f0 50%, #fdfbfb 100%);
   --card-bg: #ffffff;
-  --header-bg: #ffffff;
-  --nav-bg: rgba(255, 255, 255, 0.85);
-  --footer-bg: #f8f9fa;
+  --header-bg: rgba(255, 255, 255, 0.98);
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --footer-bg: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
   --input-bg: #ffffff;
   --input-border: #e2e8f0;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 2px 8px rgba(212, 175, 55, 0.08);
+  --shadow-md: 0 4px 12px rgba(212, 175, 55, 0.12);
+  --shadow-lg: 0 10px 25px rgba(212, 175, 55, 0.15);
+  --shadow-xl: 0 20px 40px rgba(212, 175, 55, 0.2);
 
+  /* Wedding Decorative Colors */
+  --gold: #d4af37;
+  --gold-light: #f4e5c3;
+  --rose: #ffc0cb;
+  --ivory: #fffff0;
+  --champagne: #f7e7ce;
+  
   /* Fluid Typography */
   --font-xs: clamp(0.75rem, 0.70rem + 0.25vw, 0.875rem);
   --font-sm: clamp(0.875rem, 0.83rem + 0.23vw, 1rem);
@@ -30,25 +42,35 @@
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
 }
 
 [data-theme='dark'] {
-  --primary-color: #3498db;
-  --secondary-color: #ffffff;
-  --accent-color: #e74c3c;
-  --text-color: #ffffff;
-  --bg-color: #000000;
-  --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  --card-bg: #1a1a1a;
-  --header-bg: #1a1a1a;
-  --nav-bg: rgba(0, 0, 0, 0.85);
-  --nav-bg-rgb: 0, 0, 0;
-  --footer-bg: #000000;
-  --input-bg: #1a1a1a;
-  --input-border: #333333;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  /* Dark Mode Wedding Theme */
+  --primary-color: #f4e5c3;
+  --primary-light: #d4af37;
+  --primary-dark: #c9a52b;
+  --secondary-color: #e2e8f0;
+  --accent-color: #a0826d;
+  --text-color: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --bg-color: #0f172a;
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  --card-bg: #1e293b;
+  --header-bg: rgba(15, 23, 42, 0.98);
+  --nav-bg: rgba(15, 23, 42, 0.95);
+  --footer-bg: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+  --input-bg: #1e293b;
+  --input-border: #334155;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
 * {

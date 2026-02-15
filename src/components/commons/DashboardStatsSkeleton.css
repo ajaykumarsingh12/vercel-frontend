@@ -1,0 +1,54 @@
+/* Dashboard Stats Skeleton */
+.stat-card-skeleton {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--input-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 16px;
+  background: linear-gradient(90deg, var(--input-border) 25%, rgba(255, 255, 255, 0.1) 50%, var(--input-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-number {
+  width: 40%;
+  height: 32px;
+  background: linear-gradient(90deg, var(--input-border) 25%, rgba(255, 255, 255, 0.1) 50%, var(--input-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-link {
+  width: 50%;
+  height: 14px;
+  background: linear-gradient(90deg, var(--input-border) 25%, rgba(255, 255, 255, 0.1) 50%, var(--input-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-top: auto;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+[data-theme="dark"] .skeleton-title,
+[data-theme="dark"] .skeleton-number,
+[data-theme="dark"] .skeleton-link {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+}

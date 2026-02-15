@@ -74,6 +74,16 @@ const Payment = () => {
     }
   };
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handlePayment = async () => {
     if (!booking) return;
 
@@ -85,30 +95,87 @@ const Payment = () => {
         paymentMethod,
       });
 
-      const { orderId, amount, currency, key } = initiateResponse.data;
+      const { orderId, amount, currency, key, mode } = initiateResponse.data;
 
-      // In a real implementation, you would integrate with Razorpay, Stripe, etc.
-      // For demo purposes, we'll simulate the payment process
-
-      // Simulate payment gateway
-      setTimeout(async () => {
-        try {
-          // Verify payment (mock)
-          const verifyResponse = await axios.post("/api/payments/verify", {
-            bookingId: booking._id,
-            paymentId: `pay_${Date.now()}`,
-            orderId,
-          });
-
-          toast.success("Payment successful! Your booking is confirmed.");
-          navigate("/my-bookings");
-        } catch (error) {
-          console.error(error);
-          toast.error("Payment verification failed");
-        } finally {
+      if (mode === "razorpay") {
+        // REAL RAZORPAY PAYMENT
+        const scriptLoaded = await loadRazorpayScript();
+        
+        if (!scriptLoaded) {
+          toast.error("Failed to load payment gateway. Please try again.");
           setProcessing(false);
+          return;
         }
-      }, 2000);
+
+        const options = {
+          key: key,
+          amount: amount,
+          currency: currency,
+          name: "Wedding Hall Booking",
+          description: `Booking for ${booking.hall?.name}`,
+          order_id: orderId,
+          handler: async function (response) {
+            try {
+              // Verify payment with backend
+              const verifyResponse = await axios.post("/api/payments/verify", {
+                bookingId: booking._id,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+              });
+
+              toast.success("Payment successful! Your booking is confirmed.");
+              navigate("/my-bookings");
+            } catch (error) {
+              console.error(error);
+              toast.error("Payment verification failed. Please contact support.");
+            } finally {
+              setProcessing(false);
+            }
+          },
+          prefill: {
+            name: user?.name || "",
+            email: user?.email || "",
+            contact: user?.phone || "",
+          },
+          notes: {
+            bookingId: booking._id,
+            hallName: booking.hall?.name,
+          },
+          theme: {
+            color: "#d4af37",
+          },
+          modal: {
+            ondismiss: function() {
+              setProcessing(false);
+              toast.info("Payment cancelled");
+            }
+          }
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      } else {
+        // SIMULATED PAYMENT (for testing/development)
+        setTimeout(async () => {
+          try {
+            // Verify payment (mock)
+            const verifyResponse = await axios.post("/api/payments/verify", {
+              bookingId: booking._id,
+              paymentId: `pay_${Date.now()}`,
+              orderId,
+            });
+
+            toast.success("Payment successful! Your booking is confirmed.");
+            navigate("/my-bookings");
+          } catch (error) {
+            console.error(error);
+            toast.error("Payment verification failed");
+          } finally {
+            setProcessing(false);
+          }
+        }, 2000);
+      }
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Payment initiation failed");

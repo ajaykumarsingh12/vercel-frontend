@@ -7,11 +7,7 @@ import Loader from "../components/commons/Loader";
 import HallCard from "../components/commons/HallCard";
 import HallCardSkeleton from "../components/commons/HallCardSkeleton";
 import AvailabilityCalendar from "../components/commons/AvailabilityCalendar";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Pagination, Mousewheel } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import CustomDatePicker from "../components/commons/CustomDatePicker";
 import {
   calculateTotalHours,
   calculatePricingBreakdown,
@@ -51,6 +47,7 @@ const HallDetail = () => {
   const [allUpcomingBookings, setAllUpcomingBookings] = useState([]);
   const [availabilityView, setAvailabilityView] = useState("carousel"); // carousel or calendar
   const [availabilitySlots, setAvailabilitySlots] = useState([]); // Slots from hallalloteds collection
+  const [showAvailabilityResults, setShowAvailabilityResults] = useState(false); // Control visibility of results
 
   // Helper function to get correct image URL (handles both Cloudinary and local paths)
   const getImageUrl = (imagePath) => {
@@ -100,6 +97,11 @@ const HallDetail = () => {
 
     return () => clearInterval(interval);
   }, [id]);
+
+  // Reset availability results when date changes
+  useEffect(() => {
+    setShowAvailabilityResults(false);
+  }, [bookingData.bookingDate]);
 
   useEffect(() => {
     if (hall) {
@@ -283,6 +285,7 @@ const HallDetail = () => {
 
     try {
       setBooking(true);
+      
       const response = await axios.post("/api/bookings", {
         hall: id,
         ...bookingData,
@@ -321,7 +324,7 @@ const HallDetail = () => {
   const selectSlot = (slot) => {
     setBookingData({
       ...bookingData,
-      bookingDate: new Date(slot.date).toISOString().split("T")[0],
+      bookingDate: new Date(slot.date || slot.allotmentDate).toISOString().split("T")[0],
       startTime: slot.startTime,
       endTime: slot.endTime,
     });
@@ -794,146 +797,195 @@ const HallDetail = () => {
 
             return (
               <div className={`availability-carousel-detail ${processedAvailability.length === 0 ? 'empty' : ''}`}>
-                <div className="availability-header-full">
-                  <div className="header-left">
-                    <div className="section-icon-main">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
+                {/* IRCTC-Style Date Selection Form */}
+                <div className="booking-form-irctc">
+                  <div className="form-header-irctc">
+                    <h2>CHECK AVAILABILITY</h2>
+                    <p>Select a date to view all available time slots</p>
+                  </div>
+                  <div className="form-content-irctc">
+                    <div className="form-group-irctc">
+                      <label htmlFor="booking-date">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Select Date
+                      </label>
+                      <CustomDatePicker
+                        value={bookingData.bookingDate}
+                        onChange={(date) => setBookingData({ ...bookingData, bookingDate: date })}
+                        minDate={(() => {
+                          const tomorrow = new Date();
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          return tomorrow.toISOString().split('T')[0];
+                        })()}
+                      />
+                    </div>
+                    <button 
+                      className="search-btn-irctc"
+                      onClick={() => {
+                        if (!bookingData.bookingDate) {
+                          toast.error("Please select a date");
+                          return;
+                        }
+                        // Show availability results
+                        setShowAvailabilityResults(true);
+                        // Scroll to availability section
+                        setTimeout(() => {
+                          document.querySelector('.availability-results-section')?.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                          });
+                        }, 100);
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
                       </svg>
-                    </div>
-                    <div>
-                      <h3 className="section-title-main">Availability</h3>
-                      <p className="section-subtitle-main">
-                        Select an available time slot below to reserve this hall instantly.
-                        {processedAvailability.length > 0 && (
-                          <span className="availability-stats">
-                            {' '}({processedAvailability.filter(s => !s.isBooked).length} available, {processedAvailability.filter(s => s.isBooked).length} booked)
-                          </span>
-                        )}
-                      </p>
-                    </div>
+                      Check Availability
+                    </button>
                   </div>
                 </div>
 
-                {processedAvailability.length > 0 ? (
-                  <>
-                    {availabilityView === "carousel" ? (
-                      <Swiper
-                        modules={[Navigation, Pagination, Mousewheel, Autoplay]}
-                        spaceBetween={20}
-                        slidesPerView={'auto'}
-                        navigation
-                        pagination={{ clickable: true }}
-                        mousewheel={{ forceToAxis: true }}
-                        className="availability-swiper"
-                        breakpoints={{
-                          640: { slidesPerView: 1 },
-                          768: { slidesPerView: 2 },
-                          1024: { slidesPerView: 3 },
-                          1440: { slidesPerView: 4 }
-                        }}
-                      >
-                        {processedAvailability.map((slot, index) => (
-                          <SwiperSlide key={index} className="slot-slide">
+                {/* Availability Results Section - Shows only when date is selected AND button is clicked */}
+                {bookingData.bookingDate && showAvailabilityResults && (
+                  <div className="availability-results-section">
+                    <div className="availability-header-full">
+                      <div className="header-left">
+                        <div className="section-icon-main">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="section-title-main">
+                            Availability for {new Date(bookingData.bookingDate).toLocaleDateString("en-IN", {
+                              weekday: "long",
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric"
+                            })}
+                          </h3>
+                          <p className="section-subtitle-main">
+                            Select an available time slot below to reserve this hall instantly.
+                            {processedAvailability.filter(s => {
+                              const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
+                              return slotDate === bookingData.bookingDate;
+                            }).length > 0 && (
+                              <span className="availability-stats">
+                                {' '}({processedAvailability.filter(s => {
+                                  const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
+                                  return slotDate === bookingData.bookingDate && !s.isBooked;
+                                }).length} available, {processedAvailability.filter(s => {
+                                  const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
+                                  return slotDate === bookingData.bookingDate && s.isBooked;
+                                }).length} booked)
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {(() => {
+                      // Filter slots for selected date
+                      const slotsForDate = processedAvailability.filter(s => {
+                        const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
+                        return slotDate === bookingData.bookingDate;
+                      });
+
+                      return slotsForDate.length > 0 ? (
+                        <div className="slots-grid-scrollable">
+                          {slotsForDate.map((slot, index) => (
                             <div
-                              className={`availability-card-modern ${slot.isBooked ? 'booked' : ''}`}
+                              key={index}
+                              className={`slot-card-irctc ${slot.isBooked ? 'booked' : 'available'}`}
                               onClick={() => !slot.isBooked && selectSlot(slot)}
                               style={{ cursor: slot.isBooked ? 'not-allowed' : 'pointer' }}
                             >
-                              <div className="card-top-accent"></div>
-                              {slot.isBooked ? (
-                                <div className="card-status-pill booked">
-                                  {slot.bookingStatus === 'confirmed' ? 'BOOKED' :
-                                    slot.bookingStatus === 'completed' ? 'COMPLETED' :
-                                      slot.bookingStatus === 'cancelled' ? 'CANCELLED' : 'UNAVAILABLE'}
+                              <div className="slot-card-header">
+                                <div className="slot-checkbox">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={!slot.isBooked}
+                                    disabled={slot.isBooked}
+                                    readOnly
+                                  />
                                 </div>
-                              ) : (
-                                <div className="card-status-pill">AVAILABLE</div>
-                              )}
-                              <div className="slot-date-modern">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                </svg>
-                                {new Date(slot.allotmentDate).toLocaleDateString("en-IN", {
-                                  weekday: "short",
-                                  day: "numeric",
-                                  month: "short",
-                                })}
+                                <div className="slot-time-display">
+                                  {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                                </div>
+                                <div className={`slot-status-badge ${slot.isBooked ? 'booked' : 'available'}`}>
+                                  {slot.isBooked ? (
+                                    slot.bookingStatus === 'confirmed' ? '● BOOKED' :
+                                    slot.bookingStatus === 'completed' ? '● COMPLETED' :
+                                    slot.bookingStatus === 'cancelled' ? '● CANCELLED' : '● UNAVAILABLE'
+                                  ) : (
+                                    '● AVAILABLE'
+                                  )}
+                                </div>
                               </div>
-                              <div className="slot-time-pill">
-                                {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                              </div>
-
-                              {/* Show additional info for booked slots */}
+                              
                               {slot.isBooked && slot.user && (
-                                <div className="slot-booking-info">
-                                  <div className="booking-user">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                      <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                    {slot.user.name +" Booked "}
-                                  </div>
+                                <div className="slot-booking-details">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                  </svg>
+                                  <span>{slot.user.name} Booked</span>
                                 </div>
                               )}
 
-                              <div className="slot-booking-link">
-                                {slot.isBooked ?
-                                  (slot.bookingStatus === 'confirmed' ? 'BOOKED' :
-                                    slot.bookingStatus === 'completed' ? 'COMPLETED' :
-                                      slot.bookingStatus === 'cancelled' ? 'CANCELLED' : 'UNAVAILABLE')
-                                  : 'INSTANT BOOKING'}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                                  <polyline points="12 5 19 12 12 19"></polyline>
-                                </svg>
-                              </div>
+                              {!slot.isBooked && (
+                                <button className="instant-book-btn">
+                                  INSTANT BOOKING →
+                                </button>
+                              )}
                             </div>
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    ) : (
-                      <div className="availability-calendar-container">
-                        <AvailabilityCalendar
-                          hallId={id}
-                          onSlotSelect={(slotData) => {
-                            // Convert the slot data to match the expected format
-                            const slot = {
-                              date: slotData.date,
-                              startTime: slotData.startTime,
-                              endTime: slotData.endTime
-                            };
-                            selectSlot(slot);
-                          }}
-                          selectedDate={bookingData.bookingDate}
-                          onDateChange={(date) => {
-                            setBookingData(prev => ({ ...prev, bookingDate: date }));
-                          }}
-                        />
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="empty-availability-msg">
-                    <div className="empty-icon">
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                      </svg>
-                    </div>
-                    <h4>No Upcoming Slots Available</h4>
-                    <p>Contact the owner for date availability and custom bookings.</p>
-                    <div className="contact-owner-btn">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                      </svg>
-                      Contact Owner: {hall.owner?.phone || "N/A"}
-                    </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="no-slots-message">
+                          <div className="no-slots-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                          </div>
+                          <h4>No Slots Available for This Date</h4>
+                          <p>Please try another date or contact the owner for custom bookings.</p>
+                          <div className="contact-owner-info">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                            </svg>
+                            Contact Owner: {hall.owner?.phone || "N/A"}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* Show message when no date is selected */}
+                {!bookingData.bookingDate && (
+                  <div className="select-date-prompt">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <h3>Select a Date to View Availability</h3>
+                    <p>Choose a date above to see all available and booked time slots for that day</p>
                   </div>
                 )}
               </div>
@@ -1047,35 +1099,9 @@ const HallDetail = () => {
               ))}
             </div>
           ) : (
-            <Swiper
-              modules={[Navigation, Autoplay, Pagination, Mousewheel]}
-              spaceBetween={30}
-              slidesPerView={1}
-              navigation
-              autoplay={{
-                delay: 3000,
-                disableOnInteraction: false,
-              }}
-              pagination={{ clickable: true }}
-              mousewheel={{
-                forceToAxis: true,
-                sensitivity: 1,
-                releaseOnEdges: true,
-              }}
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 20,
-                },
-                1024: {
-                  slidesPerView: 3,
-                  spaceBetween: 30,
-                },
-              }}
-              className="similar-halls-swiper"
-            >
+            <div className="similar-halls-grid-scrollable">
               {similarHalls.map((similarHall) => (
-              <SwiperSlide key={similarHall._id}>
+              <div key={similarHall._id} className="similar-hall-wrapper">
                 <div className="similar-hall-card">
                   <div className="similar-hall-image">
                     <img
@@ -1224,9 +1250,9 @@ const HallDetail = () => {
                     </Link>
                   </div>
                 </div>
-              </SwiperSlide>
+              </div>
             ))}
-          </Swiper>
+          </div>
           )}
         </div>
       )}

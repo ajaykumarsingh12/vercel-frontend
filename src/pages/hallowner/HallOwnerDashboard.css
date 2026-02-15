@@ -1985,6 +1985,30 @@
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
+/* Payment Successful Text */
+.payment-successful-text {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Pending Payment Text */
+.pending-payment-text {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
 /* Responsive Table */
 
 @media (max-width: 1200px) {
@@ -2919,7 +2943,6 @@
 
 .hall-card-slot,
 .hall-card-slot-1 {
-  cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 16px;
   overflow: hidden;
@@ -5112,12 +5135,12 @@
   }
 
   .slot-time {
-    color: #d1d5db;
+    color: #c02251;
   }
 
   .slot-action-btn.edit {
     background: rgba(59, 130, 246, 0.1);
-    color: #60a5fa;
+    color: #1471e4;
   }
 
   .slot-action-btn.edit:hover {
@@ -5126,7 +5149,7 @@
 
   .slot-action-btn.delete {
     background: rgba(239, 68, 68, 0.1);
-    color: #f87171;
+    color: #cd0505;
   }
 
   .slot-action-btn.delete:hover {
@@ -5240,8 +5263,8 @@
 }
 
 [data-theme="dark"] .slot-action-btn.edit {
-  background: rgba(59, 130, 246, 0.1) !important;
-  color: #60a5fa !important;
+  background: rgb(14 83 196) !important;
+  color: #edf1f6 !important
 }
 
 [data-theme="dark"] .slot-action-btn.edit:hover {
@@ -5249,8 +5272,8 @@
 }
 
 [data-theme="dark"] .slot-action-btn.delete {
-  background: rgba(239, 68, 68, 0.1) !important;
-  color: #f87171 !important;
+  background: red !important;
+  color: white !important;
 }
 
 [data-theme="dark"] .slot-action-btn.delete:hover {
@@ -5763,4 +5786,99 @@
 
 .availability-calendar .calendar-days {
   grid-auto-rows: 120px;
+}
+
+/* Skeleton Loaders */
+.skeleton-button {
+  width: 150px;
+  height: 42px;
+  background: linear-gradient(90deg, var(--input-border) 25%, rgba(255, 255, 255, 0.1) 50%, var(--input-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-heading {
+  width: 200px;
+  height: 28px;
+  background: linear-gradient(90deg, var(--input-border) 25%, rgba(255, 255, 255, 0.1) 50%, var(--input-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+[data-theme="dark"] .skeleton-button,
+[data-theme="dark"] .skeleton-heading {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+}
+
+/* Multi-day slot info banner */
+.multi-day-slot-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.multi-day-slot-info svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.multi-day-slot-info strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.multi-day-slot-info p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.95;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .multi-day-slot-info {
+  background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+}
+
+/* Form helper text styling */
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Improve form row spacing for multi-day layout */
+.slot-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .slot-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
