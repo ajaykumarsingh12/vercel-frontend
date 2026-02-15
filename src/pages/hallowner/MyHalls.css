@@ -288,7 +288,7 @@
 
 /* Table Container */
 .table-container {
-  background: var(--card-bg);
+  background:#473eb5e6 !important;
   backdrop-filter: blur(10px);
   border-radius: 1px;
   overflow: hidden;
