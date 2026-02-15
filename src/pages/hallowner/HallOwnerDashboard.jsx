@@ -36,6 +36,8 @@ const HallOwnerDashboard = () => {
   const [totalEarnings, setTotalEarnings] = useState(0);
   const [earningsLoading, setEarningsLoading] = useState(false);
   const [completedBookings, setCompletedBookings] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const bookingsPerPage = 6;
 
   const checkExistingRevenueRecords = async () => {
     try {
@@ -510,12 +512,45 @@ const HallOwnerDashboard = () => {
 
               <div className="bookings-section">
                 <div className="section-header">
-                  <h2>Recent Bookings</h2>
+                  <div className="section-title">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <h2>Recent Bookings</h2>
+                  </div>
                 </div>
 
                 {bookings.length === 0 ? (
                   <div className="no-bookings-owner">
-                    <div className="no-bookings-icon">📅</div>
+                    <div className="no-bookings-icon">
+                      <svg
+                        width="80"
+                        height="80"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                    </div>
                     <h3>No bookings yet</h3>
                     <p>
                       Bookings will appear here once customers start booking
@@ -523,22 +558,25 @@ const HallOwnerDashboard = () => {
                     </p>
                   </div>
                 ) : (
-                  <div className="table-container">
-                    <table className="bookings-table">
-                      <thead>
-                        <tr>
-                          <th>Hall Name</th>
-                          <th>Customer</th>
-                          <th>Phone</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Amount</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bookings.slice(0, 10).map((booking) => (
+                  <>
+                    <div className="table-container">
+                      <table className="bookings-table">
+                        <thead>
+                          <tr>
+                            <th>Hall Name</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bookings
+                            .slice((currentPage - 1) * bookingsPerPage, currentPage * bookingsPerPage)
+                            .map((booking) => (
                           <tr key={booking._id}>
                             <td className="hall-name-cell">
                               {booking.hall?.name}
@@ -607,6 +645,51 @@ const HallOwnerDashboard = () => {
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Pagination Controls */}
+                  {bookings.length > bookingsPerPage && (
+                    <div className="pagination-container">
+                      <div className="pagination-info">
+                        Showing {((currentPage - 1) * bookingsPerPage) + 1} to {Math.min(currentPage * bookingsPerPage, bookings.length)} of {bookings.length} bookings
+                      </div>
+                      <div className="pagination-controls">
+                        <button
+                          className="pagination-btn"
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={currentPage === 1}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                          </svg>
+                          Previous
+                        </button>
+                        
+                        <div className="pagination-pages">
+                          {Array.from({ length: Math.ceil(bookings.length / bookingsPerPage) }, (_, i) => i + 1).map(page => (
+                            <button
+                              key={page}
+                              className={`pagination-page ${currentPage === page ? 'active' : ''}`}
+                              onClick={() => setCurrentPage(page)}
+                            >
+                              {page}
+                            </button>
+                          ))}
+                        </div>
+
+                        <button
+                          className="pagination-btn"
+                          onClick={() => setCurrentPage(prev => Math.min(Math.ceil(bookings.length / bookingsPerPage), prev + 1))}
+                          disabled={currentPage === Math.ceil(bookings.length / bookingsPerPage)}
+                        >
+                          Next
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
                 )}
               </div>
             </>

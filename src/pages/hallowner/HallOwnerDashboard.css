@@ -3972,7 +3972,11 @@
   }
 
   .bookings-table thead {
-    background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%) !important;
+  }
+
+  .bookings-table thead th {
+    color: #f9fafb !important;
   }
 
   .bookings-table tbody tr {
@@ -3980,29 +3984,76 @@
   }
 
   .bookings-table tbody tr:hover {
-    background: linear-gradient(135deg, rgba(55, 65, 81, 0.3) 0%, rgba(75, 85, 99, 0.3) 100%) !important;
+    background: linear-gradient(135deg, rgba(75, 85, 99, 0.2) 0%, rgba(107, 114, 128, 0.2) 100%) !important;
   }
 
   .bookings-table tbody td {
-    color: #d1d5db !important;
+    color: #e5e7eb !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
   .hall-name-cell {
-    color: #f3f4f6 !important;
+    color: #f9fafb !important;
   }
 
   .time-cell {
-    color: #9ca3af !important;
+    color: #d1d5db !important;
+  }
+
+  .amount-cell {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+
+  /* Status Badges Dark Mode */
+  .status-badge-table.status-pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+  }
+
+  .status-badge-table.status-confirmed {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  }
+
+  .status-badge-table.status-completed {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  }
+
+  .status-badge-table.status-cancelled {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  }
+
+  /* Action Text Dark Mode */
+  .user-cancelled-text {
+    color: #fca5a5 !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+  }
+
+  .payment-successful-text {
+    color: #6ee7b7 !important;
+    background: rgba(16, 185, 129, 0.15) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+  }
+
+  .pending-payment-text {
+    color: #fcd34d !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.4) !important;
   }
 
   /* Phone Link Dark Mode */
   .phone-link {
-    color: #d1d5db !important;
+    color: #e5e7eb !important;
   }
 
   .phone-link:hover {
-    color: #ef4444 !important;
+    color: #fca5a5 !important;
+  }
+
+  .phone-link::before {
+    background: rgba(239, 68, 68, 0.15) !important;
   }
 
   .phone-link svg {
@@ -4016,11 +4067,32 @@
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
+  .no-bookings-owner::before {
+    background: linear-gradient(90deg, #818cf8, #a78bfa, #c084fc, #e879f9) !important;
+  }
+
+  .no-bookings-owner::after {
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 70%) !important;
+  }
+
+  .no-bookings-owner .no-bookings-icon {
+    opacity: 0.7 !important;
+  }
+
   .no-bookings-owner h3 {
     color: #f9fafb !important;
   }
 
   .no-bookings-owner p {
+    color: #d1d5db !important;
+  }
+
+  /* Section Header Dark Mode */
+  .section-header .section-title {
+    color: #f9fafb !important;
+  }
+
+  .section-header .section-title svg {
     color: #9ca3af !important;
   }
 }
@@ -4095,6 +4167,141 @@
 
 [data-theme="dark"] .bookings-section h2 {
   color: #f9fafb !important;
+}
+
+/* Dark Mode - Bookings Table */
+[data-theme="dark"] .table-container {
+  background: #1f2937 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .bookings-table thead {
+  background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%) !important;
+}
+
+[data-theme="dark"] .bookings-table thead th {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .bookings-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .bookings-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(75, 85, 99, 0.2) 0%, rgba(107, 114, 128, 0.2) 100%) !important;
+}
+
+[data-theme="dark"] .bookings-table tbody td {
+  color: #e5e7eb !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .hall-name-cell {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .time-cell {
+  color: #d1d5db !important;
+}
+
+[data-theme="dark"] .amount-cell {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Dark Mode - Status Badges */
+[data-theme="dark"] .status-badge-table.status-pending {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+}
+
+[data-theme="dark"] .status-badge-table.status-confirmed {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+}
+
+[data-theme="dark"] .status-badge-table.status-completed {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+}
+
+[data-theme="dark"] .status-badge-table.status-cancelled {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+}
+
+/* Dark Mode - Action Text */
+[data-theme="dark"] .user-cancelled-text {
+  color: #fca5a5 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+[data-theme="dark"] .payment-successful-text {
+  color: #6ee7b7 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+[data-theme="dark"] .pending-payment-text {
+  color: #fcd34d !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Dark Mode - Phone Link */
+[data-theme="dark"] .phone-link {
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] .phone-link:hover {
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .phone-link::before {
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
+[data-theme="dark"] .phone-link svg {
+  color: #ef4444 !important;
+  stroke: #ef4444 !important;
+}
+
+/* Dark Mode - No Bookings */
+[data-theme="dark"] .no-bookings-owner {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .no-bookings-owner::before {
+  background: linear-gradient(90deg, #818cf8, #a78bfa, #c084fc, #e879f9) !important;
+}
+
+[data-theme="dark"] .no-bookings-owner::after {
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 70%) !important;
+}
+
+[data-theme="dark"] .no-bookings-owner .no-bookings-icon {
+  opacity: 0.7 !important;
+}
+
+[data-theme="dark"] .no-bookings-owner h3 {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .no-bookings-owner p {
+  color: #d1d5db !important;
+}
+
+/* Dark Mode - Section Header */
+[data-theme="dark"] .section-header .section-title {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .section-header .section-title h2 {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .section-header .section-title svg {
+  color: #9ca3af !important;
 }
 
 [data-theme="dark"] .hall-info-content {
@@ -5881,4 +6088,174 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
+}
+
+
+/* Pagination Styles */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pagination-info {
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  opacity: 0.8;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-btn svg {
+  flex-shrink: 0;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-page {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-page:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.pagination-page.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  font-weight: 600;
+}
+
+/* Responsive Pagination */
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.25rem;
+  }
+
+  .pagination-info {
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .pagination-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pagination-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pagination-pages {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-page {
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .pagination-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Dark Mode Pagination */
+[data-theme="dark"] .pagination-container {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .pagination-btn {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
+}
+
+[data-theme="dark"] .pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border-color: #818cf8;
+}
+
+[data-theme="dark"] .pagination-page {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
+}
+
+[data-theme="dark"] .pagination-page:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border-color: #818cf8;
+}
+
+[data-theme="dark"] .pagination-page.active {
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+  border-color: #818cf8;
+}
+
+[data-theme="dark"] .pagination-info {
+  color: #d1d5db;
 }
