@@ -17,12 +17,91 @@
   padding: 9px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .calendar-navigation {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  min-width: 200px;
+  text-align: center;
+  flex: 1;
+}
+
+/* Responsive Calendar Header */
+@media (max-width: 768px) {
+  .calendar-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .calendar-navigation {
+    gap: 12px;
+  }
+
+  .calendar-title {
+    font-size: 1.3rem;
+    min-width: 150px;
+  }
+
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-header {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .calendar-navigation {
+    gap: 8px;
+  }
+
+  .calendar-title {
+    font-size: 1.1rem;
+    min-width: 120px;
+  }
+
+  .nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-header {
+    padding: 8px 6px;
+    gap: 6px;
+  }
+
+  .calendar-navigation {
+    gap: 6px;
+  }
+
+  .calendar-title {
+    font-size: 1rem;
+    min-width: 100px;
+  }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
 }
 
 .nav-btn {
@@ -50,6 +129,7 @@
   font-weight: 600;
   min-width: 200px;
   text-align: center;
+  flex: 1;
 }
 
 .calendar-controls {
@@ -989,4 +1069,339 @@
     transform: translateX(100%);
     opacity: 0;
   }
+}
+
+
+/* ========================================
+   HORIZONTAL SCROLL FOR CALENDAR
+   ======================================== */
+
+/* Calendar Container with Horizontal Scroll */
+.calendar-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.calendar-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* For Firefox */
+.calendar-scroll-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.3) rgba(0, 0, 0, 0.05);
+}
+
+/* Calendar Grid - Minimum Width for Scroll */
+@media (max-width: 768px) {
+  .calendar-days {
+    min-width: 600px; /* Force horizontal scroll on small screens */
+  }
+
+  .calendar-weekdays {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-days {
+    min-width: 500px;
+  }
+
+  .calendar-weekdays {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-days {
+    min-width: 450px;
+  }
+
+  .calendar-weekdays {
+    min-width: 450px;
+  }
+}
+
+/* Scroll Indicator (Optional) */
+.calendar-scroll-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(102, 126, 234, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.calendar-scroll-wrapper:not(.scrolled) .calendar-scroll-indicator {
+  opacity: 1;
+  animation: pulseScroll 2s ease-in-out infinite;
+}
+
+@keyframes pulseScroll {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+  }
+}
+
+/* Smooth Scroll Snap (Optional) */
+.calendar-scroll-wrapper.snap-scroll {
+  scroll-snap-type: x mandatory;
+}
+
+.calendar-scroll-wrapper.snap-scroll .calendar-day {
+  scroll-snap-align: start;
+}
+
+/* Touch Feedback */
+.calendar-scroll-wrapper:active {
+  cursor: grabbing;
+}
+
+/* Gradient Fade on Edges (Optional) */
+.calendar-container {
+  position: relative;
+}
+
+.calendar-container::before,
+.calendar-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.calendar-container::before {
+  left: 0;
+  background: linear-gradient(to right, white, transparent);
+}
+
+.calendar-container::after {
+  right: 0;
+  background: linear-gradient(to left, white, transparent);
+}
+
+.calendar-container.show-scroll-fade::before,
+.calendar-container.show-scroll-fade::after {
+  opacity: 1;
+}
+
+/* Mobile Specific Scroll Enhancements */
+@media (max-width: 768px) {
+  .calendar-scroll-wrapper {
+    cursor: grab;
+  }
+
+  .calendar-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  /* Show scrollbar on mobile */
+  .calendar-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.4);
+  }
+}
+
+/* Dark Mode Scroll Styles */
+@media (prefers-color-scheme: dark) {
+  .calendar-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+  }
+
+  .calendar-container::before {
+    background: linear-gradient(to right, #1f2937, transparent);
+  }
+
+  .calendar-container::after {
+    background: linear-gradient(to left, #1f2937, transparent);
+  }
+}
+
+[data-theme="dark"] {
+  .calendar-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5) !important;
+  }
+
+  .calendar-container::before {
+    background: linear-gradient(to right, #1f2937, transparent) !important;
+  }
+
+  .calendar-container::after {
+    background: linear-gradient(to left, #1f2937, transparent) !important;
+  }
+}
+
+
+/* ========================================
+   SYNCHRONIZED SCROLL FOR WEEKDAYS & DAYS
+   ======================================== */
+
+/* Weekdays Scroll Wrapper */
+.calendar-month > .calendar-scroll-wrapper:first-child {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  margin-bottom: 0;
+}
+
+/* Hide scrollbar for weekdays wrapper (only show on days) */
+.calendar-month > .calendar-scroll-wrapper:first-child::-webkit-scrollbar {
+  display: none;
+}
+
+.calendar-month > .calendar-scroll-wrapper:first-child {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Weekdays Grid */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  width: 100%; /* Full width by default */
+}
+
+/* Responsive Weekdays */
+@media (max-width: 768px) {
+  .calendar-weekdays {
+    min-width: 600px; /* Match calendar-days width */
+  }
+
+  .calendar-weekday {
+    font-size: 0.75rem;
+    padding: 10px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-weekdays {
+    min-width: 500px;
+  }
+
+  .calendar-weekday {
+    font-size: 0.7rem;
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-weekdays {
+    min-width: 450px;
+  }
+
+  .calendar-weekday {
+    font-size: 0.65rem;
+    padding: 6px 3px;
+  }
+}
+
+/* Sync Scroll Between Weekdays and Days */
+.calendar-month {
+  position: relative;
+}
+
+/* Optional: Add scroll sync via JavaScript (if needed) */
+/* This CSS ensures both wrappers have same width */
+.calendar-month > .calendar-scroll-wrapper {
+  width: 100%;
+}
+
+/* Ensure weekdays and days align perfectly */
+.calendar-weekdays,
+.calendar-days {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .calendar-weekdays,
+  .calendar-days {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-weekdays,
+  .calendar-days {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-weekdays,
+  .calendar-days {
+    min-width: 450px;
+  }
+}
+
+/* Dark Mode for Weekdays */
+@media (prefers-color-scheme: dark) {
+  .calendar-weekdays {
+    background: #374151;
+    border-bottom-color: #4b5563;
+  }
+
+  .calendar-weekday {
+    color: #d1d5db;
+  }
+}
+
+[data-theme="dark"] .calendar-weekdays {
+  background: #374151 !important;
+  border-bottom-color: #4b5563 !important;
+}
+
+[data-theme="dark"] .calendar-weekday {
+  color: #d1d5db !important;
 }

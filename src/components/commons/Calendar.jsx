@@ -47,6 +47,29 @@ const Calendar = ({
   const [view, setView] = useState("month"); // month, week, day
   const [calendarDays, setCalendarDays] = useState([]);
 
+  // Sync scroll between weekdays and days
+  useEffect(() => {
+    const weekdaysWrapper = document.querySelector('.calendar-month > .calendar-scroll-wrapper:first-child');
+    const daysWrapper = document.querySelector('.calendar-month > .calendar-scroll-wrapper:last-child');
+
+    if (weekdaysWrapper && daysWrapper) {
+      const syncScroll = (source, target) => {
+        target.scrollLeft = source.scrollLeft;
+      };
+
+      const handleWeekdaysScroll = () => syncScroll(weekdaysWrapper, daysWrapper);
+      const handleDaysScroll = () => syncScroll(daysWrapper, weekdaysWrapper);
+
+      weekdaysWrapper.addEventListener('scroll', handleWeekdaysScroll);
+      daysWrapper.addEventListener('scroll', handleDaysScroll);
+
+      return () => {
+        weekdaysWrapper.removeEventListener('scroll', handleWeekdaysScroll);
+        daysWrapper.removeEventListener('scroll', handleDaysScroll);
+      };
+    }
+  }, [view]);
+
   useEffect(() => {
     generateCalendarDays();
   }, [currentDate, view]);
@@ -187,27 +210,30 @@ const Calendar = ({
 
     return (
       <div className="calendar-month">
-        <div className="calendar-weekdays">
-          {weekDays.map(day => (
-            <div key={day} className="calendar-weekday">{day}</div>
-          ))}
+        <div className="calendar-scroll-wrapper">
+          <div className="calendar-weekdays">
+            {weekDays.map(day => (
+              <div key={day} className="calendar-weekday">{day}</div>
+            ))}
+          </div>
         </div>
-        <div className="calendar-days">
-          {calendarDays.map((day, index) => {
-            const daySlots = getSlotsForDate(day);
-            const dayBookings = getBookedSlotsForDate(day);
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const hasAvailableTime = hasAvailableTimeSlots(day);
+        <div className="calendar-scroll-wrapper">
+          <div className="calendar-days">
+            {calendarDays.map((day, index) => {
+              const daySlots = getSlotsForDate(day);
+              const dayBookings = getBookedSlotsForDate(day);
+              const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+              const hasAvailableTime = hasAvailableTimeSlots(day);
 
-            return (
-              <div
-                key={index}
-                className={`calendar-day ${isCurrentMonth ? 'current-month' : 'other-month'
-                  } ${isToday(day) ? 'today' : ''} ${isSelected(day) ? 'selected' : ''
-                  } ${isPastDate(day) ? 'past' : ''} ${!hasAvailableTime && !isPastDate(day) ? 'fully-booked' : ''
-                  }`}
-                title={
-                  isPastDate(day)
+              return (
+                <div
+                  key={index}
+                  className={`calendar-day ${isCurrentMonth ? 'current-month' : 'other-month'
+                    } ${isToday(day) ? 'today' : ''} ${isSelected(day) ? 'selected' : ''
+                    } ${isPastDate(day) ? 'past' : ''} ${!hasAvailableTime && !isPastDate(day) ? 'fully-booked' : ''
+                    }`}
+                  title={
+                    isPastDate(day)
                     ? 'Cannot create slots for past dates'
                     : !hasAvailableTime
                       ? 'This date is fully booked'
@@ -292,6 +318,7 @@ const Calendar = ({
               </div>
             );
           })}
+          </div>
         </div>
       </div>
     );

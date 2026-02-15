@@ -891,9 +891,8 @@ const HallOwnerDashboard = () => {
                                 value={slotForm.date}
                                 onChange={handleSlotFormChange}
                                 min={(() => {
-                                  const tomorrow = new Date();
-                                  tomorrow.setDate(tomorrow.getDate() + 1);
-                                  return tomorrow.toISOString().split('T')[0];
+                                  const today = new Date();
+                                  return today.toISOString().split('T')[0];
                                 })()}
                                 required
                                 onClick={(e) => e.target.showPicker && e.target.showPicker()}
