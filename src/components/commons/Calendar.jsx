@@ -145,15 +145,50 @@ const Calendar = ({
 
   const getBookedSlotsForDate = (date) => {
     const dateStr = formatDate(date);
+    
+    // Get booked slots from the slots array (slots that are not available)
     const bookedFromSlots = slots.filter(slot => {
       const slotDate = formatDate(new Date(slot.date || slot.allotmentDate));
       const isMatch = slotDate === dateStr && (slot.status !== 'available' || !slot.isAvailabilitySlot);
       return isMatch;
     });
+    
+    // Get bookings from the bookedSlots array
     const bookedFromBookings = bookedSlots.filter(booking =>
       formatDate(new Date(booking.bookingDate || booking.allotmentDate)) === dateStr
     );
-    return [...bookedFromSlots, ...bookedFromBookings];
+    
+    // Remove duplicates by checking if a booking already exists in bookedFromSlots
+    // Use a Set to track unique slot IDs
+    const uniqueBookings = [];
+    const seenIds = new Set();
+    
+    // Add slots first
+    bookedFromSlots.forEach(slot => {
+      const id = slot._id || slot.id;
+      if (id && !seenIds.has(id)) {
+        seenIds.add(id);
+        uniqueBookings.push(slot);
+      }
+    });
+    
+    // Add bookings only if they don't already exist
+    bookedFromBookings.forEach(booking => {
+      const id = booking._id || booking.id;
+      // Check if this booking is already in the slots array
+      const isDuplicate = bookedFromSlots.some(slot => 
+        (slot._id === id) || 
+        (slot.bookingId === id) ||
+        (slot.startTime === booking.startTime && slot.endTime === booking.endTime)
+      );
+      
+      if (!isDuplicate && id && !seenIds.has(id)) {
+        seenIds.add(id);
+        uniqueBookings.push(booking);
+      }
+    });
+    
+    return uniqueBookings;
   };
 
   const isToday = (date) => {

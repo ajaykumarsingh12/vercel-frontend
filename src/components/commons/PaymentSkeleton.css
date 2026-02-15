@@ -1,0 +1,425 @@
+/* Payment Skeleton Loader Styles */
+
+.skeleton-container {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--input-border);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.2) 25%,
+    rgba(200, 200, 200, 0.3) 50%,
+    rgba(200, 200, 200, 0.2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Header Skeleton */
+.skeleton-header {
+  margin-bottom: 2rem;
+}
+
+.skeleton-title {
+  height: 32px;
+  width: 280px;
+  margin-bottom: 0.5rem;
+}
+
+/* Hall Info Skeleton */
+.hall-info {
+  margin-bottom: 2rem;
+}
+
+.skeleton-hall-name {
+  height: 28px;
+  width: 200px;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-location {
+  height: 20px;
+  width: 160px;
+}
+
+/* Booking Info Grid Skeleton */
+.booking-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-label {
+  height: 16px;
+  width: 80px;
+}
+
+.skeleton-value {
+  height: 20px;
+  width: 140px;
+}
+
+/* Pricing Details Skeleton */
+.pricing-details {
+  border-top: 1px solid var(--input-border);
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton-price-label {
+  height: 18px;
+  width: 120px;
+}
+
+.skeleton-price-value {
+  height: 20px;
+  width: 80px;
+}
+
+/* Amount Section Skeleton */
+.amount-section {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.skeleton-section-title {
+  height: 24px;
+  width: 150px;
+  margin: 0 auto 1rem;
+}
+
+.skeleton-amount {
+  height: 48px;
+  width: 200px;
+  margin: 0 auto;
+}
+
+/* Payment Method Section Skeleton */
+.payment-method-section {
+  margin-bottom: 2rem;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.skeleton-payment-method {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 2px solid var(--input-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+}
+
+.skeleton-method-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(102, 126, 234, 0.2) 25%,
+    rgba(118, 75, 162, 0.3) 50%,
+    rgba(102, 126, 234, 0.2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.skeleton-method-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-method-name {
+  height: 20px;
+  width: 180px;
+}
+
+.skeleton-method-desc {
+  height: 16px;
+  width: 240px;
+}
+
+.skeleton-method-radio {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.2) 25%,
+    rgba(200, 200, 200, 0.3) 50%,
+    rgba(200, 200, 200, 0.2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+/* Action Buttons Skeleton */
+.payment-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.skeleton-button {
+  height: 48px;
+  flex: 1;
+  border-radius: 8px;
+}
+
+.skeleton-button-primary {
+  background: linear-gradient(
+    90deg,
+    rgba(102, 126, 234, 0.3) 25%,
+    rgba(118, 75, 162, 0.4) 50%,
+    rgba(102, 126, 234, 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Security Info Skeleton */
+.payment-security {
+  margin-top: 2rem;
+}
+
+.security-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.skeleton-security-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0.2) 25%,
+    rgba(245, 158, 11, 0.3) 50%,
+    rgba(245, 158, 11, 0.2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.skeleton-security-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-security-title {
+  height: 18px;
+  width: 140px;
+}
+
+.skeleton-security-text {
+  height: 16px;
+  width: 320px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .skeleton-container {
+    padding: 1.5rem;
+  }
+
+  .booking-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .payment-actions {
+    flex-direction: column;
+  }
+
+  .skeleton-button {
+    width: 100%;
+  }
+
+  .skeleton-method-desc {
+    width: 180px;
+  }
+
+  .skeleton-security-text {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skeleton-container {
+    padding: 1.25rem;
+  }
+
+  .skeleton-title {
+    width: 200px;
+    height: 28px;
+  }
+
+  .skeleton-hall-name {
+    width: 160px;
+    height: 24px;
+  }
+
+  .skeleton-amount {
+    height: 40px;
+    width: 160px;
+  }
+
+  .skeleton-payment-method {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .skeleton-method-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skeleton-method-name {
+    width: 140px;
+  }
+
+  .skeleton-method-desc {
+    width: 140px;
+  }
+
+  .security-info {
+    padding: 1.25rem;
+  }
+
+  .skeleton-security-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 65, 81, 0.3) 25%,
+    rgba(75, 85, 99, 0.4) 50%,
+    rgba(55, 65, 81, 0.3) 75%
+  );
+  background-size: 200% 100%;
+}
+
+[data-theme="dark"] .skeleton-container {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .skeleton-payment-method {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .skeleton-method-icon {
+  background: linear-gradient(
+    90deg,
+    rgba(102, 126, 234, 0.25) 25%,
+    rgba(118, 75, 162, 0.35) 50%,
+    rgba(102, 126, 234, 0.25) 75%
+  );
+  background-size: 200% 100%;
+}
+
+[data-theme="dark"] .skeleton-method-radio {
+  background: linear-gradient(
+    90deg,
+    rgba(75, 85, 99, 0.3) 25%,
+    rgba(107, 114, 128, 0.4) 50%,
+    rgba(75, 85, 99, 0.3) 75%
+  );
+  background-size: 200% 100%;
+}
+
+[data-theme="dark"] .skeleton-button-primary {
+  background: linear-gradient(
+    90deg,
+    rgba(102, 126, 234, 0.35) 25%,
+    rgba(118, 75, 162, 0.45) 50%,
+    rgba(102, 126, 234, 0.35) 75%
+  );
+  background-size: 200% 100%;
+}
+
+[data-theme="dark"] .security-info {
+  background: rgba(102, 126, 234, 0.08);
+  border-color: rgba(102, 126, 234, 0.15);
+}
+
+[data-theme="dark"] .skeleton-security-icon {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0.25) 25%,
+    rgba(245, 158, 11, 0.35) 50%,
+    rgba(245, 158, 11, 0.25) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* Pulse Animation for Enhanced Effect */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.skeleton-container {
+  animation: pulse 2s ease-in-out infinite;
+}

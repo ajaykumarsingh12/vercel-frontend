@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/commons/Loader";
+import PaymentSkeleton from "../components/commons/PaymentSkeleton";
 import { calculateTotalHours, formatCurrency } from "../utils/calculations";
 import "./Payment.css";
 
@@ -219,7 +220,7 @@ const Payment = () => {
     },
   ];
 
-  if (loading) return <Loader />;
+  if (loading) return <PaymentSkeleton />;
 
   if (!bookingId) {
     // Payment History View
