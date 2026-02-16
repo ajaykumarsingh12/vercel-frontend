@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import "./Navbar.css";
@@ -15,6 +16,12 @@ const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Notification states
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsClosing, setNotificationsClosing] = useState(false);
 
   // Click outside to close functionality
   useEffect(() => {
@@ -58,6 +65,100 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Fetch notifications for hall owners
+  useEffect(() => {
+    if (isAuthenticated && user?.role === 'hall_owner') {
+      fetchNotifications();
+      // Refresh notifications every 30 seconds
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, user]);
+
+  // Click outside to close notifications
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.notification-container') && showNotifications && !notificationsClosing) {
+        closeNotifications();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications, notificationsClosing]);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('/api/notifications');
+      setNotifications(response.data);
+      setUnreadCount(response.data.filter(n => !n.isRead).length);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  const toggleNotifications = () => {
+    if (showNotifications) {
+      closeNotifications();
+    } else {
+      setShowNotifications(true);
+      setNotificationsClosing(false);
+    }
+  };
+
+  const closeNotifications = () => {
+    setNotificationsClosing(true);
+    setTimeout(() => {
+      setShowNotifications(false);
+      setNotificationsClosing(false);
+    }, 300);
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      await axios.put(`/api/notifications/${notificationId}/read`);
+      fetchNotifications();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      const unreadNotifications = notifications.filter(n => !n.isRead);
+      await Promise.all(
+        unreadNotifications.map(n => axios.put(`/api/notifications/${n._id}/read`))
+      );
+      fetchNotifications();
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  };
+
+  const deleteNotification = async (notificationId) => {
+    try {
+      await axios.delete(`/api/notifications/${notificationId}`);
+      fetchNotifications();
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
+  const formatNotificationTime = (date) => {
+    const now = new Date();
+    const notifDate = new Date(date);
+    const diffMs = now - notifDate;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return notifDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -902,6 +1003,127 @@ c14 0 27 9 34 23 9 19 11 16 11 -25 1 -27 -3 -48 -9 -48 -5 0 -10 9 -10 20 0
                 </svg>
               </Link>
             )}
+            
+            {/* Notification Bell - Only for Hall Owners */}
+            {isAuthenticated && user?.role === 'hall_owner' && (
+              <div className="notification-container">
+                <button 
+                  className="notification-bell" 
+                  onClick={toggleNotifications}
+                  title="Notifications"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="notification-badge">{unreadCount}</span>
+                  )}
+                </button>
+                
+                {/* Notification Dropdown */}
+                {showNotifications && (
+                  <div className={`notification-dropdown ${notificationsClosing ? 'closing' : ''}`}>
+                    <div className="notification-header">
+                      <h3>Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button 
+                          className="mark-all-read-btn"
+                          onClick={markAllAsRead}
+                        >
+                          Mark all as read
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="notification-list">
+                      {notifications.length === 0 ? (
+                        <div className="no-notifications">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="48"
+                            height="48"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                          </svg>
+                          <p>No notifications yet</p>
+                        </div>
+                      ) : (
+                        notifications.map((notification) => (
+                          <div 
+                            key={notification._id} 
+                            className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
+                            onClick={() => !notification.isRead && markAsRead(notification._id)}
+                          >
+                            <div className="notification-icon">
+                              {notification.type === 'payment' && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <circle cx="12" cy="12" r="10"></circle>
+                                  <path d="M12 6v6l4 2"></path>
+                                </svg>
+                              )}
+                            </div>
+                            <div className="notification-content">
+                              <p className="notification-message">{notification.message}</p>
+                              <span className="notification-time">
+                                {formatNotificationTime(notification.createdAt)}
+                              </span>
+                            </div>
+                            <button 
+                              className="notification-delete"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteNotification(notification._id);
+                              }}
+                              title="Delete notification"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            
             <button className="profile-icon" onClick={toggleProfileMenu}>
               {user?.profileImage ? (
                 <img
@@ -957,6 +1179,127 @@ c14 0 27 9 34 23 9 19 11 16 11 -25 1 -27 -3 -48 -9 -48 -5 0 -10 9 -10 20 0
               </svg>
             </Link>
           )}
+          
+          {/* Notification Bell - Mobile - Only for Hall Owners */}
+          {isAuthenticated && user?.role === 'hall_owner' && (
+            <div className="notification-container mobile-notification">
+              <button 
+                className="notification-bell" 
+                onClick={toggleNotifications}
+                title="Notifications"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="notification-badge">{unreadCount}</span>
+                )}
+              </button>
+              
+              {/* Notification Dropdown - Mobile */}
+              {showNotifications && (
+                <div className={`notification-dropdown ${notificationsClosing ? 'closing' : ''}`}>
+                  <div className="notification-header">
+                    <h3>Notifications</h3>
+                    {unreadCount > 0 && (
+                      <button 
+                        className="mark-all-read-btn"
+                        onClick={markAllAsRead}
+                      >
+                        Mark all as read
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="notification-list">
+                    {notifications.length === 0 ? (
+                      <div className="no-notifications">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="48"
+                          height="48"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <p>No notifications yet</p>
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div 
+                          key={notification._id} 
+                          className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
+                          onClick={() => !notification.isRead && markAsRead(notification._id)}
+                        >
+                          <div className="notification-icon">
+                            {notification.type === 'payment' && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                              </svg>
+                            )}
+                          </div>
+                          <div className="notification-content">
+                            <p className="notification-message">{notification.message}</p>
+                            <span className="notification-time">
+                              {formatNotificationTime(notification.createdAt)}
+                            </span>
+                          </div>
+                          <button 
+                            className="notification-delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteNotification(notification._id);
+                            }}
+                            title="Delete notification"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
           <button className="profile-icon" onClick={toggleProfileMenu}>
             {user?.profileImage ? (
               <img
