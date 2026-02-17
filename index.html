@@ -8,6 +8,24 @@
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Facebook SDK -->
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '909222145302927',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v18.0'
+        });
+        // Dispatch custom event when FB is ready
+        window.dispatchEvent(new Event('fb-sdk-ready'));
+      };
+    </script>
+    <script async defer crossorigin="anonymous" 
+      src="https://connect.facebook.net/en_US/sdk.js">
+    </script>
+    
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

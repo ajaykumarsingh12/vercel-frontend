@@ -74,31 +74,23 @@ const Login = () => {
       }
     };
 
-    // Load Facebook SDK
-    window.fbAsyncInit = function() {
-      window.FB.init({
-        appId: import.meta.env.VITE_FACEBOOK_APP_ID,
-        cookie: true,
-        xfbml: true,
-        version: 'v18.0'
-      });
-      // Set FB as ready after initialization
+    // Listen for Facebook SDK ready event
+    const handleFBReady = () => {
       setFbReady(true);
     };
-
-    // Load Facebook SDK script
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+    
+    // Check if FB is already loaded
+    if (window.FB) {
+      setFbReady(true);
+    } else {
+      window.addEventListener('fb-sdk-ready', handleFBReady);
+    }
 
     return () => {
       if (document.body.contains(googleScript)) {
         document.body.removeChild(googleScript);
       }
+      window.removeEventListener('fb-sdk-ready', handleFBReady);
     };
   }, []);
 
