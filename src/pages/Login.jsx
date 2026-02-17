@@ -162,16 +162,36 @@ const Login = () => {
       return;
     }
 
-    window.FB.login(function(response) {
-      if (response.authResponse) {
-        // User logged in successfully
-        handleFacebookResponse(response.authResponse);
-      } else {
-        toast.error('Facebook login cancelled');
-      }
-    }, {
-      scope: 'public_profile,email'
-    });
+    // Wait for FB to be fully initialized
+    if (typeof window.FB.getLoginStatus === 'function') {
+      window.FB.login(function(response) {
+        if (response.authResponse) {
+          // User logged in successfully
+          handleFacebookResponse(response.authResponse);
+        } else {
+          toast.error('Facebook login cancelled');
+        }
+      }, {
+        scope: 'public_profile,email'
+      });
+    } else {
+      // FB SDK not fully initialized yet, wait a bit
+      setTimeout(() => {
+        if (window.FB && typeof window.FB.login === 'function') {
+          window.FB.login(function(response) {
+            if (response.authResponse) {
+              handleFacebookResponse(response.authResponse);
+            } else {
+              toast.error('Facebook login cancelled');
+            }
+          }, {
+            scope: 'public_profile,email'
+          });
+        } else {
+          toast.error("Facebook SDK not ready. Please try again.");
+        }
+      }, 1000);
+    }
     
     // Close modal
     setShowSocialLoginModal(false);
