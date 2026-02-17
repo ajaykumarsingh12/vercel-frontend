@@ -79,7 +79,11 @@ const Navbar = () => {
   // Click outside to close notifications
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.notification-container') && showNotifications && !notificationsClosing) {
+      // Check if click is outside both notification container AND bell icon
+      const isOutsideContainer = !event.target.closest('.notification-container');
+      const isOutsideBell = !event.target.closest('.notification-bell');
+      
+      if (isOutsideContainer && isOutsideBell && showNotifications && !notificationsClosing) {
         closeNotifications();
       }
     };
@@ -98,10 +102,11 @@ const Navbar = () => {
     }
   };
 
-  const toggleNotifications = () => {
-    if (showNotifications) {
+  const toggleNotifications = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    if (showNotifications && !notificationsClosing) {
       closeNotifications();
-    } else {
+    } else if (!showNotifications && !notificationsClosing) {
       setShowNotifications(true);
       setNotificationsClosing(false);
     }

@@ -18,6 +18,8 @@ const Payment = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentHistory, setPaymentHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
 
   const bookingId = searchParams.get("booking");
 
@@ -224,6 +226,12 @@ const Payment = () => {
 
   if (!bookingId) {
     // Payment History View
+    // Pagination logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = paymentHistory.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(paymentHistory.length / itemsPerPage);
+
     return (
       <div className="payment-page">
         <div className="payment-header">
@@ -274,11 +282,10 @@ const Payment = () => {
                       <th>TIME</th>
                       <th>AMOUNT</th>
                       <th>STATUS</th>
-                      <th>ACTIONS</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {paymentHistory.map((payment) => (
+                    {currentItems.map((payment) => (
                       <tr key={payment.id}>
                         <td data-label="HALL NAME" className="hall-name">
                           {payment.hallName}
@@ -313,24 +320,68 @@ const Payment = () => {
                               : payment.status.toUpperCase()}
                           </span>
                         </td>
-                        <td data-label="ACTIONS">
-                          {payment.status === "paid" && (
-                            <button
-                              className="btn-action"
-                              onClick={() => handleRefund(payment.bookingId)}
-                            >
-                              Refund
-                            </button>
-                          )}
-                          {payment.status === "refunded" && (
-                            <span className="text-muted">Refunded</span>
-                          )}
-                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <span>Page {currentPage} of {totalPages}</span>
+                  <div className="pagination-buttons">
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      title="Previous Page"
+                    >
+                      ‹
+                    </button>
+                    
+                    {/* First page */}
+                    {currentPage > 2 && (
+                      <>
+                        <button onClick={() => setCurrentPage(1)}>1</button>
+                        {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
+                      </>
+                    )}
+                    
+                    {/* Current page and neighbors */}
+                    {[...Array(totalPages)].map((_, i) => {
+                      const pageNum = i + 1;
+                      if (pageNum >= currentPage - 1 && pageNum <= currentPage + 1) {
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={currentPage === pageNum ? 'active' : ''}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      }
+                      return null;
+                    })}
+                    
+                    {/* Last page */}
+                    {currentPage < totalPages - 1 && (
+                      <>
+                        {currentPage < totalPages - 2 && <span className="pagination-ellipsis">...</span>}
+                        <button onClick={() => setCurrentPage(totalPages)}>{totalPages}</button>
+                      </>
+                    )}
+                    
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      title="Next Page"
+                    >
+                      ›
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

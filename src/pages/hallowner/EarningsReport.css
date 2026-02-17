@@ -278,7 +278,6 @@
   align-items: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #f3f4f6;
 }
 
 .pagination-buttons {
@@ -288,15 +287,13 @@
 
 .pagination-buttons button {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  background: white;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .pagination-buttons button:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #262626;
 }
 
 .pagination-buttons button.active {

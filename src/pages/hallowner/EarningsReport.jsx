@@ -19,7 +19,7 @@ const EarningsReport = () => {
     monthlyGrowth: 0
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(15); // Updated: Show 15 records per page (v2.0)
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
@@ -37,12 +37,25 @@ const EarningsReport = () => {
   const fetchRevenues = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/owner-revenue/latest');
+      const timestamp = new Date().getTime();
+      
+      console.log('📡 Fetching from /api/owner-revenue/latest...');
+      const response = await axios.get(`/api/owner-revenue/latest?t=${timestamp}`);
+      
+      console.log('� RECEIVED RESPONSE:', {
+        count: response.data.count,
+        total: response.data.total,
+        revenuesLength: response.data.revenues?.length,
+        fullResponse: response.data
+      });
+      
       const revenueData = response.data.revenues || [];
+      console.log('✅ Setting', revenueData.length, 'revenues in state');
+      
       setRevenues(revenueData);
       calculateStats(revenueData);
     } catch (error) {
-      console.error(error);
+      console.error('❌ Error fetching revenues:', error);
       toast.error("Failed to fetch earnings data");
     } finally {
       setLoading(false);
@@ -50,6 +63,9 @@ const EarningsReport = () => {
   };
 
   const calculateStats = (revenueData) => {
+    console.log('calculateStats - Revenue data count:', revenueData.length);
+    console.log('calculateStats - Revenue data:', revenueData);
+    
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -57,6 +73,7 @@ const EarningsReport = () => {
     const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
     const totalEarnings = revenueData.reduce((sum, rev) => sum + (rev.hallOwnerCommission || 0), 0);
+    console.log('calculateStats - Total Earnings:', totalEarnings);
     
     const thisMonthEarnings = revenueData
       .filter(rev => {
@@ -243,7 +260,7 @@ const EarningsReport = () => {
       
       // Prepare table data
       const tableData = revenues.map(revenue => [
-        revenue.booking?._id?.slice(-8).toUpperCase() || 'N/A',
+        revenue.booking?.toString().slice(-8).toUpperCase() || revenue.booking || 'N/A',
         revenue.hallName,
         formatDate(revenue.date),
         `Rs. ${revenue.hallOwnerCommission?.toLocaleString('en-IN')}`,
@@ -306,7 +323,7 @@ const EarningsReport = () => {
       
       // Prepare table data
       const tableData = revenues.map(revenue => [
-        revenue.booking?._id?.slice(-8).toUpperCase() || 'N/A',
+        revenue.booking?.toString().slice(-8).toUpperCase() || revenue.booking || 'N/A',
         revenue.hallName,
         formatDate(revenue.date),
         revenue.hallOwnerCommission || 0,
@@ -493,7 +510,7 @@ const EarningsReport = () => {
                     const statusInfo = getStatusBadge(revenue.status);
                     return (
                       <tr key={revenue._id}>
-                        <td>{revenue.booking?._id?.slice(-8).toUpperCase() || 'N/A'}</td>
+                        <td>{revenue.booking?.toString().slice(-8).toUpperCase() || revenue.booking || 'N/A'}</td>
                         <td>{revenue.hallName}</td>
                         <td>{formatDate(revenue.date)}</td>
                         <td>₹{revenue.hallOwnerCommission?.toLocaleString('en-IN')}</td>

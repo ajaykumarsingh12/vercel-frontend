@@ -13,7 +13,8 @@ const PrivateRoute = ({ children, allowedRoles = [] }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    // Save the current location so we can redirect back after login
+    return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {

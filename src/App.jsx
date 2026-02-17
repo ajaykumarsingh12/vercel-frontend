@@ -12,6 +12,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/commons/Navbar";
 import Footer from "./components/commons/Footer";
 import ScrollToTop from "./components/commons/ScrollToTop";
+import Preloader from "./components/commons/Preloader";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -38,6 +39,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <Router>
+          <Preloader />
           <div className="app">
             <Navbar />
             <main className="main-content">
