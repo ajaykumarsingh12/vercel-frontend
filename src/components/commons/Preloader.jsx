@@ -8,7 +8,7 @@ const Preloader = () => {
     // Hide preloader after page loads
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // 2 seconds
+    }, 2500); // 2 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -23,7 +23,7 @@ const Preloader = () => {
         
         {/* Loading Text */}
         <div className="preloader-text">
-          <h2>BookMyHall</h2>
+          {/* <h2>BookMyHall</h2> */}
           <p>Loading<span className="dots"></span></p>
         </div>
       </div>
