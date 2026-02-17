@@ -23,6 +23,7 @@ const Login = () => {
   const [sessionId, setSessionId] = useState(null); // Session ID for role storage
   const [showSocialLoginModal, setShowSocialLoginModal] = useState(false); // Modal for social login
   const [socialLoginType, setSocialLoginType] = useState("google"); // Track which social login (google or facebook)
+  const [fbReady, setFbReady] = useState(false); // Track if Facebook SDK is ready
   const { login, verifyEmailExists, resetPassword, googleLogin, facebookLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,6 +82,8 @@ const Login = () => {
         xfbml: true,
         version: 'v18.0'
       });
+      // Set FB as ready after initialization
+      setFbReady(true);
     };
 
     // Load Facebook SDK script
@@ -157,41 +160,21 @@ const Login = () => {
   };
 
   const handleFacebookLogin = () => {
-    if (!window.FB) {
-      toast.error("Facebook SDK not loaded. Please refresh the page.");
+    if (!fbReady || !window.FB) {
+      toast.error("Facebook SDK is still loading. Please wait a moment and try again.");
       return;
     }
 
-    // Wait for FB to be fully initialized
-    if (typeof window.FB.getLoginStatus === 'function') {
-      window.FB.login(function(response) {
-        if (response.authResponse) {
-          // User logged in successfully
-          handleFacebookResponse(response.authResponse);
-        } else {
-          toast.error('Facebook login cancelled');
-        }
-      }, {
-        scope: 'public_profile,email'
-      });
-    } else {
-      // FB SDK not fully initialized yet, wait a bit
-      setTimeout(() => {
-        if (window.FB && typeof window.FB.login === 'function') {
-          window.FB.login(function(response) {
-            if (response.authResponse) {
-              handleFacebookResponse(response.authResponse);
-            } else {
-              toast.error('Facebook login cancelled');
-            }
-          }, {
-            scope: 'public_profile,email'
-          });
-        } else {
-          toast.error("Facebook SDK not ready. Please try again.");
-        }
-      }, 1000);
-    }
+    window.FB.login(function(response) {
+      if (response.authResponse) {
+        // User logged in successfully
+        handleFacebookResponse(response.authResponse);
+      } else {
+        toast.error('Facebook login cancelled');
+      }
+    }, {
+      scope: 'public_profile,email'
+    });
     
     // Close modal
     setShowSocialLoginModal(false);
