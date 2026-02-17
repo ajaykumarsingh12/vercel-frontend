@@ -36,6 +36,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataDeletion from "./pages/DataDeletion";
 import "./styles/custom.css";
 
+// Facebook privacy pages deployed
+
 function App() {
   return (
     <AuthProvider>
