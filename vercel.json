@@ -1,5 +1,19 @@
 {
   "version": 2,
+  "routes": [
+    {
+      "src": "/privacy-policy.html",
+      "dest": "/privacy-policy.html"
+    },
+    {
+      "src": "/terms.html",
+      "dest": "/terms.html"
+    },
+    {
+      "src": "/data-deletion.html",
+      "dest": "/data-deletion.html"
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
