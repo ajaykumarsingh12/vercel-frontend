@@ -32,6 +32,8 @@ import AddHall from "./pages/hallowner/AddHall";
 import EditHall from "./pages/hallowner/EditHall";
 import EditProfile from "./pages/hallowner/EditProfile";
 import EarningsReport from "./pages/hallowner/EarningsReport";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import DataDeletion from "./pages/DataDeletion";
 import "./styles/custom.css";
 
 function App() {
@@ -47,6 +49,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/data-deletion" element={<DataDeletion />} />
+                <Route path="/terms" element={<PrivacyPolicy />} />
                 {/* Reset password route removed - forgot password feature disabled */}
                 <Route path="/halls" element={<Halls />} />
                 <Route path="/halls/:id" element={<HallDetail />} />

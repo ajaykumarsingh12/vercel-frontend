@@ -38,34 +38,19 @@ const EarningsReport = () => {
     try {
       setLoading(true);
       const timestamp = new Date().getTime();
-      
-      console.log('📡 Fetching from /api/owner-revenue/latest...');
       const response = await axios.get(`/api/owner-revenue/latest?t=${timestamp}`);
-      
-      console.log('� RECEIVED RESPONSE:', {
-        count: response.data.count,
-        total: response.data.total,
-        revenuesLength: response.data.revenues?.length,
-        fullResponse: response.data
-      });
-      
       const revenueData = response.data.revenues || [];
-      console.log('✅ Setting', revenueData.length, 'revenues in state');
-      
       setRevenues(revenueData);
       calculateStats(revenueData);
     } catch (error) {
-      console.error('❌ Error fetching revenues:', error);
+      console.error('Error fetching revenues:', error);
       toast.error("Failed to fetch earnings data");
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateStats = (revenueData) => {
-    console.log('calculateStats - Revenue data count:', revenueData.length);
-    console.log('calculateStats - Revenue data:', revenueData);
-    
+  const calculateStats = (revenueData) => {   
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -73,7 +58,6 @@ const EarningsReport = () => {
     const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
     const totalEarnings = revenueData.reduce((sum, rev) => sum + (rev.hallOwnerCommission || 0), 0);
-    console.log('calculateStats - Total Earnings:', totalEarnings);
     
     const thisMonthEarnings = revenueData
       .filter(rev => {
