@@ -309,8 +309,7 @@ export const AuthProvider = ({ children }) => {
 
   const facebookLogin = async (accessToken, role = "user", sessionId = null) => {
     try {
-      console.log('🔵 Sending to backend:', { accessToken, role, sessionId });
-      const response = await axios.post(
+        const response = await axios.post(
         "/api/auth/facebook",
         { accessToken, role, sessionId }
       );
@@ -324,7 +323,9 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user: userData };
     } catch (error) {
-      console.error(error);
+      console.error('🔴 Facebook login error:', error);
+      console.error('🔴 Error response:', error.response?.data);
+      console.error('🔴 Error status:', error.response?.status);
       return {
         success: false,
         message: error.response?.data?.message || "Facebook login failed",
