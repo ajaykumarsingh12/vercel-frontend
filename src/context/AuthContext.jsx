@@ -309,6 +309,7 @@ export const AuthProvider = ({ children }) => {
 
   const facebookLogin = async (accessToken, role = "user", sessionId = null) => {
     try {
+      console.log('🔵 Sending to backend:', { accessToken, role, sessionId });
       const response = await axios.post(
         "/api/auth/facebook",
         { accessToken, role, sessionId }
