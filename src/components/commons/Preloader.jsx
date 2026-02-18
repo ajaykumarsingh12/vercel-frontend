@@ -24,7 +24,7 @@ const Preloader = () => {
         {/* Loading Text */}
         <div className="preloader-text">
           {/* <h2>BookMyHall</h2> */}
-          <p>Loading<span className="dots"></span></p>
+          <p>Loading...</p>
         </div>
       </div>
     </div>
