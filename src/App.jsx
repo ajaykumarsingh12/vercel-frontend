@@ -23,6 +23,7 @@ import Reviews from "./pages/Reviews";
 import Favorites from "./pages/user/Favorites";
 import UserEditProfile from "./pages/user/EditProfile";
 import Payment from "./pages/Payment";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditProfile from "./pages/admin/EditProfile";
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
                 {/* Reset password route removed - forgot password feature disabled */}
                 <Route path="/halls" element={<Halls />} />
                 <Route path="/halls/:id" element={<HallDetail />} />
