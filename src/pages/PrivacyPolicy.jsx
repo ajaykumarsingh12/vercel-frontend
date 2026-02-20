@@ -119,7 +119,7 @@ const PrivacyPolicy = () => {
           <h2>10. Contact Us</h2>
           <p>If you have any questions about this Privacy Policy, please contact us:</p>
           <ul>
-            <li><strong>Email:</strong> <a href="mailto:support@bookmyhall.com">support@bookmyhall.com</a></li>
+            <li><strong>Email:</strong> <a href="mailto:ajaykumarsingh5963@gmail.com">support@bookmyhall.com</a></li>
             <li><strong>Phone:</strong> +91 8081721560</li>
             <li><strong>Address:</strong> Mumbai, India</li>
           </ul>
