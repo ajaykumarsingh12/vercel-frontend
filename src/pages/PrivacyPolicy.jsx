@@ -66,7 +66,7 @@ const PrivacyPolicy = () => {
             </li>
             <li>
               <strong>Option 2:</strong> Contact us directly at{' '}
-              <a href="mailto:support@bookmyhall.com">support@bookmyhall.com</a> 
+              <a href="ajaykumarsingh5963@gmail.com">support@bookmyhall.com</a> 
               {' '}and request account deletion
             </li>
             <li>
