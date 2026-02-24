@@ -2979,7 +2979,7 @@
 .hall-view-toggle {
   display: flex;
   background: var(--card-bg);
-  border-radius: 0px;
+  border-radius: 8px;
   padding: 0.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--input-border);

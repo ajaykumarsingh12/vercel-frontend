@@ -1071,7 +1071,8 @@ const HallDetail = () => {
                 </div>
                 <p className="review-text">{review.comment}</p>
                 {review.isVerified && (
-                  <span className="verified-badge">✓ Verified Booking</span>
+                  // <span className="verified-badge">✓ Verified Booking</span>
+                  <b>✓ Verified Booking</b>
                 )}
               </div>
             ))
