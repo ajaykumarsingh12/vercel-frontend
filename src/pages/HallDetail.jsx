@@ -49,6 +49,44 @@ const HallDetail = () => {
   const [availabilitySlots, setAvailabilitySlots] = useState([]); // Slots from hallalloteds collection
   const [showAvailabilityResults, setShowAvailabilityResults] = useState(false); // Control visibility of results
 
+  // Gallery state
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const imageLabels = [
+    "Main Hall", "Stage", "Seating", "Dining Area",
+    "Parking", "Outside View", "Washroom",
+  ];
+
+  const openLightbox = (index) => {
+    setActiveImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => setLightboxOpen(false);
+
+  const prevImage = () =>
+    setActiveImageIndex((i) => (i - 1 + (hall?.images?.length || 1)) % (hall?.images?.length || 1));
+
+  const prevImageLightbox = (e) => { e.stopPropagation(); prevImage(); };
+
+  const nextImage = () =>
+    setActiveImageIndex((i) => (i + 1) % (hall?.images?.length || 1));
+
+  const nextImageLightbox = (e) => { e.stopPropagation(); nextImage(); };
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") prevImage();
+      if (e.key === "ArrowRight") nextImage();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxOpen, hall?.images?.length]);
+
   // Helper function to get correct image URL (handles both Cloudinary and local paths)
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "/placeholder-image.png";
@@ -335,150 +373,90 @@ const HallDetail = () => {
   if (loading) return <Loader />;
   if (!hall) return <p>Hall not found</p>;
 
+  // Pre-compute processed availability outside JSX to avoid IIFE pattern
+  const processedAvailability = availabilitySlots.map(slot => {
+    const slotDate = new Date(slot.allotmentDate);
+    const today = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
+    const justSlotDate = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate());
+
+    if (justSlotDate < today) return { ...slot, isPast: true };
+
+    if (justSlotDate.getTime() === today.getTime()) {
+      const [hours, minutes] = slot.endTime.split(':');
+      const slotEndDate = new Date(justSlotDate.getFullYear(), justSlotDate.getMonth(), justSlotDate.getDate(), parseInt(hours), parseInt(minutes));
+      if (slotEndDate <= currentTime) return { ...slot, isPast: true };
+    }
+
+    const isBooked = slot.status !== 'available' || !slot.isAvailabilitySlot;
+    return { ...slot, isBooked, bookingStatus: slot.status, isPast: false, date: slot.allotmentDate };
+  }).filter(slot => !slot.isPast);
+
+  const slotsForSelectedDate = bookingData.bookingDate
+    ? processedAvailability.filter(s => new Date(s.allotmentDate).toISOString().split('T')[0] === bookingData.bookingDate)
+    : [];
+
   return (
     <div className="hall-detail">
       <div className="hall-detail-content">
+
         <div className="hall-images">
           {hall.images && hall.images.length > 0 ? (
-            <div className="image-upload-section">
-              <h3>Hall Photos</h3>
-
-              {/* Main Hall Photo (Cover Image) */}
-              {hall.images[0] && (
-                <div className="image-display-group">
-                  <label>Main Hall Photo (Cover Image)</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[0])}
-                      alt={`${hall.name} - Main Hall Photo`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
+            <div className="gallery-wrapper">
+              {/* Hero Image */}
+              <div className="gallery-hero" onClick={() => openLightbox(activeImageIndex)}>
+                <img
+                  src={getImageUrl(hall.images[activeImageIndex])}
+                  alt={`${hall.name} - ${imageLabels[activeImageIndex] || "Photo"}`}
+                  className="gallery-hero-img"
+                  onError={(e) => { e.target.src = "/placeholder-image.png"; }}
+                />
+                <div className="gallery-hero-overlay">
+                  <span className="gallery-label">{imageLabels[activeImageIndex] || `Photo ${activeImageIndex + 1}`}</span>
+                  <span className="gallery-expand-hint">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                    </svg>
+                    View Fullscreen
+                  </span>
                 </div>
-              )}
+                {/* Prev/Next on hero */}
+                {hall.images.length > 1 && (
+                  <>
+                    <button className="gallery-nav gallery-nav-prev" onClick={(e) => { e.stopPropagation(); prevImage(); }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button className="gallery-nav gallery-nav-next" onClick={(e) => { e.stopPropagation(); nextImage(); }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                  </>
+                )}
+                <div className="gallery-counter">{activeImageIndex + 1} / {hall.images.length}</div>
+              </div>
 
-              {/* Stage Photo */}
-              {hall.images[1] && (
-                <div className="image-display-group">
-                  <label>Stage Photo</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[1])}
-                      alt={`${hall.name} - Stage Photo`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Seating Arrangement */}
-              {hall.images[2] && (
-                <div className="image-display-group">
-                  <label>Seating Arrangement</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[2])}
-                      alt={`${hall.name} - Seating Arrangement`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Dining Area */}
-              {hall.images[3] && (
-                <div className="image-display-group">
-                  <label>Dining Area</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[3])}
-                      alt={`${hall.name} - Dining Area`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Parking Area */}
-              {hall.images[4] && (
-                <div className="image-display-group">
-                  <label>Parking Area</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[4])}
-                      alt={`${hall.name} - Parking Area`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Outside View */}
-              {hall.images[5] && (
-                <div className="image-display-group">
-                  <label>Outside View</label>
-                  <div className="image-display-container">
-                    <img
-                      src={getImageUrl(hall.images[5])}
-                      alt={`${hall.name} - Outside View`}
-                      className="display-image"
-                      onError={(e) => {
-                        e.target.src = "/placeholder-image.png"; // fallback
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Washroom Photos */}
-              {hall.images.length > 6 && (
-                <div className="image-display-group">
-                  <label>Washroom Photos</label>
-                  <div className="image-gallery">
-                    {hall.images.slice(6).map((image, index) => (
-                      <div key={index} className="gallery-item">
-                        <img
-                          src={getImageUrl(image)}
-                          alt={`${hall.name} - Washroom ${index + 1}`}
-                          className="gallery-image"
-                          onError={(e) => {
-                            e.target.src = "/placeholder-image.png"; // fallback
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
+              {/* Thumbnail Strip */}
+              {hall.images.length > 1 && (
+                <div className="gallery-thumbs">
+                  {hall.images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      className={`gallery-thumb ${idx === activeImageIndex ? "active" : ""}`}
+                      onClick={() => setActiveImageIndex(idx)}
+                      title={imageLabels[idx] || `Photo ${idx + 1}`}
+                    >
+                      <img
+                        src={getImageUrl(img)}
+                        alt={imageLabels[idx] || `Photo ${idx + 1}`}
+                        onError={(e) => { e.target.src = "/placeholder-image.png"; }}
+                      />
+                      <span className="thumb-label">{imageLabels[idx] || `Photo ${idx + 1}`}</span>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
           ) : (
             <div className="no-image">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                 <polyline points="21 15 16 10 5 21"></polyline>
@@ -487,6 +465,33 @@ const HallDetail = () => {
             </div>
           )}
         </div>
+
+        {/* Lightbox */}
+        {lightboxOpen && hall.images && (
+          <div className="lightbox-overlay" onClick={closeLightbox}>
+            <button className="lightbox-close" onClick={closeLightbox}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <button className="lightbox-nav lightbox-prev" onClick={prevImageLightbox}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+              <img
+                src={getImageUrl(hall.images[activeImageIndex])}
+                alt={`${hall.name} - ${imageLabels[activeImageIndex] || "Photo"}`}
+                className="lightbox-img"
+                onError={(e) => { e.target.src = "/placeholder-image.png"; }}
+              />
+              <div className="lightbox-caption">
+                <span>{imageLabels[activeImageIndex] || `Photo ${activeImageIndex + 1}`}</span>
+                <span className="lightbox-counter">{activeImageIndex + 1} / {hall.images.length}</span>
+              </div>
+            </div>
+            <button className="lightbox-nav lightbox-next" onClick={nextImageLightbox}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        )}
 
         <div className="hall-info-card">
           {/* Header Section */}
@@ -736,67 +741,10 @@ const HallDetail = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Hall Availability Carousel Section */}
-        {availabilitySlots && (
-          (() => {
-            // console.log('Processing availability slots:', availabilitySlots.length);
-            
-            const processedAvailability = availabilitySlots.map(slot => {
-              const slotDate = new Date(slot.allotmentDate);
-
-              // Set both to midnight to compare only dates
-              const today = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
-              const justSlotDate = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate());
-
-              // console.log('Slot date:', justSlotDate, 'Today:', today, 'Slot:', slot);
-
-              // If slot date is before today, mark as past
-              if (justSlotDate < today) {
-                // console.log('Slot marked as past (date before today)');
-                return { ...slot, isPast: true };
-              }
-
-              // If slot date is today, check if end time has passed
-              if (justSlotDate.getTime() === today.getTime()) {
-                const [hours, minutes] = slot.endTime.split(':');
-                const slotEndDate = new Date(justSlotDate.getFullYear(), justSlotDate.getMonth(), justSlotDate.getDate(), parseInt(hours), parseInt(minutes));
-
-                // Only mark as past if end time has passed
-                if (slotEndDate <= currentTime) {
-                  // console.log('Slot marked as past (end time passed)');
-                  return { ...slot, isPast: true };
-                }
-              }
-
-              // Determine if slot is booked based on status and isAvailabilitySlot flag
-              const isBooked = slot.status !== 'available' || !slot.isAvailabilitySlot;
-              const bookingStatus = slot.status;
-
-              return {
-                ...slot,
-                isBooked,
-                bookingStatus,
-                isPast: false,
-                // Convert allotmentDate to date for compatibility with existing code
-                date: slot.allotmentDate
-              };
-            }).filter(slot => {
-              // Only filter out past slots
-              // Show both available and booked slots (including completed ones)
-              const keep = !slot.isPast;
-              if (!keep) {
-                // console.log('Filtering out past slot:', slot);
-              }
-              return keep;
-            });
-
-            // console.log('Processed availability count:', processedAvailability.length);
-            // console.log('Available slots:', processedAvailability.filter(s => !s.isBooked).length);
-            // console.log('Booked slots:', processedAvailability.filter(s => s.isBooked).length);
-
-            return (
-              <div className={`availability-carousel-detail ${processedAvailability.length === 0 ? 'empty' : ''}`}>
+      {/* Hall Availability Section */}
+      <div className={`availability-carousel-detail ${processedAvailability.length === 0 ? 'empty' : ''}`}>
                 {/* IRCTC-Style Date Selection Form */}
                 <div className="booking-form-irctc">
                   <div className="form-header-irctc">
@@ -874,18 +822,9 @@ const HallDetail = () => {
                           </h3>
                           <p className="section-subtitle-main">
                             Select an available time slot below to reserve this hall instantly.
-                            {processedAvailability.filter(s => {
-                              const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
-                              return slotDate === bookingData.bookingDate;
-                            }).length > 0 && (
+                            {slotsForSelectedDate.length > 0 && (
                               <span className="availability-stats">
-                                {' '}({processedAvailability.filter(s => {
-                                  const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
-                                  return slotDate === bookingData.bookingDate && !s.isBooked;
-                                }).length} available, {processedAvailability.filter(s => {
-                                  const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
-                                  return slotDate === bookingData.bookingDate && s.isBooked;
-                                }).length} booked)
+                                {' '}({slotsForSelectedDate.filter(s => !s.isBooked).length} available, {slotsForSelectedDate.filter(s => s.isBooked).length} booked)
                               </span>
                             )}
                           </p>
@@ -893,16 +832,9 @@ const HallDetail = () => {
                       </div>
                     </div>
 
-                    {(() => {
-                      // Filter slots for selected date
-                      const slotsForDate = processedAvailability.filter(s => {
-                        const slotDate = new Date(s.allotmentDate).toISOString().split('T')[0];
-                        return slotDate === bookingData.bookingDate;
-                      });
-
-                      return slotsForDate.length > 0 ? (
+                    {slotsForSelectedDate.length > 0 ? (
                         <div className="slots-grid-scrollable">
-                          {slotsForDate.map((slot, index) => (
+                          {slotsForSelectedDate.map((slot, index) => (
                             <div
                               key={index}
                               className={`slot-card-irctc ${slot.isBooked ? 'booked' : 'available'}`}
@@ -931,16 +863,11 @@ const HallDetail = () => {
                                   )}
                                 </div>
                               </div>
-                              
                               {slot.isBooked && slot.user && (
-                                <div className="slot-booking-details">
-                                </div>
+                                <div className="slot-booking-details"></div>
                               )}
-
                               {!slot.isBooked && (
-                                <button className="instant-book-btn">
-                                  INSTANT BOOKING →
-                                </button>
+                                <button className="instant-book-btn">INSTANT BOOKING →</button>
                               )}
                             </div>
                           ))}
@@ -964,8 +891,7 @@ const HallDetail = () => {
                             Contact Owner: {hall.owner?.phone || "N/A"}
                           </div>
                         </div>
-                      );
-                    })()}
+                      )}
                   </div>
                 )}
 
@@ -983,11 +909,6 @@ const HallDetail = () => {
                   </div>
                 )}
               </div>
-            );
-
-          })()
-        )}
-      </div>
 
       {/* Reviews Section */}
       <div className="reviews-section">
@@ -1397,7 +1318,7 @@ const HallDetail = () => {
                   </div>
                 )}
 
-                <div className="form-group">
+                {/* <div className="form-group">
                   <label>SPECIAL REQUESTS</label>
                   <div className="textarea-wrapper">
                     <textarea
@@ -1418,7 +1339,7 @@ const HallDetail = () => {
                       </svg>
                     </span>
                   </div>
-                </div>
+                </div> */}
 
                 <button
                   type="submit"

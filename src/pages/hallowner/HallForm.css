@@ -544,7 +544,7 @@
 .slot-card {
   display: grid;
   grid-template-columns: 2fr 1.5fr 1.5fr auto;
-  gap: 1.5rem;
+  gap: 0.5rem;
   padding: 1.25rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
