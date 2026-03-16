@@ -258,7 +258,7 @@ const Payment = () => {
                   )}
                 </p>
               </div>
-              <div className="summary-card">
+              {/* <div className="summary-card">
                 <h3>Refunds</h3>
                 <p className="amount">
                   ₹
@@ -268,7 +268,7 @@ const Payment = () => {
                       .reduce((sum, p) => sum + p.amount, 0),
                   )}
                 </p>
-              </div>
+              </div> */}
             </div>
 
             <div className="history-list">
