@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -48,6 +48,24 @@ const HallDetail = () => {
   const [availabilityView, setAvailabilityView] = useState("carousel"); // carousel or calendar
   const [availabilitySlots, setAvailabilitySlots] = useState([]); // Slots from hallalloteds collection
   const [showAvailabilityResults, setShowAvailabilityResults] = useState(false); // Control visibility of results
+
+  // Rating bars scroll animation — callback ref so observer attaches immediately
+  const [barsVisible, setBarsVisible] = useState(false);
+  const reviewsSectionRef = useRef(null);
+  const reviewsCallbackRef = (node) => {
+    if (!node) return;
+    reviewsSectionRef.current = node;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setBarsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(node);
+  };
 
   // Gallery state
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -140,6 +158,7 @@ const HallDetail = () => {
   useEffect(() => {
     setShowAvailabilityResults(false);
   }, [bookingData.bookingDate]);
+
 
   useEffect(() => {
     if (hall) {
@@ -911,7 +930,7 @@ const HallDetail = () => {
               </div>
 
       {/* Reviews Section */}
-      <div className="reviews-section">
+      <div className="reviews-section" ref={reviewsCallbackRef}>
         <h2>Reviews & Ratings</h2>
         <div className="reviews-summary">
           <div className="rating-overview">
@@ -950,7 +969,7 @@ const HallDetail = () => {
                   <div className="progress-bar">
                     <div
                       className="progress-fill"
-                      style={{ width: `${percentage}%` }}
+                      style={{ width: barsVisible ? `${percentage}%` : "0%" }}
                     ></div>
                   </div>
                   <span className="rating-count">{count}</span>
@@ -970,7 +989,9 @@ const HallDetail = () => {
                   <div className="reviewer-info">
                     <span className="reviewer-name">{review.user?.name}</span>
                     <span className="review-date">
-                      {new Date(review.createdAt).toLocaleDateString()}
+                       {review.booking?.bookingDate
+                        ? new Date(review.booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                        : new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                   <div className="review-rating">

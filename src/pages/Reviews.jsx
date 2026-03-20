@@ -421,7 +421,9 @@ const Reviews = () => {
                 
                 <div className="review-card-footer">
                   <span className="review-card-date">
-                    {new Date(review.createdAt).toLocaleDateString()}
+                    {review.booking?.bookingDate
+                      ? new Date(review.booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                      : new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                   <div className="review-card-actions">
                     <button
