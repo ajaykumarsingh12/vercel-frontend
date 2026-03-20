@@ -2754,7 +2754,7 @@ button:active {
     padding: 12px;
     gap: 12px;
     margin-bottom: 24px;
-    max-width: 600px;
+   width: 100%;
   }
 
   .tabs button {

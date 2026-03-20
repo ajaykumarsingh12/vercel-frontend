@@ -508,7 +508,7 @@
 }
 
 .browse-hall-card__photo-count-badge::before {
-  content: "📷";
+  content: "";
   font-size: 0.7rem;
 }
 
