@@ -343,7 +343,6 @@
   gap: 0.5rem;
   padding: 0.55rem 1.1rem;
   border-radius: 50px;
-  border: 2px solid var(--input-border);
   background: var(--bg-color);
   color: var(--text-color);
   font-weight: 600;
