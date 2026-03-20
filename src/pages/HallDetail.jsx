@@ -563,8 +563,7 @@ const HallDetail = () => {
           </div>
 
           {/* Location Section */}
-          <div className="info-section location-section">
-            <div className="section-icon">
+                 <div className="section-icon">
               <svg
                 width="20"
                 height="20"
@@ -577,8 +576,11 @@ const HallDetail = () => {
                 <circle cx="12" cy="10" r="3" />
               </svg>
             </div>
-            <div className="section-content">
               <h3 className="section-title">Location</h3>
+          <div className="info-section location-section">
+     
+            <div className="section-content">
+            
               <p className="section-text">
                 {hall.location.address}, {hall.location.city},{" "}
                 {hall.location.state} - {hall.location.pincode}

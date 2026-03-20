@@ -296,7 +296,7 @@
 .hall-info-card {
   background: var(--card-bg);
   border-radius: 2px;
-  padding: 0.1rem;
+  padding: 1.2rem;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   border: 1px solid var(--input-border);
   position: sticky;
