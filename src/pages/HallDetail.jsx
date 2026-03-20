@@ -16,6 +16,45 @@ import {
 } from "../utils/calculations";
 import "./HallDetail.css";
 
+
+const REVIEW_LIMIT = 170;
+const ReviewCard = ({ review }) => {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = review.comment?.length > REVIEW_LIMIT;
+  const displayText = isLong && !expanded
+    ? review.comment.slice(0, REVIEW_LIMIT) + "..."
+    : review.comment;
+
+  return (
+    <div className="review-card">
+      <div className="review-header">
+        <div className="reviewer-info">
+          <span className="reviewer-name">{review.user?.name}</span>
+          <span className="review-date">
+            {review.booking?.bookingDate
+              ? new Date(review.booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+              : new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
+        </div>
+        <div className="review-rating">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <span key={star} className={`star ${star <= review.rating ? "filled" : ""}`}>★</span>
+          ))}
+        </div>
+      </div>
+      <p className="review-text">
+        {displayText}
+        {isLong && (
+          <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>
+            {expanded ? " Read less" : " Read more"}
+          </button>
+        )}
+      </p>
+      {review.isVerified && <b>✓ Verified Booking</b>}
+    </div>
+  );
+};
+
 const HallDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -986,34 +1025,7 @@ const HallDetail = () => {
             <p className="no-reviews-text">No reviews yet for this hall.</p>
           ) : (
             reviewsData.reviews.map((review) => (
-              <div key={review._id} className="review-card">
-                <div className="review-header">
-                  <div className="reviewer-info">
-                    <span className="reviewer-name">{review.user?.name}</span>
-                    <span className="review-date">
-                       {review.booking?.bookingDate
-                        ? new Date(review.booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-                        : new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                  <div className="review-rating">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        className={`star ${star <= review.rating ? "filled" : ""
-                          }`}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <p className="review-text">{review.comment}</p>
-                {review.isVerified && (
-                  // <span className="verified-badge">✓ Verified Booking</span>
-                  <b>✓ Verified Booking</b>
-                )}
-              </div>
+              <ReviewCard key={review._id} review={review} />
             ))
           )}
         </div>
