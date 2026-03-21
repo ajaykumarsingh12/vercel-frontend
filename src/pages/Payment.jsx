@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/commons/Loader";
-import PaymentSkeleton from "../components/commons/PaymentSkeleton";
 import { calculateTotalHours, formatCurrency } from "../utils/calculations";
 import "./Payment.css";
 
@@ -47,6 +46,8 @@ const Payment = () => {
   useEffect(() => {
     if (bookingId) {
       fetchBookingDetails();
+      // Preload Razorpay script so it's ready when user clicks Pay
+      loadRazorpayScript();
     } else {
       fetchPaymentHistory();
     }
@@ -79,6 +80,16 @@ const Payment = () => {
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
+      // If already loaded, resolve immediately
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existing) {
+        existing.onload = () => resolve(true);
+        return;
+      }
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
@@ -110,6 +121,13 @@ const Payment = () => {
           return;
         }
 
+        // Map our method IDs to Razorpay method keys
+        const methodMap = {
+          card: "card",
+          upi: "upi",
+          netbanking: "netbanking",
+        };
+
         const options = {
           key: key,
           amount: amount,
@@ -117,6 +135,7 @@ const Payment = () => {
           name: "Wedding Hall Booking",
           description: `Booking for ${booking.hall?.name}`,
           order_id: orderId,
+          method: methodMap[paymentMethod] || undefined,
           handler: async function (response) {
             try {
               // Verify payment with backend
@@ -222,7 +241,7 @@ const Payment = () => {
     },
   ];
 
-  if (loading) return <PaymentSkeleton />;
+  if (loading) return <Loader />;
 
   if (!bookingId) {
     // Payment History View
@@ -258,17 +277,6 @@ const Payment = () => {
                   )}
                 </p>
               </div>
-              {/* <div className="summary-card">
-                <h3>Refunds</h3>
-                <p className="amount">
-                  ₹
-                  {Math.round(
-                    paymentHistory
-                      .filter((p) => p.status === "refunded")
-                      .reduce((sum, p) => sum + p.amount, 0),
-                  )}
-                </p>
-              </div> */}
             </div>
 
             <div className="history-list">

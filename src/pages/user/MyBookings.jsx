@@ -3,15 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import BookingCardSkeleton from "../../components/commons/BookingCardSkeleton";
+import { useAuth } from "../../context/AuthContext";
 import "./MyBookings.css";
 
 const MyBookings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [filterLoading, setFilterLoading] = useState(false);
   const [reviewedBookingIds, setReviewedBookingIds] = useState(new Set());
+  const [payingBookingId, setPayingBookingId] = useState(null);
 
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewBooking, setReviewBooking] = useState(null);
@@ -24,6 +27,7 @@ const MyBookings = () => {
   useEffect(() => {
     fetchBookings();
     fetchReviewedBookings();
+    loadRazorpayScript(); // preload so modal opens instantly
   }, []);
 
   const fetchBookings = async () => {
@@ -52,8 +56,101 @@ const MyBookings = () => {
     }
   };
 
-  const handlePayment = (bookingId) => {
-    navigate(`/payment?booking=${bookingId}`);
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) { resolve(true); return; }
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existing) { existing.onload = () => resolve(true); return; }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async (booking) => {
+    setPayingBookingId(booking._id);
+    try {
+      const initiateResponse = await axios.post("/api/payments/initiate", {
+        bookingId: booking._id,
+        paymentMethod: "card",
+      });
+
+      const { orderId, amount, currency, key, mode } = initiateResponse.data;
+
+      if (mode === "razorpay") {
+        const scriptLoaded = await loadRazorpayScript();
+        if (!scriptLoaded) {
+          toast.error("Failed to load payment gateway. Please try again.");
+          setPayingBookingId(null);
+          return;
+        }
+
+        const options = {
+          key,
+          amount,
+          currency,
+          name: "Wedding Hall Booking",
+          description: `Booking for ${booking.hall?.name}`,
+          order_id: orderId,
+          handler: async function (response) {
+            try {
+              await axios.post("/api/payments/verify", {
+                bookingId: booking._id,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+              });
+              toast.success("Payment successful! Your booking is confirmed.");
+              fetchBookings();
+            } catch (error) {
+              console.error(error);
+              toast.error("Payment verification failed. Please contact support.");
+            } finally {
+              setPayingBookingId(null);
+            }
+          },
+          prefill: {
+            name: user?.name || "",
+            email: user?.email || "",
+            contact: user?.phone || "",
+          },
+          theme: { color: "#d4af37" },
+          modal: {
+            ondismiss: function () {
+              setPayingBookingId(null);
+              toast.info("Payment cancelled");
+            },
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      } else {
+        // simulated fallback
+        setTimeout(async () => {
+          try {
+            await axios.post("/api/payments/verify", {
+              bookingId: booking._id,
+              paymentId: `pay_${Date.now()}`,
+              orderId,
+            });
+            toast.success("Payment successful! Your booking is confirmed.");
+            fetchBookings();
+          } catch (error) {
+            console.error(error);
+            toast.error("Payment verification failed");
+          } finally {
+            setPayingBookingId(null);
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Payment initiation failed");
+      setPayingBookingId(null);
+    }
   };
 
   const openReviewModal = (booking) => {
@@ -354,14 +451,16 @@ const MyBookings = () => {
                 {booking.status === "pending" && booking.paymentStatus === "pending" && (
                   <>
                     <button
-                      onClick={() => handlePayment(booking._id)}
+                      onClick={() => handlePayment(booking)}
                       className="btn btn-pay-now"
+                      disabled={payingBookingId === booking._id}
                     >
-                      🔒 Pay Now 
+                      {payingBookingId === booking._id ? "Processing..." : "🔒 Pay Now"}
                     </button>
                     <button
                       onClick={() => handleCancel(booking._id)}
                       className="btn btn-cancel"
+                      disabled={payingBookingId === booking._id}
                     >
                       Cancel
                     </button>
