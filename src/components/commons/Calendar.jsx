@@ -4,7 +4,6 @@ import "./Calendar.css";
 // Simple toast notification system
 const toast = {
   error: (message) => {
-    // Create a simple toast notification
     const toastEl = document.createElement('div');
     toastEl.className = 'calendar-toast error';
     toastEl.textContent = message;
@@ -22,16 +21,74 @@ const toast = {
       font-weight: 500;
       animation: slideIn 0.3s ease;
     `;
-
     document.body.appendChild(toastEl);
-
     setTimeout(() => {
       toastEl.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => {
-        document.body.removeChild(toastEl);
-      }, 300);
+      setTimeout(() => document.body.removeChild(toastEl), 300);
     }, 3000);
   }
+};
+
+// Bottom sheet modal for mobile day slots
+const DaySlotSheet = ({ date, slots, bookings, onClose, onSlotClick, onSlotCreate, formatTime }) => {
+  const allSlots = [
+    ...slots.map(s => ({ ...s, _type: 'available' })),
+    ...bookings.map(s => ({ ...s, _type: 'booked' })),
+  ].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+  const displayDate = new Date(date + 'T00:00:00').toLocaleDateString('en-IN', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  return (
+    <div className="day-sheet-overlay" onClick={onClose}>
+      <div className="day-sheet" onClick={e => e.stopPropagation()}>
+        <div className="day-sheet-handle" />
+        <div className="day-sheet-header">
+          <div>
+            <div className="day-sheet-title">{displayDate}</div>
+            <div className="day-sheet-subtitle">
+              {slots.length} available &bull; {bookings.length} booked
+            </div>
+          </div>
+          <button className="day-sheet-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="day-sheet-body">
+          {allSlots.length === 0 ? (
+            <div className="day-sheet-empty">No slots for this day</div>
+          ) : (
+            allSlots.map((slot, idx) => (
+              <div
+                key={idx}
+                className={`day-sheet-slot ${slot._type}`}
+                onClick={() => { onSlotClick && onSlotClick(slot); onClose(); }}
+              >
+                <div className="day-sheet-slot-dot" />
+                <div className="day-sheet-slot-info">
+                  <span className="day-sheet-slot-time">
+                    {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
+                  </span>
+                  <span className="day-sheet-slot-badge">
+                    {slot._type === 'available' ? 'Available' : (slot.status || 'Booked')}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="day-sheet-footer">
+          <button
+            className="day-sheet-add-btn"
+            onClick={() => { onSlotCreate && onSlotCreate(date); onClose(); }}
+          >
+            + Add Slot
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const Calendar = ({
@@ -44,8 +101,16 @@ const Calendar = ({
   selectedDate
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState("month"); // month, week, day
+  const [view, setView] = useState("month");
   const [calendarDays, setCalendarDays] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [sheetData, setSheetData] = useState(null); // { date, slots, bookings }
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Sync scroll between weekdays and days
   useEffect(() => {
@@ -285,6 +350,16 @@ const Calendar = ({
                     return;
                   }
 
+                  // On mobile, open bottom sheet instead of selecting date
+                  if (isMobile) {
+                    setSheetData({
+                      date: formatDate(day),
+                      slots: daySlots,
+                      bookings: dayBookings,
+                    });
+                    return;
+                  }
+
                   const formattedDate = formatDate(day);
                   onDateSelect && onDateSelect(formattedDate);
                 }}
@@ -306,37 +381,50 @@ const Calendar = ({
                 }}
               >
                 <div className="day-number">{day.getDate()}</div>
-                <div className="day-slots">
-                  {daySlots.slice(0, 2).map((slot, idx) => (
-                    <div
-                      key={idx}
-                      className="slot-indicator available"
-                      title={`Available: ${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSlotClick && onSlotClick(slot);
-                      }}
-                    >
-                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                    </div>
-                  ))}
-                  {dayBookings.slice(0, 2).map((booking, idx) => (
-                    <div
-                      key={`booking-${idx}`}
-                      className={`slot-indicator booked ${booking.status || 'confirmed'}`}
-                      title={`Booked: ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSlotClick && onSlotClick(booking);
-                      }}
-                    >
-                      {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-                    </div>
-                  ))}
-                  {(daySlots.length + dayBookings.length) > 4 && (
-                    <div className="more-slots">+{(daySlots.length + dayBookings.length) - 4}</div>
-                  )}
-                </div>
+
+                {/* MOBILE: dot indicators */}
+                {isMobile ? (
+                  <div className="day-dots">
+                    {daySlots.length > 0 && (
+                      <span className="day-dot available" title={`${daySlots.length} available`} />
+                    )}
+                    {dayBookings.length > 0 && (
+                      <span className="day-dot booked" title={`${dayBookings.length} booked`} />
+                    )}
+                    {(daySlots.length + dayBookings.length) > 0 && (
+                      <span className="day-dot-count">
+                        {daySlots.length + dayBookings.length}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  /* DESKTOP: full slot text */
+                  <div className="day-slots">
+                    {daySlots.slice(0, 2).map((slot, idx) => (
+                      <div
+                        key={idx}
+                        className="slot-indicator available"
+                        title={`Available: ${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`}
+                        onClick={(e) => { e.stopPropagation(); onSlotClick && onSlotClick(slot); }}
+                      >
+                        {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                      </div>
+                    ))}
+                    {dayBookings.slice(0, 2).map((booking, idx) => (
+                      <div
+                        key={`booking-${idx}`}
+                        className={`slot-indicator booked ${booking.status || 'confirmed'}`}
+                        title={`Booked: ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}`}
+                        onClick={(e) => { e.stopPropagation(); onSlotClick && onSlotClick(booking); }}
+                      >
+                        {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                      </div>
+                    ))}
+                    {(daySlots.length + dayBookings.length) > 4 && (
+                      <div className="more-slots">+{(daySlots.length + dayBookings.length) - 4}</div>
+                    )}
+                  </div>
+                )}
                 {isCurrentMonth && !isPastDate(day) && hasAvailableTime && (
                   <button
                     className="add-slot-btn"
@@ -577,6 +665,19 @@ const Calendar = ({
             <span>Cancelled Bookings</span>
           </div>
         </div>
+      )}
+
+      {/* Mobile bottom sheet */}
+      {sheetData && (
+        <DaySlotSheet
+          date={sheetData.date}
+          slots={sheetData.slots}
+          bookings={sheetData.bookings}
+          onClose={() => setSheetData(null)}
+          onSlotClick={onSlotClick}
+          onSlotCreate={onSlotCreate}
+          formatTime={formatTime}
+        />
       )}
     </div>
   );
