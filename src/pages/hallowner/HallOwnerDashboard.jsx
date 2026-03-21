@@ -1163,9 +1163,7 @@ const HallOwnerDashboard = () => {
                                             {slot.isRecurring && (
                                               <span className="slot-row-recurring">↻ Recurring</span>
                                             )}
-                                            <div className={`slot-row-status ${isBookedOrNonAvailable ? "booked" : "available"}`}>
-                                              {isBookedOrNonAvailable ? "Booked" : "Available"}
-                                            </div>
+                                            <span className={`slot-row-dot ${isBookedOrNonAvailable ? "booked" : "available"}`} title={isBookedOrNonAvailable ? "Booked" : "Available"} />
                                             <div className="slot-row-actions">
                                               <button
                                                 onClick={() => handleEditSlot(slot)}

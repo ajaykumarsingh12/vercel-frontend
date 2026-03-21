@@ -6482,9 +6482,13 @@
 .slot-tab-btn.active.available .slot-tab-count { background: #dcfce7; color: #16a34a; }
 .slot-tab-btn.active.booked  .slot-tab-count { background: #fee2e2; color: #dc2626; }
 
+[data-theme="dark"] .slot-tab-btn.active.all     { color: #f6c07a; }
+[data-theme="dark"] .slot-tab-btn.active.available { color: #4ade80; }
+[data-theme="dark"] .slot-tab-btn.active.booked  { color: #f87171; }
+
 [data-theme="dark"] .slot-tab-btn.active.all     .slot-tab-count { color: #f6c07a; background: rgba(201,129,58,0.2); }
-[data-theme="dark"] .slot-tab-btn.active.available .slot-tab-count { color: #f6c07a; background: rgba(201,129,58,0.15); }
-[data-theme="dark"] .slot-tab-btn.active.booked  .slot-tab-count { color: #f9a8a8; background: rgba(220,100,100,0.15); }
+[data-theme="dark"] .slot-tab-btn.active.available .slot-tab-count { color: #4ade80; background: rgba(22,163,74,0.15); }
+[data-theme="dark"] .slot-tab-btn.active.booked  .slot-tab-count { color: #f87171; background: rgba(220,100,100,0.15); }
 
 /* Slot tabs responsive fix */
 @media (max-width: 480px) {
@@ -6500,3 +6504,17 @@
     font-size: 0.78rem;
   }
 }
+
+/* Row status dot */
+.slot-row-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.slot-row-dot.available { background: #16a34a; }
+.slot-row-dot.booked    { background: #dc2626; }
+
+[data-theme="dark"] .slot-row-dot.available { background: #4ade80; }
+[data-theme="dark"] .slot-row-dot.booked    { background: #f87171; }
