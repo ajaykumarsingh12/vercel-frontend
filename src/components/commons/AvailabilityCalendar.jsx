@@ -206,49 +206,23 @@ const AvailabilityCalendar = ({ hallId, onSlotSelect, selectedDate, onDateChange
               className={`calendar-day ${isCurrentMonth ? 'current-month' : 'other-month'
                 } ${isToday(day) ? 'today' : ''} ${isSelected(day) ? 'selected' : ''
                 } ${isPastDate(day) ? 'past' : ''} ${hasAvailability ? 'has-availability' : ''
+                } ${isCurrentMonth && !isPastDate(day) && !hasAvailability && hasBookings ? 'fully-booked' : ''
                 }`}
-              title={isPastDate(day) ? 'Cannot select past dates' : ''}
+              title={
+                isPastDate(day) ? 'Cannot select past dates'
+                : hasAvailability ? `${available.length} slot${available.length > 1 ? 's' : ''} available`
+                : hasBookings ? 'Fully booked'
+                : ''
+              }
               onClick={() => handleDateClick(day)}
             >
               <div className="day-number">{day.getDate()}</div>
 
-              {isCurrentMonth && !isPastDate(day) && (
-                <div className="day-slots">
-                  {available.slice(0, 2).map((slot, idx) => (
-                    <div
-                      key={idx}
-                      className="slot-indicator available"
-                      title={`Available: ${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSlotClick(slot);
-                      }}
-                    >
-                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                    </div>
-                  ))}
-
-                  {booked.slice(0, 2).map((booking, idx) => (
-                    <div
-                      key={`booking-${idx}`}
-                      className={`slot-indicator booked ${booking.status}`}
-                      title={`Unavailable: ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}`}
-                    >
-                      {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-                    </div>
-                  ))}
-
-                  {(available.length + booked.length) > 4 && (
-                    <div className="more-slots">
-                      +{(available.length + booked.length) - 4}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {isCurrentMonth && hasAvailability && !isPastDate(day) && (
-                <div className="availability-indicator">
-                  <div className="availability-dot"></div>
+              {/* Dot indicator below date number */}
+              {isCurrentMonth && !isPastDate(day) && (hasAvailability || hasBookings) && (
+                <div className="day-dot-row">
+                  {hasAvailability && <span className="avail-dot green" />}
+                  {!hasAvailability && hasBookings && <span className="avail-dot red" />}
                 </div>
               )}
             </div>
@@ -258,12 +232,12 @@ const AvailabilityCalendar = ({ hallId, onSlotSelect, selectedDate, onDateChange
 
       <div className="calendar-legend">
         <div className="legend-item">
-          <div className="legend-dot available"></div>
+          <span className="avail-dot green" />
           <span>Available</span>
         </div>
         <div className="legend-item">
-          <div className="legend-dot booked"></div>
-          <span>Unavailable</span>
+          <span className="avail-dot red" />
+          <span>Fully Booked</span>
         </div>
         <div className="legend-item">
           <div className="legend-dot today"></div>

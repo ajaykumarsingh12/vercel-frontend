@@ -453,6 +453,15 @@ const HallDetail = () => {
     ? processedAvailability.filter(s => new Date(s.allotmentDate).toISOString().split('T')[0] === bookingData.bookingDate)
     : [];
 
+  // Build a map of date → dot status for CustomDatePicker
+  const dateAvailabilityMap = {};
+  processedAvailability.forEach(slot => {
+    const d = new Date(slot.allotmentDate).toISOString().split('T')[0];
+    if (!dateAvailabilityMap[d]) dateAvailabilityMap[d] = { available: 0, booked: 0 };
+    if (slot.isBooked) dateAvailabilityMap[d].booked++;
+    else dateAvailabilityMap[d].available++;
+  });
+
   return (
     <div className="hall-detail">
       <div className="hall-detail-content">
@@ -829,6 +838,7 @@ const HallDetail = () => {
                           const today = new Date();
                           return today.toISOString().split('T')[0];
                         })()}
+                        dateAvailabilityMap={dateAvailabilityMap}
                       />
                     </div>
                     <button 

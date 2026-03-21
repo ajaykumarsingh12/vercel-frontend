@@ -153,6 +153,7 @@
 .day {
   aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
@@ -162,7 +163,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  min-height: 32px;
+  min-height: 36px;
+  gap: 2px;
 }
 
 .day.empty {
@@ -310,4 +312,129 @@
     width: 16px;
     height: 16px;
   }
+}
+
+/* CSS Tooltip on day hover */
+.day[data-tooltip] {
+  position: relative;
+}
+
+.day[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #f8fafc;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 99999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.day[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #1e293b;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 99999;
+}
+
+.day[data-tooltip]:hover::after,
+.day[data-tooltip]:hover::before {
+  opacity: 1;
+}
+
+/* Keep tooltip inside dropdown on edge days */
+.day:first-child[data-tooltip]::after,
+.day:nth-child(7n+1)[data-tooltip]::after {
+  left: 0;
+  transform: translateX(0);
+}
+
+.day:nth-child(7n)[data-tooltip]::after {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
+[data-theme="dark"] .day[data-tooltip]::after {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+[data-theme="dark"] .day[data-tooltip]::before {
+  border-top-color: #f1f5f9;
+}
+
+/* Availability dot below date number */
+.day-avail-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.day-avail-dot.green {
+  background: #22c55e;
+}
+
+.day-avail-dot.red {
+  background: #ef4444;
+}
+
+.day-avail-dot.grey {
+  background: #cbd5e0;
+}
+
+[data-theme="dark"] .day-avail-dot.grey {
+  background: #4a5568;
+}
+
+/* Subtle tint on available days */
+.day:not(.disabled):not(.selected):not(.empty) .day-avail-dot.green ~ * ,
+.day:has(.day-avail-dot.green):not(.disabled):not(.selected) {
+  /* no extra bg needed — dot is enough */
+}
+
+/* Legend below calendar */
+.date-picker-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 8px 0 2px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 6px;
+}
+
+.date-picker-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #718096;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .date-picker-legend {
+  border-top-color: #4a5568;
+}
+
+[data-theme="dark"] .date-picker-legend-item {
+  color: #a0aec0;
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './CustomDatePicker.css';
 
-const CustomDatePicker = ({ value, onChange, minDate }) => {
+const CustomDatePicker = ({ value, onChange, minDate, dateAvailabilityMap = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : null);
@@ -195,19 +195,57 @@ const CustomDatePicker = ({ value, onChange, minDate }) => {
             <div className="days">
               {days.map((date, index) => {
                 const isPast = isPastDate(date);
+                const dateStr = date ? formatDate(date) : null;
+                const avail = dateStr ? dateAvailabilityMap[dateStr] : null;
+                const hasAvailable = avail && avail.available > 0;
+                const fullyBooked = avail && avail.available === 0 && avail.booked > 0;
+
+                const tooltipText = !date || isPast ? null
+                  : hasAvailable
+                    ? `${avail.available} slot${avail.available > 1 ? 's' : ''} available${avail.booked > 0 ? `, ${avail.booked} booked` : ''}`
+                    : fullyBooked
+                      ? `Fully booked (${avail.booked} slot${avail.booked > 1 ? 's' : ''})`
+                      : Object.keys(dateAvailabilityMap).length > 0
+                        ? 'Not scheduled by owner'
+                        : null;
+
                 return (
                   <div
                     key={index}
                     className={`day ${!date ? 'empty' : ''} ${isToday(date) ? 'today' : ''} ${isSelected(date) ? 'selected' : ''} ${isPast ? 'disabled' : ''}`}
                     onClick={!isPast && date ? () => handleDateClick(date) : undefined}
                     style={{ cursor: isPast ? 'not-allowed' : 'pointer' }}
+                    data-tooltip={tooltipText || undefined}
                   >
                     {date ? date.getDate() : ''}
+                    {date && !isPast && (hasAvailable || fullyBooked) && (
+                      <span className={`day-avail-dot ${hasAvailable ? 'green' : 'red'}`} />
+                    )}
+                    {date && !isPast && !avail && Object.keys(dateAvailabilityMap).length > 0 && (
+                      <span className="day-avail-dot grey" />
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
+
+          {Object.keys(dateAvailabilityMap).length > 0 && (
+            <div className="date-picker-legend">
+              <div className="date-picker-legend-item">
+                <span className="day-avail-dot green" />
+                Available
+              </div>
+              <div className="date-picker-legend-item">
+                <span className="day-avail-dot red" />
+                Fully Booked
+              </div>
+              <div className="date-picker-legend-item">
+                <span className="day-avail-dot grey" />
+                Not Scheduled
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
