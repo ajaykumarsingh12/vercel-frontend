@@ -1413,10 +1413,15 @@
 /* Dot row inside each day cell */
 .day-dots {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 3px;
   margin-top: 4px;
-  flex-wrap: wrap;
+}
+
+.day-dot-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .day-dot {
@@ -1430,11 +1435,16 @@
 .day-dot.booked    { background: #2196f3; }
 
 .day-dot-count {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  color: #555;
-  margin-left: 1px;
+  line-height: 1;
 }
+
+.day-dot-count.available { color: #2e7d32; }
+.day-dot-count.booked    { color: #0d47a1; }
+
+[data-theme="dark"] .day-dot-count.available { color: #86efac; }
+[data-theme="dark"] .day-dot-count.booked    { color: #93c5fd; }
 
 /* Tighter day cells when using dots — all devices */
 .calendar-day {

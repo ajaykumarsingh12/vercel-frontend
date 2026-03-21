@@ -385,14 +385,15 @@ const Calendar = ({
                 {/* Dot indicators for all devices */}
                 <div className="day-dots">
                   {daySlots.length > 0 && (
-                    <span className="day-dot available" title={`${daySlots.length} available`} />
+                    <span className="day-dot-group">
+                      <span className="day-dot available" />
+                      <span className="day-dot-count available">{daySlots.length}</span>
+                    </span>
                   )}
                   {dayBookings.length > 0 && (
-                    <span className="day-dot booked" title={`${dayBookings.length} booked`} />
-                  )}
-                  {(daySlots.length + dayBookings.length) > 0 && (
-                    <span className="day-dot-count">
-                      {daySlots.length + dayBookings.length}
+                    <span className="day-dot-group">
+                      <span className="day-dot booked" />
+                      <span className="day-dot-count booked">{dayBookings.length}</span>
                     </span>
                   )}
                 </div>
