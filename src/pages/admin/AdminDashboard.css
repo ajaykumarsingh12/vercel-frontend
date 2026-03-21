@@ -708,7 +708,7 @@
 /* Enhanced Users Table Styles */
 .users-table-container {
   background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border-radius: 16px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-top: 8px;
@@ -1543,7 +1543,7 @@ color: white;
   .halls-table-container,
   .users-table-container {
     overflow-x: auto;
-    border-radius: 12px;
+    border-radius: 6px;
     margin-top: 16px;
   }
 
