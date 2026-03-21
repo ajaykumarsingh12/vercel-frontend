@@ -439,12 +439,30 @@ const Calendar = ({
       <div className="calendar-week">
         <div className="week-header">
           <div className="time-column-header">Time</div>
-          {weekDays.map((day, index) => (
-            <div key={index} className={`day-header ${isToday(day) ? 'today' : ''}`}>
-              <div className="day-name">{day.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-              <div className="day-date">{day.getDate()}</div>
-            </div>
-          ))}
+          {weekDays.map((day, index) => {
+            const daySlotsCount = getSlotsForDate(day).length;
+            const dayBookingsCount = getBookedSlotsForDate(day).length;
+            return (
+              <div key={index} className={`day-header ${isToday(day) ? 'today' : ''}`}>
+                <div className="day-name">{day.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                <div className="day-date">{day.getDate()}</div>
+                <div className="week-header-dots">
+                  {daySlotsCount > 0 && (
+                    <span className="day-dot-group">
+                      <span className="day-dot available" />
+                      <span className="day-dot-count available">{daySlotsCount}</span>
+                    </span>
+                  )}
+                  {dayBookingsCount > 0 && (
+                    <span className="day-dot-group">
+                      <span className="day-dot booked" />
+                      <span className="day-dot-count booked">{dayBookingsCount}</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="week-body">
           {timeSlots.map((timeSlot) => (
@@ -465,24 +483,26 @@ const Calendar = ({
                     className={`time-cell ${isPastDate(day) ? 'past' : ''}`}
                     onClick={() => {
                       if (!isPastDate(day)) {
-                        onSlotCreate && onSlotCreate(formatDate(day), timeSlot);
+                        const cellSlots = getSlotsForDate(day);
+                        const cellBookings = getBookedSlotsForDate(day);
+                        if (cellSlots.length > 0 || cellBookings.length > 0) {
+                          setSheetData({ date: formatDate(day), slots: cellSlots, bookings: cellBookings });
+                        } else {
+                          onSlotCreate && onSlotCreate(formatDate(day), timeSlot);
+                        }
                       }
                     }}
                   >
-                    {hourSlots.map((slot, slotIndex) => (
-                      <div
-                        key={slotIndex}
-                        className={`week-slot ${slot.status === 'available' && slot.isAvailabilitySlot ? 'available' : 'booked'
-                          } ${slot.status || ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSlotClick && onSlotClick(slot);
-                        }}
-                        title={`${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`}
-                      >
-                        {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                    {hourSlots.length > 0 && (
+                      <div className="week-cell-dots">
+                        {hourSlots.filter(s => s.status === 'available' && s.isAvailabilitySlot).length > 0 && (
+                          <span className="day-dot available" title="Available" />
+                        )}
+                        {hourSlots.filter(s => !(s.status === 'available' && s.isAvailabilitySlot)).length > 0 && (
+                          <span className="day-dot booked" title="Booked" />
+                        )}
                       </div>
-                    ))}
+                    )}
                   </div>
                 );
               })}
@@ -505,12 +525,28 @@ const Calendar = ({
     return (
       <div className="calendar-day-view">
         <div className="day-view-header">
-          <h3>{currentDate.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}</h3>
+          <div className="day-view-header-top">
+            <h3>{currentDate.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}</h3>
+            <div className="day-view-dots">
+              {daySlots.length > 0 && (
+                <span className="day-dot-group">
+                  <span className="day-dot available" />
+                  <span className="day-dot-count available">{daySlots.length} available</span>
+                </span>
+              )}
+              {dayBookings.length > 0 && (
+                <span className="day-dot-group">
+                  <span className="day-dot booked" />
+                  <span className="day-dot-count booked">{dayBookings.length} booked</span>
+                </span>
+              )}
+            </div>
+          </div>
         </div>
         <div className="day-view-body">
           {timeSlots.map((timeSlot) => {
@@ -527,31 +563,24 @@ const Calendar = ({
                   className={`day-time-cell ${isPastDate(currentDate) ? 'past' : ''}`}
                   onClick={() => {
                     if (!isPastDate(currentDate)) {
-                      onSlotCreate && onSlotCreate(formatDate(currentDate), timeSlot);
+                      if (daySlots.length > 0 || dayBookings.length > 0) {
+                        setSheetData({ date: formatDate(currentDate), slots: daySlots, bookings: dayBookings });
+                      } else {
+                        onSlotCreate && onSlotCreate(formatDate(currentDate), timeSlot);
+                      }
                     }
                   }}
                 >
-                  {hourSlots.map((slot, slotIndex) => (
-                    <div
-                      key={slotIndex}
-                      className={`day-slot ${slot.status === 'available' && slot.isAvailabilitySlot ? 'available' : 'booked'
-                        } ${slot.status || ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSlotClick && onSlotClick(slot);
-                      }}
-                    >
-                      <div className="slot-time">
-                        {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                      </div>
-                      {slot.user && (
-                        <div className="slot-user">{slot.user.name}</div>
+                  {hourSlots.length > 0 && (
+                    <div className="week-cell-dots">
+                      {hourSlots.filter(s => s.status === 'available' && s.isAvailabilitySlot).length > 0 && (
+                        <span className="day-dot available" title="Available" />
                       )}
-                      {slot.specialRequests && (
-                        <div className="slot-notes">{slot.specialRequests}</div>
+                      {hourSlots.filter(s => !(s.status === 'available' && s.isAvailabilitySlot)).length > 0 && (
+                        <span className="day-dot booked" title="Booked" />
                       )}
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             );
