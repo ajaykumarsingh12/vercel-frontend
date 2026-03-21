@@ -350,8 +350,8 @@ const Calendar = ({
                     return;
                   }
 
-                  // On mobile, open bottom sheet instead of selecting date
-                  if (isMobile) {
+                  // Open bottom sheet on all devices
+                  if (true) {
                     setSheetData({
                       date: formatDate(day),
                       slots: daySlots,
@@ -382,49 +382,20 @@ const Calendar = ({
               >
                 <div className="day-number">{day.getDate()}</div>
 
-                {/* MOBILE: dot indicators */}
-                {isMobile ? (
-                  <div className="day-dots">
-                    {daySlots.length > 0 && (
-                      <span className="day-dot available" title={`${daySlots.length} available`} />
-                    )}
-                    {dayBookings.length > 0 && (
-                      <span className="day-dot booked" title={`${dayBookings.length} booked`} />
-                    )}
-                    {(daySlots.length + dayBookings.length) > 0 && (
-                      <span className="day-dot-count">
-                        {daySlots.length + dayBookings.length}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  /* DESKTOP: full slot text */
-                  <div className="day-slots">
-                    {daySlots.slice(0, 2).map((slot, idx) => (
-                      <div
-                        key={idx}
-                        className="slot-indicator available"
-                        title={`Available: ${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`}
-                        onClick={(e) => { e.stopPropagation(); onSlotClick && onSlotClick(slot); }}
-                      >
-                        {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                      </div>
-                    ))}
-                    {dayBookings.slice(0, 2).map((booking, idx) => (
-                      <div
-                        key={`booking-${idx}`}
-                        className={`slot-indicator booked ${booking.status || 'confirmed'}`}
-                        title={`Booked: ${formatTime(booking.startTime)} - ${formatTime(booking.endTime)}`}
-                        onClick={(e) => { e.stopPropagation(); onSlotClick && onSlotClick(booking); }}
-                      >
-                        {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-                      </div>
-                    ))}
-                    {(daySlots.length + dayBookings.length) > 4 && (
-                      <div className="more-slots">+{(daySlots.length + dayBookings.length) - 4}</div>
-                    )}
-                  </div>
-                )}
+                {/* Dot indicators for all devices */}
+                <div className="day-dots">
+                  {daySlots.length > 0 && (
+                    <span className="day-dot available" title={`${daySlots.length} available`} />
+                  )}
+                  {dayBookings.length > 0 && (
+                    <span className="day-dot booked" title={`${dayBookings.length} booked`} />
+                  )}
+                  {(daySlots.length + dayBookings.length) > 0 && (
+                    <span className="day-dot-count">
+                      {daySlots.length + dayBookings.length}
+                    </span>
+                  )}
+                </div>
                 {isCurrentMonth && !isPastDate(day) && hasAvailableTime && (
                   <button
                     className="add-slot-btn"

@@ -1436,6 +1436,17 @@
   margin-left: 1px;
 }
 
+/* Tighter day cells when using dots — all devices */
+.calendar-day {
+  min-height: 80px !important;
+  padding: 8px 6px !important;
+}
+
+.day-number {
+  font-size: 13px !important;
+  margin-bottom: 4px !important;
+}
+
 /* Tighter mobile day cells when using dots */
 @media (max-width: 768px) {
   .calendar-day {
@@ -1460,6 +1471,13 @@
   animation: sheetFadeIn 0.2s ease;
 }
 
+@media (min-width: 769px) {
+  .day-sheet-overlay {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 @keyframes sheetFadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -1477,6 +1495,20 @@
   animation: sheetSlideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+@media (min-width: 769px) {
+  .day-sheet {
+    width: 420px;
+    border-radius: 20px;
+    max-height: 80vh;
+    animation: sheetZoomIn 0.25s ease;
+  }
+}
+
+@keyframes sheetZoomIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
 @keyframes sheetSlideUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
@@ -1486,7 +1518,7 @@
   background: #1e293b;
 }
 
-/* Drag handle */
+/* Drag handle — hide on desktop */
 .day-sheet-handle {
   width: 40px;
   height: 4px;
@@ -1494,6 +1526,10 @@
   border-radius: 2px;
   margin: 12px auto 0;
   flex-shrink: 0;
+}
+
+@media (min-width: 769px) {
+  .day-sheet-handle { display: none; }
 }
 
 /* Sheet header */
