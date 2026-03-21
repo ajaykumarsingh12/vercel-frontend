@@ -1973,3 +1973,46 @@
 [data-theme="dark"] .calendar-container::after {
   background: linear-gradient(to left, #1e293b, transparent);
 }
+
+/* Week header dots */
+.week-header-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  align-items: center;
+}
+
+/* Day view header dots */
+.day-view-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.day-view-dots {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.day-view-dots .day-dot-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.day-view-dots .day-dot {
+  width: 10px;
+  height: 10px;
+}
+
+.day-view-dots .day-dot-count {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Dark mode */
+[data-theme="dark"] .day-view-header-top h3 { color: #e2e8f0; }
