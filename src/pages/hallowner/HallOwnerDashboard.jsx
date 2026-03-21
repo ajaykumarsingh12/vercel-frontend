@@ -31,6 +31,7 @@ const HallOwnerDashboard = () => {
   const [editingSlot, setEditingSlot] = useState(null);
   const [showSlotForm, setShowSlotForm] = useState(false);
   const [slotView, setSlotView] = useState("list"); // list, calendar
+  const [slotTab, setSlotTab] = useState("all"); // all, available, booked
   const [highlightedHall, setHighlightedHall] = useState(null);
   const [hallView, setHallView] = useState("table"); // table, grid
   const [totalEarnings, setTotalEarnings] = useState(0);
@@ -1078,77 +1079,142 @@ const HallOwnerDashboard = () => {
                             </button>
                           </div>
                         ) : (
-                          <div className="slots-grid">
-                            {slots.map((slot) => {
-                              const isBooked = isSlotBooked(slot);
-                              // Also consider slots that are not availability slots as "booked"
-                              const isBookedOrNonAvailable = isBooked || 
-                                (slot.status && slot.status !== "available") || 
-                                (!slot.isAvailabilitySlot && slot.user) ||
-                                (slot.booking);
-                              
-                              return (
-                                <div key={slot._id} className={`slot-card ${isBookedOrNonAvailable ? "booked" : "available"}`}>
-                                  <div className="slot-card-header">
-                                    <div className="slot-date">
-                                      {new Date(slot.allotmentDate).toLocaleDateString("en-US", {
-                                        weekday: "short",
-                                        month: "short",
-                                        day: "numeric",
-                                        year: "numeric"
+                          <>
+                            {/* Status Tabs */}
+                            <div className="slot-tabs">
+                              {["all", "available", "booked"].map((tab) => {
+                                const count = tab === "all" ? slots.length
+                                  : slots.filter(s => {
+                                      const b = isSlotBooked(s) || (s.status && s.status !== "available") || (!s.isAvailabilitySlot && s.user) || s.booking;
+                                      return tab === "booked" ? b : !b;
+                                    }).length;
+                                return (
+                                  <button
+                                    key={tab}
+                                    className={`slot-tab-btn ${slotTab === tab ? "active " + tab : ""}`}
+                                    onClick={() => setSlotTab(tab)}
+                                  >
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                    <span className="slot-tab-count">{count}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                          <div className="slots-grouped">
+                            {(() => {
+                              // Filter by tab
+                              const filtered = slots.filter(s => {
+                                const b = isSlotBooked(s) || (s.status && s.status !== "available") || (!s.isAvailabilitySlot && s.user) || s.booking;
+                                if (slotTab === "available") return !b;
+                                if (slotTab === "booked") return b;
+                                return true;
+                              });
+                              // Group slots by date
+                              const groups = {};
+                              filtered.forEach((slot) => {
+                                const dateKey = new Date(slot.allotmentDate).toLocaleDateString("en-US", {
+                                  weekday: "long", month: "long", day: "numeric", year: "numeric"
+                                });
+                                if (!groups[dateKey]) groups[dateKey] = [];
+                                groups[dateKey].push(slot);
+                              });
+
+                              return Object.entries(groups).map(([dateLabel, dateSlots]) => {
+                                const availCount = dateSlots.filter(s => {
+                                  const isBooked = isSlotBooked(s);
+                                  return !(isBooked || (s.status && s.status !== "available") || (!s.isAvailabilitySlot && s.user) || s.booking);
+                                }).length;
+                                const bookedCount = dateSlots.length - availCount;
+
+                                return (
+                                  <div key={dateLabel} className="slot-date-group">
+                                    {/* Date header */}
+                                    <div className="slot-date-header">
+                                      <div className="slot-date-label">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                                        </svg>
+                                        {dateLabel}
+                                      </div>
+                                      <div className="slot-date-badges">
+                                        {availCount > 0 && <span className="date-badge available">{availCount} Available</span>}
+                                        {bookedCount > 0 && <span className="date-badge booked">{bookedCount} Booked</span>}
+                                      </div>
+                                    </div>
+
+                                    {/* Slot rows under this date */}
+                                    <div className="slot-rows">
+                                      {dateSlots.map((slot) => {
+                                        const isBooked = isSlotBooked(slot);
+                                        const isBookedOrNonAvailable = isBooked ||
+                                          (slot.status && slot.status !== "available") ||
+                                          (!slot.isAvailabilitySlot && slot.user) ||
+                                          (slot.booking);
+
+                                        return (
+                                          <div key={slot._id} className={`slot-row ${isBookedOrNonAvailable ? "booked" : "available"}`}>
+                                            <div className="slot-row-time">
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+                                              </svg>
+                                              {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
+                                            </div>
+                                            {slot.isRecurring && (
+                                              <span className="slot-row-recurring">↻ Recurring</span>
+                                            )}
+                                            <div className={`slot-row-status ${isBookedOrNonAvailable ? "booked" : "available"}`}>
+                                              {isBookedOrNonAvailable ? "Booked" : "Available"}
+                                            </div>
+                                            <div className="slot-row-actions">
+                                              <button
+                                                onClick={() => handleEditSlot(slot)}
+                                                className="slot-action-btn edit"
+                                                disabled={isBookedOrNonAvailable && !slot.isAvailabilitySlot}
+                                                title="Edit"
+                                              >
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                                  <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                                </svg>
+                                              </button>
+                                              <button
+                                                onClick={() => {
+                                                  if (window.confirm('Delete this slot?')) handleDeleteSlot(slot._id);
+                                                }}
+                                                className="slot-action-btn delete"
+                                                disabled={isBookedOrNonAvailable}
+                                                title="Delete"
+                                              >
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                  <polyline points="3,6 5,6 21,6"/>
+                                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                </svg>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        );
                                       })}
                                     </div>
-                                    <div className={`slot-status ${isBookedOrNonAvailable ? "booked" : "available"}`}>
-                                      {isBookedOrNonAvailable ? "Booked" : "Available"}
-                                    </div>
                                   </div>
-                                  <div className="slot-time">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                      <circle cx="12" cy="12" r="10"></circle>
-                                      <polyline points="12,6 12,12 16,14"></polyline>
-                                    </svg>
-                                    {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                                  </div>
-                                  {slot.isRecurring && (
-                                    <div className="slot-recurring">
-                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.98"></path>
-                                        <path d="M17 3l4 4-4 4"></path>
-                                      </svg>
-                                      Recurring
-                                    </div>
-                                  )}
-                                  <div className="slot-actions">
-                                    <button
-                                      onClick={() => handleEditSlot(slot)}
-                                      className="slot-action-btn edit"
-                                      disabled={isBookedOrNonAvailable && !slot.isAvailabilitySlot}
-                                    >
-                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                      </svg>
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        if (window.confirm('Are you sure you want to delete this slot from the database?')) {
-                                          handleDeleteSlot(slot._id);
-                                        }
-                                      }}
-                                      className="slot-action-btn delete"
-                                      title="Delete slot from database"
-                                      disabled={isBookedOrNonAvailable}
-                                    >
-                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <polyline points="3,6 5,6 21,6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                      </svg>
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              });
+                            })()}
                           </div>
+                          {/* Empty filtered state */}
+                          {slots.filter(s => {
+                            const b = isSlotBooked(s) || (s.status && s.status !== "available") || (!s.isAvailabilitySlot && s.user) || s.booking;
+                            if (slotTab === "available") return !b;
+                            if (slotTab === "booked") return b;
+                            return true;
+                          }).length === 0 && (
+                            <div className="empty-slots">
+                              <div className="empty-slots-icon">{slotTab === "available" ? "✅" : "📋"}</div>
+                              <h3>No {slotTab} slots</h3>
+                              <p>Switch tabs to see other slots</p>
+                            </div>
+                          )}
+                          </>
                         )}
                       </div>
                     ) : (
