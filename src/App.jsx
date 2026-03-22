@@ -170,7 +170,14 @@ function App() {
             </main>
             <Footer />
             <ScrollToTop />
-            <ToastContainer position="top-right" autoClose={3000} />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              draggable
+              draggablePercent={40}
+              draggableDirection="x"
+              swipeToClose
+            />
           </div>
         </Router>
       </ThemeProvider>
