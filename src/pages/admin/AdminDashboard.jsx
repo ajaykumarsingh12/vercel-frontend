@@ -747,7 +747,15 @@ const AdminDashboard = () => {
   const fetchUnblockRequests = async () => {
     try {
       const response = await axios.get("/api/admin/unblock-requests");
-      setUnblockRequests(response.data);
+      // Deduplicate by relatedId in case DB has old duplicate records
+      const seen = new Set();
+      const unique = response.data.filter(r => {
+        const key = r.relatedId?._id || r.relatedId || r._id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      setUnblockRequests(unique);
     } catch (error) {
       console.error(error);
     }
