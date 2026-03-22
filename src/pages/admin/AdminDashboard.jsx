@@ -300,8 +300,8 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
           )}
 
           <div className="hall-status-overlay">
-            <span className="status-badge status-pending">
-              {images.length > 1 ? `Photo ${currentImageIndex + 1}/${images.length}` : "Pending Approval"}
+            <span className={`status-badge status-${hall.isApproved || 'pending'}`}>
+              {images.length > 1 ? `Photo ${currentImageIndex + 1}/${images.length}` : (hall.isApproved === "approved" ? "Approved" : hall.isApproved === "rejected" ? "Rejected" : "Pending")}
             </span>
           </div>
 
@@ -359,7 +359,7 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
 
         <div className="hall-details">
           <div className="detail-item">
-            <span><b style={{'color':'orange'}}>Capacity:</b> {hall.capacity} people</span>
+            <span><b style={{'color':'orange'}}>Capacity:</b> {hall.capacity}people</span>
           </div>
           <div className="detail-item">
             <span><b style={{'color':'orange'}}>Price:₹</b>{hall.pricePerHour}/hr</span>
@@ -368,7 +368,7 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
 
         <div className="hall-owner-info">
           <div className="owner-avatar">
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"
@@ -381,7 +381,7 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
             >
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+            </svg> */}
           </div>
           <div className="owner-details">
             <span className="owner-label">Owner  </span>
@@ -393,18 +393,38 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
       </div>
 
       <div className="hall-card-actions">
-        <button
-          onClick={() => handleApproveHall(hall._id, true)}
-          className="btn btn-approve"
-        >
-          Approve
-        </button>
-        <button
-          onClick={() => handleApproveHall(hall._id, false)}
-          className="btn btn-reject"
-        >
-          Reject
-        </button>
+        {hall.isApproved !== "approved" && (
+          <button
+            onClick={() => handleApproveHall(hall._id, true)}
+            className="btn btn-approve"
+          >
+            Approve
+          </button>
+        )}
+        {hall.isApproved !== "rejected" && (
+          <button
+            onClick={() => handleApproveHall(hall._id, false)}
+            className="btn btn-reject"
+          >
+            Reject
+          </button>
+        )}
+        {hall.isApproved === "approved" && (
+          <button
+            onClick={() => handleApproveHall(hall._id, false)}
+            className="btn btn-reject"
+          >
+            Revoke
+          </button>
+        )}
+        {hall.isApproved === "rejected" && (
+          <button
+            onClick={() => handleApproveHall(hall._id, true)}
+            className="btn btn-approve"
+          >
+            Re-approve
+          </button>
+        )}
       </div>
     </div>
   );
@@ -457,7 +477,7 @@ const AdminHallTableRow = ({ hall, handleApproveHall }) => {
       <td className="price-cell">₹{hall.pricePerHour}/hr</td>
       <td className="owner-cell">
         <div className="owner-info">
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
@@ -470,54 +490,40 @@ const AdminHallTableRow = ({ hall, handleApproveHall }) => {
           >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
-          </svg>
+          </svg> */}
           {hall.owner?.name}
         </div>
       </td>
       <td className="status-cell">
-        <span className="status-badge status-pending">Pending</span>
+        <span className={`status-badge status-${hall.isApproved || 'pending'}`}>
+          {hall.isApproved === "approved" ? "Approved" : hall.isApproved === "rejected" ? "Rejected" : "Pending"}
+        </span>
       </td>
       <td className="actions-cell">
         <div className="table-actions">
-          <button
-            onClick={() => handleApproveHall(hall._id, true)}
-            className="btn btn-approve btn-sm"
-            title="Approve Hall"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {hall.isApproved !== "approved" && (
+            <button
+              onClick={() => handleApproveHall(hall._id, true)}
+              className="btn btn-approve btn-sm"
+              title={hall.isApproved === "rejected" ? "Re-approve Hall" : "Approve Hall"}
             >
-              <polyline points="20,6 9,17 4,12"></polyline>
-            </svg>
-          </button>
-          <button
-            onClick={() => handleApproveHall(hall._id, false)}
-            className="btn btn-reject btn-sm"
-            title="Reject Hall"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+            </button>
+          )}
+          {hall.isApproved !== "rejected" && (
+            <button
+              onClick={() => handleApproveHall(hall._id, false)}
+              className="btn btn-reject btn-sm"
+              title={hall.isApproved === "approved" ? "Revoke Hall" : "Reject Hall"}
             >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
         </div>
       </td>
     </tr>
@@ -707,6 +713,8 @@ const AdminDashboard = () => {
   const [showHallDialog, setShowHallDialog] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
+  const [hallSearch, setHallSearch] = useState("");
+  const [hallStatusFilter, setHallStatusFilter] = useState("pending");
 
   useEffect(() => {
     fetchStats();
@@ -726,7 +734,7 @@ const AdminDashboard = () => {
 
   const fetchPendingHalls = async () => {
     try {
-      const response = await axios.get("/api/admin/halls?isApproved=false");
+      const response = await axios.get("/api/admin/halls");
       setHalls(response.data);
     } catch (error) {
       console.error(error);
@@ -868,7 +876,7 @@ const AdminDashboard = () => {
               className={activeTab === "halls" ? "active" : ""}
               onClick={() => setActiveTab("halls")}
             >
-              Pending Halls ({halls.length})
+              All Halls ({halls.length})
             </button>
             <button
               className={activeTab === "users" ? "active" : ""}
@@ -1081,10 +1089,10 @@ const AdminDashboard = () => {
                       <line x1="16" y1="17" x2="8" y2="17"></line>
                       <polyline points="10,9 9,9 8,9"></polyline>
                     </svg>
-                    Pending Hall Approvals
+                    All Halls
                   </h2>
                   <p>
-                    Review and approve new hall listings
+                    View, search and manage all hall listings
                   </p>
                 </div>
 
@@ -1140,39 +1148,87 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {halls.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-state-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="64"
-                      height="64"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <circle cx="9" cy="9" r="2"></circle>
-                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
-                    </svg>
-                  </div>
-                  <h3>No Pending Halls</h3>
-                  <p>All hall listings have been reviewed</p>
+              {/* Halls Search & Filter Bar */}
+              <div className="users-search-bar">
+                <div className="users-search-input-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input
+                    type="text"
+                    placeholder="Search by hall name, city or owner..."
+                    value={hallSearch}
+                    onChange={e => setHallSearch(e.target.value)}
+                    className="users-search-input"
+                  />
+                  {hallSearch && (
+                    <button className="users-search-clear" onClick={() => setHallSearch("")}>✕</button>
+                  )}
                 </div>
-              ) : (
-                hallsViewMode === "grid" ? (
+                <div className="users-role-filter">
+                  {["all", "pending", "approved", "rejected"].map(s => (
+                    <button
+                      key={s}
+                      className={`role-filter-btn ${hallStatusFilter === s ? "active" : ""}`}
+                      onClick={() => setHallStatusFilter(s)}
+                    >
+                      {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Halls results count */}
+              {(() => {
+                const filtered = halls.filter(h => {
+                  if (hallStatusFilter !== "all" && h.isApproved !== hallStatusFilter) return false;
+                  if (hallSearch) {
+                    const q = hallSearch.toLowerCase();
+                    return h.name?.toLowerCase().includes(q) ||
+                      h.location?.city?.toLowerCase().includes(q) ||
+                      h.owner?.name?.toLowerCase().includes(q);
+                  }
+                  return true;
+                });
+                return (
+                  <p className="users-results-count">
+                    Showing <strong>{filtered.length}</strong> of <strong>{halls.length}</strong> halls
+                    {(hallSearch || hallStatusFilter !== "all") && (
+                      <button className="users-clear-filters" onClick={() => { setHallSearch(""); setHallStatusFilter("all"); }}>
+                        Clear filters
+                      </button>
+                    )}
+                  </p>
+                );
+              })()}
+
+              {(() => {
+                const filteredHalls = halls.filter(h => {
+                  if (hallStatusFilter !== "all" && h.isApproved !== hallStatusFilter) return false;
+                  if (hallSearch) {
+                    const q = hallSearch.toLowerCase();
+                    return h.name?.toLowerCase().includes(q) ||
+                      h.location?.city?.toLowerCase().includes(q) ||
+                      h.owner?.name?.toLowerCase().includes(q);
+                  }
+                  return true;
+                });
+
+                if (filteredHalls.length === 0) return (
+                  <div className="empty-state">
+                    <div className="empty-state-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="9" cy="9" r="2"></circle>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                      </svg>
+                    </div>
+                    <h3>No Halls Found</h3>
+                    <p>{hallSearch || hallStatusFilter !== "all" ? "Try adjusting your search or filters" : "No halls have been added yet"}</p>
+                  </div>
+                );
+
+                return hallsViewMode === "grid" ? (
                   <div className="halls-container grid">
-                    {halls.map((hall) => (
+                    {filteredHalls.map((hall) => (
                       <AdminHallCard
                         key={hall._id}
                         hall={hall}
@@ -1187,126 +1243,16 @@ const AdminDashboard = () => {
                       <table className="halls-table">
                         <thead>
                           <tr>
-                            <th className="hall-info-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                  <polyline points="9,22 9,12 15,12 15,22"></polyline>
-                                </svg>
-                                Hall Information
-                              </div>
-                            </th>
-                            <th className="capacity-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                  <circle cx="9" cy="7" r="4"></circle>
-                                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                </svg>
-                                Capacity
-                              </div>
-                            </th>
-                            <th className="price-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <line x1="12" y1="1" x2="12" y2="23"></line>
-                                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                </svg>
-                                Price
-                              </div>
-                            </th>
-                            <th className="owner-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                  <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                Owner
-                              </div>
-                            </th>
-                            <th className="status-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <circle cx="12" cy="12" r="10"></circle>
-                                  <polyline points="12,6 12,12 16,14"></polyline>
-                                </svg>
-                                Status
-                              </div>
-                            </th>
-                            <th className="actions-header">
-                              <div className="header-content">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <circle cx="12" cy="12" r="3"></circle>
-                                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                                </svg>
-                                Actions
-                              </div>
-                            </th>
+                            <th className="hall-info-header"><div className="header-content">Hall Information</div></th>
+                            <th className="capacity-header"><div className="header-content">Capacity</div></th>
+                            <th className="price-header"><div className="header-content">Price</div></th>
+                            <th className="owner-header"><div className="header-content">Owner</div></th>
+                            <th className="status-header"><div className="header-content">Status</div></th>
+                            <th className="actions-header"><div className="header-content">Actions</div></th>
                           </tr>
                         </thead>
                         <tbody>
-                          {halls.map((hall) => (
+                          {filteredHalls.map((hall) => (
                             <AdminHallTableRow
                               key={hall._id}
                               hall={hall}
@@ -1317,8 +1263,8 @@ const AdminDashboard = () => {
                       </table>
                     </div>
                   </div>
-                )
-              )}
+                );
+              })()}
             </div>
           )}
 

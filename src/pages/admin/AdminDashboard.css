@@ -399,6 +399,18 @@
   box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
 }
 
+.status-approved {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
 /* Dark mode enhancements for halls table */
 [data-theme="dark"] .halls-table-container {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -2028,14 +2040,14 @@ color: white;
 }
 
 .owner-name {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .hall-card-actions {
   display: flex;
   gap: 12px;
   padding: 16px;
-  border-top: 1px solid var(--input-border);
+  /* border-top: 1px solid var(--input-border); */
 }
 
 .btn {
@@ -4115,7 +4127,7 @@ button:active {
     gap: 0.75rem;
   }
   .users-role-filter {
-    width: 84%;
+    width: 100%;
     justify-content: center;
   }
   .role-filter-btn {
