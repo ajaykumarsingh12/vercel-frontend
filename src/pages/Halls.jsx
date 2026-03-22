@@ -46,7 +46,6 @@ const Halls = () => {
         if (appliedFilters[key]) params.append(key, appliedFilters[key]);
       });
 
-      console.log('🔍 Fetching halls from:', axios.defaults.baseURL + `/api/halls?${params.toString()}`);
       const response = await axios.get(`/api/halls?${params.toString()}`);
       // console.log('✅ Halls API Response:', response);
       // console.log('✅ Response Data:', response.data);
