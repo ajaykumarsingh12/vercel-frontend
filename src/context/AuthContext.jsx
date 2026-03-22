@@ -279,6 +279,8 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: error.response?.data?.message || "Google login failed",
+        isBlocked: error.response?.data?.isBlocked || false,
+        email: error.response?.data?.email || "",
       };
     }
   };
@@ -329,6 +331,8 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: error.response?.data?.message || "Facebook login failed",
+        isBlocked: error.response?.data?.isBlocked || false,
+        email: error.response?.data?.email || "",
       };
     }
   };

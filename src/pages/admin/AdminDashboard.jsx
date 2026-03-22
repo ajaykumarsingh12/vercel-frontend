@@ -1764,8 +1764,8 @@ const AdminDashboard = () => {
                 </div>
               ) : (
                 <div className="unblock-requests-container">
-                  {unblockRequests.map((request) => (
-                    <div key={request._id} className="unblock-request-card">
+                  {unblockRequests.map((request, index) => (
+                    <div key={request._id} className="unblock-request-card" style={{ animationDelay: `${index * 0.1}s` }}>
                       <div className="request-header">
                         <div className="user-info-section">
                           <div className="user-avatar-small">

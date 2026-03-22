@@ -97,18 +97,13 @@ const Login = () => {
   const handleGoogleResponse = async (response) => {
     setLoading(true);
     
-    // Get session ID from localStorage
     const storedSessionId = localStorage.getItem('socialLoginSessionId');
-    // console.log('🔵 Session ID from storage:', storedSessionId);
-    // console.log('🔵 Selected role:', socialLoginRole);
     
     const result = await googleLogin(response.credential, socialLoginRole, storedSessionId);
-    // console.log('🔵 Backend response:', result);
 
     if (result.success) {
       toast.success("Google login successful!");
       const currentUser = result.user;
-      // console.log('🔵 Current user role:', currentUser.role);
 
       // Clear session after successful login
       if (storedSessionId) {
@@ -126,16 +121,17 @@ const Login = () => {
       if (location.state?.from) {
         navigate(location.state.from);
       } else if (currentUser.role === "admin") {
-        // console.log('🔵 Navigating to: /admin/dashboard');
         navigate("/admin/dashboard");
       } else if (currentUser.role === "hall_owner") {
-        // console.log('🔵 Navigating to: /hall-owner/dashboard');
         navigate("/hall-owner/dashboard");
       } else {
-        // console.log('🔵 Navigating to: / (home)');
         navigate("/");
       }
     } else {
+      if (result.isBlocked) {
+        setIsBlocked(true);
+        setBlockedEmail(result.email || "");
+      }
       toast.error(result.message);
     }
     setLoading(false);
@@ -211,6 +207,10 @@ const Login = () => {
         navigate("/");
       }
     } else {
+      if (result.isBlocked) {
+        setIsBlocked(true);
+        setBlockedEmail(result.email || "");
+      }
       toast.error(result.message);
     }
     setLoading(false);
