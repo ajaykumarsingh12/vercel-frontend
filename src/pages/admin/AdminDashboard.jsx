@@ -828,6 +828,10 @@ const AdminDashboard = () => {
   const [hallsViewMode, setHallsViewMode] = useState("grid"); // "grid" or "list" for halls
   const [usersViewMode, setUsersViewMode] = useState("grid"); // "grid" or "list" for users
   const [unblockRequests, setUnblockRequests] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [bookingSearch, setBookingSearch] = useState("");
+  const [bookingStatusFilter, setBookingStatusFilter] = useState("all");
+  const [csvState, setCsvState] = useState("idle"); // idle | downloading | done
   const [selectedHall, setSelectedHall] = useState(null);
   const [showHallDialog, setShowHallDialog] = useState(false);
   const [showReviewsDialog, setShowReviewsDialog] = useState(false);
@@ -842,6 +846,7 @@ const AdminDashboard = () => {
     fetchPendingHalls();
     fetchUsers();
     fetchUnblockRequests();
+    fetchBookings();
   }, []);
 
   const fetchStats = async () => {
@@ -868,6 +873,15 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get("/api/admin/users");
       setUsers(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const response = await axios.get("/api/admin/bookings");
+      setBookings(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -1020,6 +1034,12 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab("unblockRequests")}
             >
               Unblock Requests ({unblockRequests.length})
+            </button>
+            <button
+              className={activeTab === "bookings" ? "active" : ""}
+              onClick={() => setActiveTab("bookings")}
+            >
+              All Bookings ({bookings.length})
             </button>
           </div>
 
@@ -1790,6 +1810,219 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {activeTab === "bookings" && (
+            <div className="bookings-admin-section">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2>All Bookings</h2>
+                  <p>View and monitor all bookings across the platform</p>
+                </div>
+              </div>
+
+              {/* Search & Filter */}
+              <div className="bookings-toolbar">
+                <button
+                  className={`bookings-download-btn ${csvState !== "idle" ? "csv-" + csvState : ""}`}
+                  title="Download as CSV"
+                  disabled={csvState !== "idle"}
+                  onClick={() => {
+                    setCsvState("downloading");
+                    const filtered = bookings.filter(b => {
+                      if (bookingStatusFilter !== "all" && b.status !== bookingStatusFilter) return false;
+                      if (bookingSearch) {
+                        const q = bookingSearch.toLowerCase();
+                        return b.hall?.name?.toLowerCase().includes(q) ||
+                          b.user?.name?.toLowerCase().includes(q) ||
+                          b.user?.email?.toLowerCase().includes(q);
+                      }
+                      return true;
+                    });
+                    const headers = ["Hall","City","User","Email","Phone","Date","Start Time","End Time","Amount","Status","Payment"];
+                    const rows = filtered.map(b => [
+                      b.hall?.name || "",
+                      b.hall?.location?.city || "",
+                      b.user?.name || "",
+                      b.user?.email || "",
+                      b.user?.phone || "",
+                      new Date(b.bookingDate).toLocaleDateString("en-IN"),
+                      b.startTime || "",
+                      b.endTime || "",
+                      Math.round(b.totalAmount || 0),
+                      b.status || "",
+                      b.paymentStatus || ""
+                    ]);
+                    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+                    const blob = new Blob([csv], { type: "text/csv" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `bookings_${new Date().toISOString().slice(0,10)}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setTimeout(() => {
+                      setCsvState("done");
+                      setTimeout(() => setCsvState("idle"), 2000);
+                    }, 2000);
+                  }}
+                >
+                  {/* Animated ring overlay */}
+                  {csvState === "downloading" && <span className="csv-ring" />}
+
+                  {/* Icon states */}
+                  {csvState === "idle" && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  )}
+                  {csvState === "downloading" && (
+                    <span className="csv-label-text">CSV</span>
+                  )}
+                  {csvState === "done" && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="csv-check">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  )}
+                </button>
+                <div className="users-search-bar" style={{flex: 1}}>
+                  <div className="users-search-input-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input
+                      type="text"
+                      placeholder="Search by hall, user or email..."
+                      value={bookingSearch}
+                      onChange={e => setBookingSearch(e.target.value)}
+                      className="users-search-input"
+                    />
+                    {bookingSearch && <button className="users-search-clear" onClick={() => setBookingSearch("")}>✕</button>}
+                  </div>
+                  <div className="users-role-filter">
+                    {["all", "pending", "confirmed", "cancelled"].map(s => (
+                      <button
+                        key={s}
+                        className={`role-filter-btn ${bookingStatusFilter === s ? "active" : ""}`}
+                        onClick={() => setBookingStatusFilter(s)}
+                      >
+                        {s.charAt(0).toUpperCase() + s.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="bookings-revenue-box">
+                  <span className="revenue-label">Total Revenue</span>
+                  <span className="revenue-amount">
+                    ₹{bookings
+                        .filter(b => {
+                          if (bookingStatusFilter !== "all" && b.status !== bookingStatusFilter) return false;
+                          if (bookingSearch) {
+                            const q = bookingSearch.toLowerCase();
+                            return b.hall?.name?.toLowerCase().includes(q) ||
+                              b.user?.name?.toLowerCase().includes(q) ||
+                              b.user?.email?.toLowerCase().includes(q);
+                          }
+                          return true;
+                        })
+                        .filter(b => b.paymentStatus === "paid")
+                        .reduce((sum, b) => sum + (b.totalAmount || 0), 0)
+                        .toLocaleString("en-IN")}
+                  </span>
+                </div>
+              </div>
+
+              {(() => {
+                const filtered = bookings.filter(b => {
+                  if (bookingStatusFilter !== "all" && b.status !== bookingStatusFilter) return false;
+                  if (bookingSearch) {
+                    const q = bookingSearch.toLowerCase();
+                    return b.hall?.name?.toLowerCase().includes(q) ||
+                      b.user?.name?.toLowerCase().includes(q) ||
+                      b.user?.email?.toLowerCase().includes(q);
+                  }
+                  return true;
+                });
+
+                // Group by date
+                const grouped = filtered.reduce((acc, b) => {
+                  const dateKey = new Date(b.bookingDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+                  if (!acc[dateKey]) acc[dateKey] = [];
+                  acc[dateKey].push(b);
+                  return acc;
+                }, {});
+
+                return (
+                  <>
+                    <p className="users-results-count">
+                      Showing <strong>{filtered.length}</strong> of <strong>{bookings.length}</strong> bookings
+                      {(bookingSearch || bookingStatusFilter !== "all") && (
+                        <button className="users-clear-filters" onClick={() => { setBookingSearch(""); setBookingStatusFilter("all"); }}>Clear filters</button>
+                      )}
+                    </p>
+
+                    {filtered.length === 0 ? (
+                      <div className="empty-state">
+                        <div className="empty-state-icon">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                          </svg>
+                        </div>
+                        <h3>No Bookings Found</h3>
+                        <p>{bookingSearch || bookingStatusFilter !== "all" ? "Try adjusting your filters" : "No bookings yet"}</p>
+                      </div>
+                    ) : (
+                      <div className="booking-timeline">
+                        {Object.entries(grouped).map(([date, dayBookings]) => (
+                          <div key={date} className="timeline-day">
+                            <div className="timeline-date-label">
+                              <span className="timeline-date-dot">📅</span>
+                              <span className="timeline-date-text">{date}</span>
+                              <span className="timeline-date-count">{dayBookings.length} booking{dayBookings.length > 1 ? "s" : ""}</span>
+                            </div>
+                            <div className="timeline-cards">
+                              {dayBookings.map(b => (
+                                <div key={b._id} className={`timeline-card tl-${b.status}`}>
+                                  <div className="tl-left-bar" />
+                                  <div className="tl-body">
+                                    <div className="tl-top">
+                                      <div className="tl-hall">
+                                        <span className="tl-hall-name">{b.hall?.name || "—"}</span>
+                                        <span className="tl-hall-loc">📍 {b.hall?.location?.city}{b.hall?.location?.state ? `, ${b.hall.location.state}` : ""}</span>
+                                      </div>
+                                      <div className="tl-badges">
+                                        <span className={`tl-badge tl-status-${b.status}`}>{b.status}</span>
+                                        <span className={`tl-badge tl-pay-${b.paymentStatus || "pending"}`}>{b.paymentStatus || "pending"}</span>
+                                      </div>
+                                    </div>
+                                    <div className="tl-bottom">
+                                      <div className="tl-user">
+                                        <span className="tl-icon">👤</span>
+                                        <span>{b.user?.name || "—"}</span>
+                                        <span className="tl-email">{b.user?.email}</span>
+                                      </div>
+                                      <div className="tl-meta">
+                                        {b.startTime && b.endTime && (
+                                          <span className="tl-chip">🕐 {b.startTime} – {b.endTime}</span>
+                                        )}
+                                        <span className="tl-chip tl-amount">₹{Math.round(b.totalAmount || 0)}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           )}
 
