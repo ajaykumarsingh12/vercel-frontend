@@ -46,7 +46,8 @@ const ReviewCard = ({ review }) => {
         {displayText}
         {isLong && (
           <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>
-            {expanded ? " Read less" : " Read more"}
+            {expanded ? "Read less" : "Read more"}
+            <span className={`read-more-arrow ${expanded ? 'open' : ''}`}>▾</span>
           </button>
         )}
       </p>
