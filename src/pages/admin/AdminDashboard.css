@@ -3280,14 +3280,14 @@ button:active {
 .unblock-requests-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 1.1rem;
   margin-top: 1.5rem;
 }
 
 .unblock-request-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 8px;
+  padding: 1.2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(226, 232, 240, 0.6);
   transition: all 0.3s ease;
@@ -3309,7 +3309,6 @@ button:active {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
   transform: translateY(-4px);
 }
-
 .request-header {
   display: flex;
   justify-content: space-between;
@@ -3450,6 +3449,65 @@ button:active {
 
   .user-info-section .user-details h4 {
     font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .unblock-request-card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .user-info-section {
+    gap: 0.75rem;
+  }
+
+  .user-info-section .user-avatar-small {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .user-info-section .user-details h4 {
+    font-size: 0.95rem;
+    word-break: break-word;
+  }
+
+  .user-email {
+    font-size: 0.78rem;
+    word-break: break-all;
+  }
+
+  .request-message p {
+    font-size: 0.82rem;
+  }
+
+  .request-actions .btn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .unblock-request-card {
+    padding: 0.875rem;
+  }
+
+  .user-info-section .user-details h4 {
+    font-size: 0.875rem;
+  }
+
+  .user-email {
+    font-size: 0.72rem;
+  }
+
+  .request-actions {
+    gap: 0.5rem;
+  }
+
+  .request-actions .btn {
+    font-size: 0.78rem;
+    padding: 0.55rem 0.5rem;
   }
 }
 
