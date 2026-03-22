@@ -703,8 +703,10 @@ const AdminDashboard = () => {
   const [hallsViewMode, setHallsViewMode] = useState("grid"); // "grid" or "list" for halls
   const [usersViewMode, setUsersViewMode] = useState("grid"); // "grid" or "list" for users
   const [unblockRequests, setUnblockRequests] = useState([]);
-  const [selectedHall, setSelectedHall] = useState(null); // For dialog
-  const [showHallDialog, setShowHallDialog] = useState(false); // Dialog visibility
+  const [selectedHall, setSelectedHall] = useState(null);
+  const [showHallDialog, setShowHallDialog] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState("all");
 
   useEffect(() => {
     fetchStats();
@@ -1396,6 +1398,58 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
+              {/* Search & Filter Bar */}
+              <div className="users-search-bar">
+                <div className="users-search-input-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input
+                    type="text"
+                    placeholder="Search by name, email or phone..."
+                    value={userSearch}
+                    onChange={e => setUserSearch(e.target.value)}
+                    className="users-search-input"
+                  />
+                  {userSearch && (
+                    <button className="users-search-clear" onClick={() => setUserSearch("")}>✕</button>
+                  )}
+                </div>
+                <div className="users-role-filter">
+                  {["all", "user", "hall_owner"].map(role => (
+                    <button
+                      key={role}
+                      className={`role-filter-btn ${userRoleFilter === role ? "active" : ""}`}
+                      onClick={() => setUserRoleFilter(role)}
+                    >
+                      {role === "all" ? "All" : role === "hall_owner" ? "Hall Owners" : "Users"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Results count */}
+              {(() => {
+                const filtered = users.filter(u => {
+                  if (u.role === "admin") return false;
+                  if (userRoleFilter !== "all" && u.role !== userRoleFilter) return false;
+                  if (userSearch) {
+                    const q = userSearch.toLowerCase();
+                    return u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.phone?.toLowerCase().includes(q);
+                  }
+                  return true;
+                });
+                const total = users.filter(u => u.role !== "admin").length;
+                return (
+                  <p className="users-results-count">
+                    Showing <strong>{filtered.length}</strong> of <strong>{total}</strong> users
+                    {(userSearch || userRoleFilter !== "all") && (
+                      <button className="users-clear-filters" onClick={() => { setUserSearch(""); setUserRoleFilter("all"); }}>
+                        Clear filters
+                      </button>
+                    )}
+                  </p>
+                );
+              })()}
+
               <div className={`users-container ${usersViewMode}`}>
                 {users.length === 0 ? (
                   <div className="empty-state">
@@ -1421,7 +1475,15 @@ const AdminDashboard = () => {
                     <p>No users have been registered in the system yet.</p>
                   </div>
                 ) : usersViewMode === "grid" ? (
-                  users.filter(user => user.role !== "admin").map((user) => {
+                  users.filter(user => {
+                    if (user.role === "admin") return false;
+                    if (userRoleFilter !== "all" && user.role !== userRoleFilter) return false;
+                    if (userSearch) {
+                      const q = userSearch.toLowerCase();
+                      return user.name?.toLowerCase().includes(q) || user.email?.toLowerCase().includes(q) || user.phone?.toLowerCase().includes(q);
+                    }
+                    return true;
+                  }).map((user) => {
                     const profileImageUrl = user.profileImage 
                       ? (user.profileImage.startsWith('http') 
                           ? user.profileImage 
@@ -1619,7 +1681,15 @@ const AdminDashboard = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {users.filter(user => user.role !== "admin").map((user) => (
+                          {users.filter(user => {
+                            if (user.role === "admin") return false;
+                            if (userRoleFilter !== "all" && user.role !== userRoleFilter) return false;
+                            if (userSearch) {
+                              const q = userSearch.toLowerCase();
+                              return user.name?.toLowerCase().includes(q) || user.email?.toLowerCase().includes(q) || user.phone?.toLowerCase().includes(q);
+                            }
+                            return true;
+                          }).map((user) => (
                             <AdminUserTableRow
                               key={user._id}
                               user={user}
