@@ -116,7 +116,7 @@ const MyBookings = () => {
             email: user?.email || "",
             contact: user?.phone || "",
           },
-          theme: { color: "#d4af37" },
+          theme: { color: "#525df6ed" },
           modal: {
             ondismiss: function () {
               setPayingBookingId(null);
