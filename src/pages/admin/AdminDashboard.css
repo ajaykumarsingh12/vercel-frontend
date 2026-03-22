@@ -4207,3 +4207,102 @@ button:active {
   border-color: rgba(255,255,255,0.1);
   color: #9ca3af;
 }
+
+/* ── Reviews Dialog ── */
+.reviews-dialog {
+  max-width: 640px;
+  width: 95%;
+}
+
+.admin-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.admin-review-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--input-border, #e2e8f0);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.admin-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-review-user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-review-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.admin-review-email {
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+}
+
+.admin-review-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.admin-review-stars {
+  color: #f59e0b;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.admin-review-date {
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+}
+
+.admin-review-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.admin-review-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admin-review-comment {
+  font-size: 13px;
+  color: var(--text-color);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Reviews button */
+.btn-reviews {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  font-size: 12px;
+}
+
+.btn-reviews:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  transform: translateY(-1px);
+}

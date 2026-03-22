@@ -203,6 +203,93 @@ const HallDetailsDialog = ({ hall, onClose }) => {
   );
 };
 
+const ReviewsDialog = ({ hall, onClose }) => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(`/api/admin/halls/${hall._id}/reviews`);
+        setReviews(res.data);
+      } catch (e) {
+        toast.error("Failed to load reviews");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReviews();
+  }, [hall._id]);
+
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm("Delete this review?")) return;
+    try {
+      await axios.delete(`/api/admin/reviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      toast.success("Review deleted");
+    } catch (e) {
+      toast.error("Failed to delete review");
+    }
+  };
+
+  return (
+    <div className="hall-details-dialog-overlay" onClick={onClose}>
+      <div className="hall-details-dialog reviews-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="dialog-header">
+          <h2>Reviews — {hall.name}</h2>
+          <button className="dialog-close-btn" onClick={onClose}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div className="dialog-content">
+          {loading ? (
+            <p style={{ padding: "1rem", textAlign: "center" }}>Loading reviews...</p>
+          ) : reviews.length === 0 ? (
+            <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-secondary)" }}>
+              No reviews for this hall yet.
+            </div>
+          ) : (
+            <div className="admin-reviews-list">
+              {reviews.map((review) => (
+                <div key={review._id} className="admin-review-card">
+                  <div className="admin-review-header">
+                    <div className="admin-review-user">
+                      <span className="admin-review-name">{review.user?.name || "Unknown"}</span>
+                      <span className="admin-review-email">{review.user?.email}</span>
+                    </div>
+                    <div className="admin-review-meta">
+                      <span className="admin-review-stars">
+                        {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                      </span>
+                      <span className="admin-review-date">
+                        {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                      </span>
+                      <button
+                        className="admin-review-delete-btn"
+                        onClick={() => handleDelete(review._id)}
+                        title="Delete review"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <p className="admin-review-comment">{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StatsTableRow = ({ label, value, icon, color }) => {
   return (
     <tr className="simple-stats-row">
@@ -221,7 +308,7 @@ const StatsTableRow = ({ label, value, icon, color }) => {
   );
 };
 
-const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
+const AdminHallCard = ({ hall, handleApproveHall, onViewDetails, onViewReviews }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images =
     hall.images && hall.images.length > 0
@@ -393,6 +480,13 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
       </div>
 
       <div className="hall-card-actions">
+        <button
+          className="btn btn-reviews"
+          onClick={() => onViewReviews(hall)}
+          title="View Reviews"
+        >
+          ⭐ Reviews
+        </button>
         {hall.isApproved !== "approved" && (
           <button
             onClick={() => handleApproveHall(hall._id, true)}
@@ -430,7 +524,7 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails }) => {
   );
 };
 
-const AdminHallTableRow = ({ hall, handleApproveHall }) => {
+const AdminHallTableRow = ({ hall, handleApproveHall, onViewReviews }) => {
   const images =
     hall.images && hall.images.length > 0
       ? hall.images.map((img) =>
@@ -501,6 +595,13 @@ const AdminHallTableRow = ({ hall, handleApproveHall }) => {
       </td>
       <td className="actions-cell">
         <div className="table-actions">
+          <button
+            onClick={() => onViewReviews(hall)}
+            className="btn btn-reviews btn-sm"
+            title="View Reviews"
+          >
+            ⭐
+          </button>
           {hall.isApproved !== "approved" && (
             <button
               onClick={() => handleApproveHall(hall._id, true)}
@@ -711,6 +812,8 @@ const AdminDashboard = () => {
   const [unblockRequests, setUnblockRequests] = useState([]);
   const [selectedHall, setSelectedHall] = useState(null);
   const [showHallDialog, setShowHallDialog] = useState(false);
+  const [showReviewsDialog, setShowReviewsDialog] = useState(false);
+  const [reviewsHall, setReviewsHall] = useState(null);
   const [userSearch, setUserSearch] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
   const [hallSearch, setHallSearch] = useState("");
@@ -791,6 +894,16 @@ const AdminDashboard = () => {
   const handleCloseDialog = () => {
     setShowHallDialog(false);
     setSelectedHall(null);
+  };
+
+  const handleViewReviews = (hall) => {
+    setReviewsHall(hall);
+    setShowReviewsDialog(true);
+  };
+
+  const handleCloseReviews = () => {
+    setShowReviewsDialog(false);
+    setReviewsHall(null);
   };
 
   const handleDeleteUser = async (id) => {
@@ -1234,6 +1347,7 @@ const AdminDashboard = () => {
                         hall={hall}
                         handleApproveHall={handleApproveHall}
                         onViewDetails={handleViewDetails}
+                        onViewReviews={handleViewReviews}
                       />
                     ))}
                   </div>
@@ -1257,6 +1371,7 @@ const AdminDashboard = () => {
                               key={hall._id}
                               hall={hall}
                               handleApproveHall={handleApproveHall}
+                              onViewReviews={handleViewReviews}
                             />
                           ))}
                         </tbody>
@@ -1844,6 +1959,11 @@ const AdminDashboard = () => {
       {/* Hall Details Dialog */}
       {showHallDialog && selectedHall && (
         <HallDetailsDialog hall={selectedHall} onClose={handleCloseDialog} />
+      )}
+
+      {/* Reviews Dialog */}
+      {showReviewsDialog && reviewsHall && (
+        <ReviewsDialog hall={reviewsHall} onClose={handleCloseReviews} />
       )}
     </div >
   );
