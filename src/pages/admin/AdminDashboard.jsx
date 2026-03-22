@@ -206,6 +206,12 @@ const HallDetailsDialog = ({ hall, onClose }) => {
 const ReviewsDialog = ({ hall, onClose }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(onClose, 320);
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -233,11 +239,17 @@ const ReviewsDialog = ({ hall, onClose }) => {
   };
 
   return (
-    <div className="hall-details-dialog-overlay" onClick={onClose}>
-      <div className="hall-details-dialog reviews-dialog" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={`hall-details-dialog-overlay${closing ? " overlay-closing" : ""}`}
+      onClick={handleClose}
+    >
+      <div
+        className={`hall-details-dialog reviews-dialog${closing ? " dialog-closing" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h2>Reviews — {hall.name}</h2>
-          <button className="dialog-close-btn" onClick={onClose}>
+          <button className="dialog-close-btn" onClick={handleClose}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>

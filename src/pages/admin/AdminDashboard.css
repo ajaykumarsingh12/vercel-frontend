@@ -3659,11 +3659,21 @@ button:active {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .hall-details-dialog-overlay {
+    padding: 0;
+    align-items: flex-end;
   }
-  to {
-    opacity: 1;
+  .hall-details-dialog,
+  .reviews-dialog {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0;
   }
 }
 
@@ -3689,6 +3699,52 @@ button:active {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownToBottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.overlay-closing {
+  animation: fadeOut 0.32s ease forwards;
+}
+
+@media (max-width: 480px) {
+  .hall-details-dialog,
+  .reviews-dialog {
+    animation: slideUpFromBottom 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .dialog-closing {
+    animation: slideDownToBottom 0.32s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  }
+}
+
+/* Desktop closing — fade + slide down */
+@media (min-width: 481px) {
+  .dialog-closing {
+    animation: slideDownDesktop 0.28s ease forwards;
+  }
+}
+
+@keyframes slideDownDesktop {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(24px); opacity: 0; }
 }
 
 [data-theme="dark"] .hall-details-dialog {
@@ -4001,7 +4057,8 @@ button:active {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .hall-details-dialog {
+  .hall-details-dialog,
+  .reviews-dialog {
     max-width: 100%;
     max-height: 100vh;
     border-radius: 0;
