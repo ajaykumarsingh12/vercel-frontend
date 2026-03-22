@@ -1332,7 +1332,6 @@ color: white;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--input-bg) 0%, rgba(99, 102, 241, 0.05) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2219,6 +2218,71 @@ color: white;
 
   .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-card {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .user-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+    word-break: break-word;
+  }
+
+  .user-email {
+    font-size: 0.78rem;
+    word-break: break-all;
+  }
+
+  .user-role {
+    font-size: 0.72rem;
+  }
+
+  .user-actions {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .user-actions .btn {
+    flex: 1;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .user-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .user-name {
+    font-size: 0.82rem;
+  }
+
+  .user-email {
+    font-size: 0.72rem;
+  }
+
+  .user-actions .btn {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -3328,7 +3392,6 @@ button:active {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
