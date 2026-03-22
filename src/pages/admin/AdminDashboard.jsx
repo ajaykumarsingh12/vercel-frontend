@@ -417,6 +417,19 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails, onViewReviews }
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           </button>
+
+          {/* Reviews Button - Top Left Corner */}
+          <button
+            className="view-details-icon-btn reviews-icon-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onViewReviews(hall);
+            }}
+            title="View Reviews"
+          >
+            ⭐
+          </button>
         </div>
       </div>
 
@@ -480,13 +493,6 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails, onViewReviews }
       </div>
 
       <div className="hall-card-actions">
-        <button
-          className="btn btn-reviews"
-          onClick={() => onViewReviews(hall)}
-          title="View Reviews"
-        >
-          ⭐ Reviews
-        </button>
         {hall.isApproved !== "approved" && (
           <button
             onClick={() => handleApproveHall(hall._id, true)}

@@ -3606,6 +3606,16 @@ button:active {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.reviews-icon-btn {
+  right: auto;
+  left: 12px;
+  font-size: 18px;
+}
+
+.reviews-icon-btn:hover {
+  background: #f59e0b !important;
+}
+
 .view-details-icon-btn:hover {
   background: #6366f1;
   color: white;
