@@ -406,7 +406,7 @@
   background: linear-gradient(135deg, #f59e0b, #d97706);
 }
 
-.detail-content { flex: 1; min-width: 0; }
+.detail-content { flex: 1; min-width: 0; overflow: hidden; }
 
 .detail-label {
   display: block;
@@ -425,6 +425,9 @@
   font-weight: 800;
   color: var(--secondary-color);
   line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Info Sections */
@@ -1740,7 +1743,7 @@
   .hall-info-card { padding: 1rem; border-radius: 10px; }
   .hall-title { font-size: 1.2rem; }
 
-  .key-details-grid { gap: 0.5rem; }
+  .key-details-grid { grid-template-columns: 0.5fr 0.2fr;gap: 0.5rem; }
   .detail-card { padding: 0.75rem 0.6rem; }
   .detail-label { font-size: 0.68rem; }
   .detail-value { font-size: 0.95rem; }
@@ -1800,7 +1803,7 @@
   .hall-info-card { padding: 0.875rem; border-radius: 10px; }
   .hall-title { font-size: 1.1rem; }
 
-  .key-details-grid { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .key-details-grid { grid-template-columns: 0.5fr 0.2fr; gap: 0.4rem; }
   .detail-card { padding: 0.65rem 0.5rem; flex-direction: column; text-align: center; gap: 0.4rem; }
   .detail-icon { width: 32px; height: 32px; }
   .detail-value { font-size: 0.9rem; }
@@ -1832,7 +1835,7 @@
   .gallery-nav { width: 28px; height: 28px; }
 
   .hall-title { font-size: 1rem; }
-  .key-details-grid { grid-template-columns: 1fr; }
+  .key-details-grid { grid-template-columns: 0.5fr 0.2fr; }
   .detail-card { flex-direction: row; text-align: left; }
 
   .hall-info-card { padding: 0.75rem; }
