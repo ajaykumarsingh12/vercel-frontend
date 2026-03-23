@@ -2470,14 +2470,6 @@ button:active {
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
 }
-
-
-
-
-
-/* ========== COMPREHENSIVE RESPONSIVE DESIGN ========== */
-
-/* ===== EXTRA SMALL MOBILE (≤360px) ===== */
 @media (max-width: 360px) {
   .admin-dashboard {
     font-size: 14px;

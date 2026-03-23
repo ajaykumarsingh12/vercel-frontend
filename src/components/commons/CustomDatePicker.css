@@ -404,13 +404,6 @@
 [data-theme="dark"] .day-avail-dot.grey {
   background: #4a5568;
 }
-
-/* Subtle tint on available days */
-.day:not(.disabled):not(.selected):not(.empty) .day-avail-dot.green ~ * ,
-.day:has(.day-avail-dot.green):not(.disabled):not(.selected) {
-  /* no extra bg needed — dot is enough */
-}
-
 /* Legend below calendar */
 .date-picker-legend {
   display: flex;
