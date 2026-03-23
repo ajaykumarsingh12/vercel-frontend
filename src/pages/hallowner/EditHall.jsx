@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../../components/commons/Loader";
 import AddressAutocomplete from "../../components/commons/AddressAutocomplete";
-
+import { uploadMultipleToCloudinary } from "../../utils/cloudinaryUpload";
 import "./HallForm.css";
 
 const EditHall = () => {
@@ -12,6 +12,7 @@ const EditHall = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [initialApprovalStatus, setInitialApprovalStatus] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -157,22 +158,11 @@ const EditHall = () => {
 
   const handleImageUpload = (category, file) => {
     if (file) {
-      // Validate file type
       if (!file.type.startsWith("image/")) {
         toast.error("Please select a valid image file");
         return;
       }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return;
-      }
-
-      setImageFiles({
-        ...imageFiles,
-        [category]: file,
-      });
+      setImageFiles({ ...imageFiles, [category]: file });
     }
   };
 
@@ -182,18 +172,10 @@ const EditHall = () => {
         toast.error("Please select valid image files only");
         return false;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return false;
-      }
       return true;
     });
-
     if (validFiles.length > 0) {
-      setImageFiles({
-        ...imageFiles,
-        washroom: [...imageFiles.washroom, ...validFiles],
-      });
+      setImageFiles({ ...imageFiles, washroom: [...imageFiles.washroom, ...validFiles] });
     }
   };
 
@@ -214,105 +196,65 @@ const EditHall = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setUploadProgress(0);
 
     try {
-      const formDataToSend = new FormData();
+      // 1. Collect existing image URLs to keep
+      const categories = ["mainHall", "stage", "seating", "dining", "parking", "outsideView"];
+      const existingImages = [];
+      const newFiles = [];
 
-      // Add basic form data
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("location[address]", formData.location.address);
-      formDataToSend.append("location[city]", formData.location.city);
-      formDataToSend.append("location[state]", formData.location.state);
-      formDataToSend.append("location[pincode]", formData.location.pincode);
-      
-      // Add Google Maps data
-      if (formData.location.googleMapsUrl) {
-        formDataToSend.append("location[googleMapsUrl]", formData.location.googleMapsUrl);
+      categories.forEach((cat) => {
+        if (typeof imageFiles[cat] === "string") existingImages.push(imageFiles[cat]);
+        else if (imageFiles[cat]) newFiles.push(imageFiles[cat]);
+      });
+
+      imageFiles.washroom.forEach((img) => {
+        if (typeof img === "string") existingImages.push(img);
+        else newFiles.push(img);
+      });
+
+      // 2. Upload new files directly to Cloudinary
+      let newUrls = [];
+      if (newFiles.length > 0) {
+        toast.info("Uploading images...");
+        newUrls = await uploadMultipleToCloudinary(
+          newFiles,
+          "hall-booking/halls",
+          (p) => setUploadProgress(p)
+        );
       }
-      if (formData.location.coordinates?.lat && formData.location.coordinates?.lng) {
-        formDataToSend.append("location[coordinates][lat]", formData.location.coordinates.lat);
-        formDataToSend.append("location[coordinates][lng]", formData.location.coordinates.lng);
-      }
-      
-      formDataToSend.append("capacity", formData.capacity);
-      formDataToSend.append("pricePerHour", formData.pricePerHour);
-      formDataToSend.append("isAvailable", formData.isAvailable);
 
-      // Add amenities
-      formData.amenities.forEach((amenity) => {
-        formDataToSend.append("amenities", amenity);
+      // 3. Send JSON to backend — existing URLs + new Cloudinary URLs
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        capacity: formData.capacity,
+        pricePerHour: formData.pricePerHour,
+        isAvailable: formData.isAvailable,
+        amenities: formData.amenities,
+        existingImages,
+        newImages: newUrls,
+      };
+
+      await axios.put(`/api/halls/${id}`, payload, {
+        headers: { "Content-Type": "application/json" },
       });
 
-      // Collect images to keep (existing string URLs)
-      const imagesToKeep = [];
-
-      // Check each category - if it's a string (existing image), keep it
-      if (typeof imageFiles.mainHall === "string")
-        imagesToKeep.push(imageFiles.mainHall);
-      if (typeof imageFiles.stage === "string")
-        imagesToKeep.push(imageFiles.stage);
-      if (typeof imageFiles.seating === "string")
-        imagesToKeep.push(imageFiles.seating);
-      if (typeof imageFiles.dining === "string")
-        imagesToKeep.push(imageFiles.dining);
-      if (typeof imageFiles.parking === "string")
-        imagesToKeep.push(imageFiles.parking);
-      if (typeof imageFiles.outsideView === "string")
-        imagesToKeep.push(imageFiles.outsideView);
-
-      // Add existing washroom images (strings)
-      imageFiles.washroom.forEach((image) => {
-        if (typeof image === "string") {
-          imagesToKeep.push(image);
-        }
-      });
-
-      // Add images to keep
-      imagesToKeep.forEach((image) => {
-        formDataToSend.append("existingImages", image);
-      });
-
-      // Add new image files (File objects)
-      if (imageFiles.mainHall && typeof imageFiles.mainHall !== "string")
-        formDataToSend.append("images", imageFiles.mainHall);
-      if (imageFiles.stage && typeof imageFiles.stage !== "string")
-        formDataToSend.append("images", imageFiles.stage);
-      if (imageFiles.seating && typeof imageFiles.seating !== "string")
-        formDataToSend.append("images", imageFiles.seating);
-      if (imageFiles.dining && typeof imageFiles.dining !== "string")
-        formDataToSend.append("images", imageFiles.dining);
-      if (imageFiles.parking && typeof imageFiles.parking !== "string")
-        formDataToSend.append("images", imageFiles.parking);
-      if (imageFiles.outsideView && typeof imageFiles.outsideView !== "string")
-        formDataToSend.append("images", imageFiles.outsideView);
-
-      // Add new washroom image files
-      imageFiles.washroom.forEach((file) => {
-        if (typeof file !== "string") {
-          formDataToSend.append("images", file);
-        }
-      });
-
-      await axios.put(`/api/halls/${id}`, formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Show different message based on initial status
       if (initialApprovalStatus === "rejected" || initialApprovalStatus === false) {
         toast.success("Hall updated and resubmitted for admin review!");
       } else {
         toast.success("Hall updated successfully!");
       }
-      
+
       navigate("/hall-owner/halls");
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to update hall");
     } finally {
       setSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -493,31 +435,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.mainHall && (
                     <div className="image-preview">
-                      {typeof imageFiles.mainHall === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.mainHall.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Main Hall"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.mainHall)}
-                          alt="Main Hall"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("mainHall")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.mainHall === "string" ? imageFiles.mainHall : URL.createObjectURL(imageFiles.mainHall)}
+                        alt="Main Hall" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("mainHall")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -545,31 +467,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.stage && (
                     <div className="image-preview">
-                      {typeof imageFiles.stage === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.stage.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Stage"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.stage)}
-                          alt="Stage"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("stage")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.stage === "string" ? imageFiles.stage : URL.createObjectURL(imageFiles.stage)}
+                        alt="Stage" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("stage")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -597,31 +499,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.seating && (
                     <div className="image-preview">
-                      {typeof imageFiles.seating === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.seating.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Seating Arrangement"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.seating)}
-                          alt="Seating Arrangement"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("seating")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.seating === "string" ? imageFiles.seating : URL.createObjectURL(imageFiles.seating)}
+                        alt="Seating Arrangement" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("seating")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -649,31 +531,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.dining && (
                     <div className="image-preview">
-                      {typeof imageFiles.dining === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.dining.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Dining Area"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.dining)}
-                          alt="Dining Area"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("dining")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.dining === "string" ? imageFiles.dining : URL.createObjectURL(imageFiles.dining)}
+                        alt="Dining Area" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("dining")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -701,31 +563,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.parking && (
                     <div className="image-preview">
-                      {typeof imageFiles.parking === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.parking.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Parking Area"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.parking)}
-                          alt="Parking Area"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("parking")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.parking === "string" ? imageFiles.parking : URL.createObjectURL(imageFiles.parking)}
+                        alt="Parking Area" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("parking")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -753,31 +595,11 @@ const EditHall = () => {
                   )}
                   {imageFiles.outsideView && (
                     <div className="image-preview">
-                      {typeof imageFiles.outsideView === "string" ? (
-                        // Existing image from server
-                        <img
-                          src={`http://localhost:5000/uploads/${imageFiles.outsideView.replace(
-                            "uploads/",
-                            "",
-                          )}`}
-                          alt="Outside View"
-                          className="preview-image"
-                        />
-                      ) : (
-                        // New uploaded image
-                        <img
-                          src={URL.createObjectURL(imageFiles.outsideView)}
-                          alt="Outside View"
-                          className="preview-image"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImageFile("outsideView")}
-                        className="remove-image"
-                      >
-                        ×
-                      </button>
+                      <img
+                        src={typeof imageFiles.outsideView === "string" ? imageFiles.outsideView : URL.createObjectURL(imageFiles.outsideView)}
+                        alt="Outside View" className="preview-image"
+                      />
+                      <button type="button" onClick={() => removeImageFile("outsideView")} className="remove-image">×</button>
                       <div className="image-status">Current Photo</div>
                     </div>
                   )}
@@ -806,24 +628,11 @@ const EditHall = () => {
                     <div className="image-gallery">
                       {imageFiles.washroom.map((image, index) => (
                         <div key={index} className="image-preview">
-                          {typeof image === "string" ? (
-                            // Existing image from server
-                            <img
-                              src={`http://localhost:5000/uploads/${image.replace(
-                                "uploads/",
-                                "",
-                              )}`}
-                              alt={`Washroom ${index + 1}`}
-                              className="preview-image"
-                            />
-                          ) : (
-                            // New uploaded image
-                            <img
-                              src={URL.createObjectURL(image)}
-                              alt={`Washroom ${index + 1}`}
-                              className="preview-image"
-                            />
-                          )}
+                          <img
+                            src={typeof image === "string" ? image : URL.createObjectURL(image)}
+                            alt={`Washroom ${index + 1}`}
+                            className="preview-image"
+                          />
                           <button
                             type="button"
                             onClick={() => removeWashroomImageFile(index)}
@@ -846,7 +655,11 @@ const EditHall = () => {
                 className="btn btn-primary"
                 disabled={saving}
               >
-                {saving ? "Saving..." : "Update Hall"}
+                {saving
+                  ? uploadProgress > 0
+                    ? `Uploading... ${uploadProgress}%`
+                    : "Saving..."
+                  : "Update Hall"}
               </button>
               <button
                 type="button"
