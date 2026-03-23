@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AddressAutocomplete from "../../components/commons/AddressAutocomplete";
+import { uploadToCloudinary, uploadMultipleToCloudinary } from "../../utils/cloudinaryUpload";
 import "./HallForm.css";
 
 const AddHall = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -90,24 +92,13 @@ const AddHall = () => {
 
   const handleImageUpload = (category, file) => {
     if (file) {
-      // Validate file type
       if (!file.type.startsWith("image/")) {
         toast.error("Please select a valid image file");
         return;
       }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return;
-      }
-
       setFormData({
         ...formData,
-        images: {
-          ...formData.images,
-          [category]: file,
-        },
+        images: { ...formData.images, [category]: file },
       });
     }
   };
@@ -118,20 +109,12 @@ const AddHall = () => {
         toast.error("Please select valid image files only");
         return false;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return false;
-      }
       return true;
     });
-
     if (validFiles.length > 0) {
       setFormData({
         ...formData,
-        images: {
-          ...formData.images,
-          washroom: [...formData.images.washroom, ...validFiles],
-        },
+        images: { ...formData.images, washroom: [...formData.images.washroom, ...validFiles] },
       });
     }
   };
@@ -159,64 +142,42 @@ const AddHall = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setUploadProgress(0);
 
     try {
-      const formDataToSend = new FormData();
+      // 1. Collect all image files
+      const imageCategories = ["mainHall", "stage", "seating", "dining", "parking", "outsideView"];
+      const filesToUpload = [];
 
-      // Add basic form data
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("location[address]", formData.location.address);
-      formDataToSend.append("location[city]", formData.location.city);
-      formDataToSend.append("location[state]", formData.location.state);
-      formDataToSend.append("location[pincode]", formData.location.pincode);
-      
-      // Add Google Maps data
-      if (formData.location.googleMapsUrl) {
-        formDataToSend.append("location[googleMapsUrl]", formData.location.googleMapsUrl);
-      }
-      if (formData.location.coordinates.lat && formData.location.coordinates.lng) {
-        formDataToSend.append("location[coordinates][lat]", formData.location.coordinates.lat);
-        formDataToSend.append("location[coordinates][lng]", formData.location.coordinates.lng);
-      }
-      
-      formDataToSend.append("capacity", formData.capacity);
-      formDataToSend.append("pricePerHour", formData.pricePerHour);
-
-      // Add amenities
-      formData.amenities.forEach((amenity) => {
-        formDataToSend.append("amenities", amenity);
+      imageCategories.forEach((cat) => {
+        if (formData.images[cat]) filesToUpload.push(formData.images[cat]);
       });
+      formData.images.washroom.forEach((f) => filesToUpload.push(f));
 
-      // Add image files
-      if (formData.images.mainHall) {
-        formDataToSend.append("images", formData.images.mainHall);
-      }
-      if (formData.images.stage) {
-        formDataToSend.append("images", formData.images.stage);
-      }
-      if (formData.images.seating) {
-        formDataToSend.append("images", formData.images.seating);
-      }
-      if (formData.images.dining) {
-        formDataToSend.append("images", formData.images.dining);
-      }
-      if (formData.images.parking) {
-        formDataToSend.append("images", formData.images.parking);
-      }
-      if (formData.images.outsideView) {
-        formDataToSend.append("images", formData.images.outsideView);
+      // 2. Upload all images directly to Cloudinary
+      let imageUrls = [];
+      if (filesToUpload.length > 0) {
+        toast.info("Uploading images...");
+        imageUrls = await uploadMultipleToCloudinary(
+          filesToUpload,
+          "hall-booking/halls",
+          (p) => setUploadProgress(p)
+        );
       }
 
-      // Add washroom images
-      formData.images.washroom.forEach((file) => {
-        formDataToSend.append("images", file);
-      });
+      // 3. Send only URLs + form data to backend (tiny payload)
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        capacity: formData.capacity,
+        pricePerHour: formData.pricePerHour,
+        amenities: formData.amenities,
+        images: imageUrls,
+      };
 
-      await axios.post("/api/halls", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      await axios.post("/api/halls", payload, {
+        headers: { "Content-Type": "application/json" },
       });
 
       toast.success("Hall added successfully! Waiting for admin approval.");
@@ -226,6 +187,7 @@ const AddHall = () => {
       toast.error(error.response?.data?.message || "Failed to add hall");
     } finally {
       setLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -663,7 +625,11 @@ const AddHall = () => {
                 className="btn btn-primary"
                 disabled={loading}
               >
-                {loading ? "Adding..." : "Add Hall"}
+                {loading
+                  ? uploadProgress > 0
+                    ? `Uploading... ${uploadProgress}%`
+                    : "Adding..."
+                  : "Add Hall"}
               </button>
               <button
                 type="button"
