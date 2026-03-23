@@ -9,14 +9,14 @@ import "./AdminDashboard.css";
 // Hall Details Dialog Component
 const HallDetailsDialog = ({ hall, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   if (!hall) return null;
 
   const images =
     hall.images && hall.images.length > 0
       ? hall.images.map((img) =>
-          img.startsWith("http") ? img : `http://localhost:5000/${img}`
-        )
+        img.startsWith("http") ? img : `http://localhost:5000/${img}`
+      )
       : ["https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800"];
 
   return (
@@ -471,29 +471,15 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails, onViewReviews }
 
         <div className="hall-details">
           <div className="detail-item">
-            <span><b style={{'color':'orange'}}>Capacity:</b> {hall.capacity}people</span>
+            <span><b style={{ 'color': 'orange' }}>Capacity:</b> {hall.capacity}people</span>
           </div>
           <div className="detail-item">
-            <span><b style={{'color':'orange'}}>Price:₹</b>{hall.pricePerHour}/hr</span>
+            <span><b style={{ 'color': 'orange' }}>Price:₹</b>{hall.pricePerHour}/hr</span>
           </div>
         </div>
 
         <div className="hall-owner-info">
           <div className="owner-avatar">
-            {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg> */}
           </div>
           <div className="owner-details">
             <span className="owner-label">Owner  </span>
@@ -650,10 +636,10 @@ const AdminHallTableRow = ({ hall, handleApproveHall, onViewReviews }) => {
 };
 
 const AdminUserTableRow = ({ user, handleDeleteUser, handleBlockUser }) => {
-  const profileImageUrl = user.profileImage 
-    ? (user.profileImage.startsWith('http') 
-        ? user.profileImage 
-        : `http://localhost:5000/${user.profileImage}`)
+  const profileImageUrl = user.profileImage
+    ? (user.profileImage.startsWith('http')
+      ? user.profileImage
+      : `http://localhost:5000/${user.profileImage}`)
     : null;
 
   return (
@@ -809,10 +795,10 @@ const AdminUserTableRow = ({ user, handleDeleteUser, handleBlockUser }) => {
               <path d="M3 6h18"></path>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
-          </svg>
-        </button>
-      </div>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+        </div>
       </td>
     </tr>
   );
@@ -1302,7 +1288,7 @@ const AdminDashboard = () => {
               {/* Halls Search & Filter Bar */}
               <div className="users-search-bar">
                 <div className="users-search-input-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                   <input
                     type="text"
                     placeholder="Search by hall name, city or owner..."
@@ -1426,23 +1412,6 @@ const AdminDashboard = () => {
               <div className="section-header">
                 <div className="section-info">
                   <h2>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="responsive-icon"
-                    >
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
                     <span className="section-title">User Management</span>
                   </h2>
                   <p className="section-description">
@@ -1508,7 +1477,7 @@ const AdminDashboard = () => {
               {/* Search & Filter Bar */}
               <div className="users-search-bar">
                 <div className="users-search-input-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                   <input
                     type="text"
                     placeholder="Search by name, email or phone..."
@@ -1591,10 +1560,10 @@ const AdminDashboard = () => {
                     }
                     return true;
                   }).map((user) => {
-                    const profileImageUrl = user.profileImage 
-                      ? (user.profileImage.startsWith('http') 
-                          ? user.profileImage 
-                          : `http://localhost:5000/${user.profileImage}`)
+                    const profileImageUrl = user.profileImage
+                      ? (user.profileImage.startsWith('http')
+                        ? user.profileImage
+                        : `http://localhost:5000/${user.profileImage}`)
                       : null;
 
                     return (
@@ -1840,7 +1809,7 @@ const AdminDashboard = () => {
                       }
                       return true;
                     });
-                    const headers = ["Hall","City","User","Email","Phone","Date","Start Time","End Time","Amount","Status","Payment"];
+                    const headers = ["Hall", "City", "User", "Email", "Phone", "Date", "Start Time", "End Time", "Amount", "Status", "Payment"];
                     const rows = filtered.map(b => [
                       b.hall?.name || "",
                       b.hall?.location?.city || "",
@@ -1854,12 +1823,12 @@ const AdminDashboard = () => {
                       b.status || "",
                       b.paymentStatus || ""
                     ]);
-                    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+                    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
                     const blob = new Blob([csv], { type: "text/csv" });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;
-                    a.download = `bookings_${new Date().toISOString().slice(0,10)}.csv`;
+                    a.download = `bookings_${new Date().toISOString().slice(0, 10)}.csv`;
                     a.click();
                     URL.revokeObjectURL(url);
                     setTimeout(() => {
@@ -1888,9 +1857,9 @@ const AdminDashboard = () => {
                     </svg>
                   )}
                 </button>
-                <div className="users-search-bar" style={{flex: 1}}>
+                <div className="users-search-bar" style={{ flex: 1 }}>
                   <div className="users-search-input-wrap">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                     <input
                       type="text"
                       placeholder="Search by hall, user or email..."
@@ -1916,19 +1885,19 @@ const AdminDashboard = () => {
                   <span className="revenue-label">Total Revenue</span>
                   <span className="revenue-amount">
                     ₹{bookings
-                        .filter(b => {
-                          if (bookingStatusFilter !== "all" && b.status !== bookingStatusFilter) return false;
-                          if (bookingSearch) {
-                            const q = bookingSearch.toLowerCase();
-                            return b.hall?.name?.toLowerCase().includes(q) ||
-                              b.user?.name?.toLowerCase().includes(q) ||
-                              b.user?.email?.toLowerCase().includes(q);
-                          }
-                          return true;
-                        })
-                        .filter(b => b.paymentStatus === "paid")
-                        .reduce((sum, b) => sum + (b.totalAmount || 0), 0)
-                        .toLocaleString("en-IN")}
+                      .filter(b => {
+                        if (bookingStatusFilter !== "all" && b.status !== bookingStatusFilter) return false;
+                        if (bookingSearch) {
+                          const q = bookingSearch.toLowerCase();
+                          return b.hall?.name?.toLowerCase().includes(q) ||
+                            b.user?.name?.toLowerCase().includes(q) ||
+                            b.user?.email?.toLowerCase().includes(q);
+                        }
+                        return true;
+                      })
+                      .filter(b => b.paymentStatus === "paid")
+                      .reduce((sum, b) => sum + (b.totalAmount || 0), 0)
+                      .toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
@@ -2031,20 +2000,6 @@ const AdminDashboard = () => {
               <div className="section-header">
                 <div className="section-info">
                   <h2>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                    </svg>
                     <span className="section-title">Unblock Requests</span>
                   </h2>
                   <p className="section-description">
@@ -2083,8 +2038,8 @@ const AdminDashboard = () => {
                           <div className="user-avatar-small">
                             {request.relatedId?.profileImage ? (
                               <img
-                                src={request.relatedId.profileImage.startsWith('http') 
-                                  ? request.relatedId.profileImage 
+                                src={request.relatedId.profileImage.startsWith('http')
+                                  ? request.relatedId.profileImage
                                   : `http://localhost:5000/${request.relatedId.profileImage}`}
                                 alt={request.requestData?.userName || request.relatedId?.name || "User"}
                                 className="user-avatar-image"
