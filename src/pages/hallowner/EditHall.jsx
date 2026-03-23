@@ -217,7 +217,7 @@ const EditHall = () => {
       // 2. Upload new files directly to Cloudinary
       let newUrls = [];
       if (newFiles.length > 0) {
-        toast.info("Uploading images...");
+        toast.info("Updating hall, please wait...");
         newUrls = await uploadMultipleToCloudinary(
           newFiles,
           "hall-booking/halls",
@@ -657,8 +657,8 @@ const EditHall = () => {
               >
                 {saving
                   ? uploadProgress > 0
-                    ? `Uploading... ${uploadProgress}%`
-                    : "Saving..."
+                    ? `Updating... ${uploadProgress}%`
+                    : "Updating..."
                   : "Update Hall"}
               </button>
               <button

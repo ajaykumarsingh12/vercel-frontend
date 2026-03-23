@@ -157,7 +157,7 @@ const AddHall = () => {
       // 2. Upload all images directly to Cloudinary
       let imageUrls = [];
       if (filesToUpload.length > 0) {
-        toast.info("Uploading images...");
+        toast.info("Adding hall, please wait...");
         imageUrls = await uploadMultipleToCloudinary(
           filesToUpload,
           "hall-booking/halls",
@@ -627,7 +627,7 @@ const AddHall = () => {
               >
                 {loading
                   ? uploadProgress > 0
-                    ? `Uploading... ${uploadProgress}%`
+                    ? `Adding... ${uploadProgress}%`
                     : "Adding..."
                   : "Add Hall"}
               </button>
