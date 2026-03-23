@@ -129,6 +129,32 @@
   padding: 5rem 0rem;
   background: var(--bg-gradient);
   contain: layout style;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Leaf branch decorations */
+.leaf-branch {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.22;
+}
+
+.leaf-branch-left {
+  top: -10px;
+  left: -20px;
+  width: 360px;
+}
+
+.leaf-branch-right {
+  bottom: -10px;
+  right: -20px;
+  width: 360px;
+  transform: rotate(180deg);
+}
+
+[data-theme="dark"] .leaf-branch {
+  opacity: 0.07;
 }
 
 .section-header {

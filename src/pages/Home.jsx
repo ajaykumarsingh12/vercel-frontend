@@ -111,6 +111,41 @@ const Home = () => {
 
       {/* Featured Halls Section */}
       <div className="featured-halls-section" ref={cardsSectionRef}>
+        {/* Decorative leaf branches */}
+        <svg className="leaf-branch leaf-branch-left" aria-hidden="true" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 200 Q80 160 160 80 Q220 20 340 10" stroke="#e8a0b0" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+          <path d="M60 170 Q40 140 70 120 Q85 145 60 170Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M62 155 Q68 138 62 122" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M100 140 Q75 110 105 88 Q122 115 100 140Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M102 125 Q108 107 102 90" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M145 105 Q118 78 148 55 Q165 80 145 105Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M147 90 Q153 72 147 57" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M195 68 Q172 42 200 20 Q218 44 195 68Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M197 53 Q203 36 197 22" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M250 42 Q232 18 258 2 Q272 24 250 42Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M75 185 Q95 165 80 145 Q62 162 75 185Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M77 170 Q72 155 78 145" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M120 158 Q142 138 128 116 Q108 133 120 158Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M122 143 Q117 127 123 116" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M168 122 Q190 102 176 80 Q156 97 168 122Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M218 85 Q240 65 226 43 Q206 60 218 85Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+        </svg>
+        <svg className="leaf-branch leaf-branch-right" aria-hidden="true" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 200 Q80 160 160 80 Q220 20 340 10" stroke="#e8a0b0" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+          <path d="M60 170 Q40 140 70 120 Q85 145 60 170Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M62 155 Q68 138 62 122" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M100 140 Q75 110 105 88 Q122 115 100 140Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M102 125 Q108 107 102 90" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M145 105 Q118 78 148 55 Q165 80 145 105Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M147 90 Q153 72 147 57" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M195 68 Q172 42 200 20 Q218 44 195 68Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M197 53 Q203 36 197 22" stroke="#e8a0b0" strokeWidth="0.8" fill="none"/>
+          <path d="M250 42 Q232 18 258 2 Q272 24 250 42Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M75 185 Q95 165 80 145 Q62 162 75 185Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M120 158 Q142 138 128 116 Q108 133 120 158Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M168 122 Q190 102 176 80 Q156 97 168 122Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+          <path d="M218 85 Q240 65 226 43 Q206 60 218 85Z" stroke="#e8a0b0" strokeWidth="1.4" fill="none"/>
+        </svg>
         <div className="container">
           <div className="section-header">
             <h2>Featured Wedding Halls</h2>
