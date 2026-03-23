@@ -1949,7 +1949,7 @@ const AdminDashboard = () => {
                         {Object.entries(grouped).map(([date, dayBookings]) => (
                           <div key={date} className="timeline-day">
                             <div className="timeline-date-label">
-                              <span className="timeline-date-dot">📅</span>
+                              <span className="timeline-date-dot">💐</span>
                               <span className="timeline-date-text">{date}</span>
                               <span className="timeline-date-count">{dayBookings.length} booking{dayBookings.length > 1 ? "s" : ""}</span>
                             </div>
