@@ -1157,6 +1157,164 @@
 
 .reviews-list { display: grid; gap: 1.25rem; }
 
+/* ── Reviews Carousel ── */
+.reviews-carousel-wrapper { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.reviews-carousel-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.review-card-carousel {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 1.25rem;
+  border: 1px solid var(--input-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeSlideIn 0.3s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.review-card-carousel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.rcc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rcc-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.rcc-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rcc-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rcc-date {
+  font-size: 0.72rem;
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.rcc-stars { display: flex; gap: 1px; flex-shrink: 0; }
+.rcc-stars .star { font-size: 0.95rem; color: #e2e8f0; }
+.rcc-stars .star.filled { color: #fbbf24; }
+
+.rcc-text {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  opacity: 0.82;
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+.rcc-verified {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Controls */
+.reviews-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.rcc-nav-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--input-border);
+  background: var(--card-bg);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rcc-nav-btn:hover:not(:disabled) {
+  border-color: #f97316;
+  color: #f97316;
+  transform: scale(1.08);
+}
+
+.rcc-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.rcc-dots { display: flex; gap: 0.4rem; align-items: center; }
+
+.rcc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--input-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.rcc-dot.active {
+  background: #f97316;
+  width: 22px;
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .reviews-carousel-track { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .reviews-carousel-track { grid-template-columns: 1fr; }
+}
+/* Adding  */
+@media (max-width: 390px) {
+  .review-card-carousel{
+  padding: 5px;
+ 
+  }
+}
+
 .review-card {
   padding: 1.5rem;
   border: 1px solid var(--input-border);
@@ -1837,7 +1995,7 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
-
+ 
   .similar-halls-section { padding: 0 0.5rem; }
 
   .booking-modal-overlay { padding: 0.5rem; }

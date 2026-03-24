@@ -18,40 +18,62 @@ import "./HallDetail.css";
 
 
 const REVIEW_LIMIT = 170;
+
+// Avatar color based on name
+const getAvatarColor = (name = "") => {
+  const colors = ["#f97316","#6366f1","#10b981","#e74c3c","#3b82f6","#8b5cf6","#ec4899","#14b8a6"];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+};
+
+const getRatingBorderColor = (rating) => {
+  if (rating >= 5) return "#10b981";
+  if (rating >= 4) return "#22c55e";
+  if (rating >= 3) return "#f59e0b";
+  if (rating >= 2) return "#f97316";
+  return "#ef4444";
+};
+
 const ReviewCard = ({ review }) => {
   const [expanded, setExpanded] = useState(false);
   const isLong = review.comment?.length > REVIEW_LIMIT;
   const displayText = isLong && !expanded
     ? review.comment.slice(0, REVIEW_LIMIT) + "..."
     : review.comment;
+  const name = review.user?.name || "User";
+  const initials = name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+  const avatarColor = getAvatarColor(name);
+  const borderColor = getRatingBorderColor(review.rating);
 
   return (
-    <div className="review-card">
-      <div className="review-header">
-        <div className="reviewer-info">
-          <span className="reviewer-name">{review.user?.name}</span>
-          <span className="review-date">
+    <div className="review-card-carousel" style={{ borderTop: `3px solid ${borderColor}` }}>
+      <div className="rcc-header">
+        <div className="rcc-avatar" style={{ background: avatarColor }}>{initials}</div>
+        <div className="rcc-meta">
+          <span className="rcc-name">{name}</span>
+          <span className="rcc-date">
             {review.booking?.bookingDate
               ? new Date(review.booking.bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
               : new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
           </span>
         </div>
-        <div className="review-rating">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <span key={star} className={`star ${star <= review.rating ? "filled" : ""}`}>★</span>
+        <div className="rcc-stars">
+          {[1,2,3,4,5].map(s => (
+            <span key={s} className={`star ${s <= review.rating ? "filled" : ""}`}>★</span>
           ))}
         </div>
       </div>
-      <p className="review-text">
+      <p className="rcc-text">
         {displayText}
         {isLong && (
           <button className="read-more-btn" onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Read less" : "Read more"}
-            <span className={`read-more-arrow ${expanded ? 'open' : ''}`}>▾</span>
+            {expanded ? " Read less" : " Read more"}
+            <span className={`read-more-arrow ${expanded ? "open" : ""}`}>▾</span>
           </button>
         )}
       </p>
-      {review.isVerified && <b>✓ Verified Booking</b>}
+      {review.isVerified && <span className="rcc-verified">✓ Verified Booking</span>}
     </div>
   );
 };
@@ -110,6 +132,10 @@ const HallDetail = () => {
   // Gallery state
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  // Reviews carousel state
+  const [reviewPage, setReviewPage] = useState(0);
+  const REVIEWS_PER_PAGE = 3;
 
   const imageLabels = [
     "Main Hall", "Stage", "Seating", "Dining Area",
@@ -1031,13 +1057,46 @@ const HallDetail = () => {
           </div>
         </div>
 
-        <div className="reviews-list">
+        <div className="reviews-carousel-wrapper">
           {reviewsData.reviews.length === 0 ? (
             <p className="no-reviews-text">No reviews yet for this hall.</p>
           ) : (
-            reviewsData.reviews.map((review) => (
-              <ReviewCard key={review._id} review={review} />
-            ))
+            <>
+              <div className="reviews-carousel-track">
+                {reviewsData.reviews
+                  .slice(reviewPage * REVIEWS_PER_PAGE, reviewPage * REVIEWS_PER_PAGE + REVIEWS_PER_PAGE)
+                  .map((review) => (
+                    <ReviewCard key={review._id} review={review} />
+                  ))}
+              </div>
+              {reviewsData.reviews.length > REVIEWS_PER_PAGE && (
+                <div className="reviews-carousel-controls">
+                  <button
+                    className="rcc-nav-btn"
+                    onClick={() => setReviewPage(p => Math.max(0, p - 1))}
+                    disabled={reviewPage === 0}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <div className="rcc-dots">
+                    {Array.from({ length: Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) }).map((_, i) => (
+                      <button
+                        key={i}
+                        className={`rcc-dot ${i === reviewPage ? "active" : ""}`}
+                        onClick={() => setReviewPage(i)}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    className="rcc-nav-btn"
+                    onClick={() => setReviewPage(p => Math.min(Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) - 1, p + 1))}
+                    disabled={reviewPage >= Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) - 1}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
