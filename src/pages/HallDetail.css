@@ -1503,9 +1503,6 @@
 .share-menu-option.whatsapp { color: #25d366; }
 .share-menu-option.copy     { color: #6366f1; }
 
-/* ============================================================
-   SIMILAR HALL CONTENT (missing base styles)
-   ============================================================ */
 .similar-hall-content {
   padding: 1.25rem;
   display: flex;
@@ -1571,7 +1568,7 @@
 
 .booking-modal-content {
   background: var(--card-bg);
-  border-radius: 24px;
+  border-radius: 10px;
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
@@ -1587,18 +1584,34 @@
   .booking-modal-overlay {
     padding: 0;
     align-items: flex-end;
+    overflow: hidden;
   }
 
   .booking-modal-content {
-    max-width: 100%;
-    width: 100%;
+    max-width: 100vw;
+    width: 100vw;
     max-height: 100dvh;
     height: 100dvh;
     border-radius: 0;
     transform: translateY(100%);
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .booking-modal-content.visible { transform: translateY(0); }
+
+  .booking-modal-main {
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .booking-modal-form *,
+  .input-wrapper,
+  .duration-display,
+  .pricing-display {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .booking-modal-main { padding: 2rem; position: relative; }
@@ -1892,7 +1905,7 @@
   .similar-halls-grid-scrollable { grid-template-columns: 1fr; gap: 1rem; }
 
   /* Booking modal */
-  .booking-modal-content { border-radius: 20px; }
+  .booking-modal-content { border-radius: 0; }
   .booking-modal-main { padding: 1.5rem; }
   .booking-modal-header h2 { font-size: 1.2rem; }
 
@@ -1998,9 +2011,38 @@
  
   .similar-halls-section { padding: 0 0.5rem; }
 
-  .booking-modal-overlay { padding: 0.5rem; }
-  .booking-modal-content { border-radius: 16px; }
-  .booking-modal-main { padding: 1rem; }
+  .booking-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+    overflow: hidden;
+  }
+  .booking-modal-content {
+    border-radius: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  .booking-modal-main {
+    padding: 1rem !important;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  .booking-modal-form,
+  .form-row,
+  .input-wrapper,
+  .duration-display,
+  .pricing-display,
+  .booking-modal-form input,
+  .booking-modal-form textarea {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .input-icon {
+    right: 0.5rem;
+  }
 }
 
 /* Extreme small (320px) */
