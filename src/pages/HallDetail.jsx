@@ -135,7 +135,22 @@ const HallDetail = () => {
 
   // Reviews carousel state
   const [reviewPage, setReviewPage] = useState(0);
+  const [reviewFilter, setReviewFilter] = useState("newest");
   const REVIEWS_PER_PAGE = 3;
+
+  const REVIEW_FILTERS = [
+    { key: "newest", label: "Newest", icon: "🕐" },
+    { key: "oldest", label: "Oldest", icon: "📅" },
+    { key: "5",      label: "5 Star",  icon: "⭐" },
+    { key: "4",      label: "4 Star",  icon: "⭐" },
+  ];
+
+  const getFilteredReviews = () => {
+    let list = [...reviewsData.reviews];
+    if (reviewFilter === "newest") return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (reviewFilter === "oldest") return list.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    return list.filter(r => r.rating === Number(reviewFilter));
+  };
 
   const imageLabels = [
     "Main Hall", "Stage", "Seating", "Dining Area",
@@ -1062,40 +1077,70 @@ const HallDetail = () => {
             <p className="no-reviews-text">No reviews yet for this hall.</p>
           ) : (
             <>
-              <div className="reviews-carousel-track">
-                {reviewsData.reviews
-                  .slice(reviewPage * REVIEWS_PER_PAGE, reviewPage * REVIEWS_PER_PAGE + REVIEWS_PER_PAGE)
-                  .map((review) => (
-                    <ReviewCard key={review._id} review={review} />
-                  ))}
+              {/* Segmented filter bar */}
+              <div className="review-filter-bar">
+                {REVIEW_FILTERS.map((f, idx) => (
+                  <button
+                    key={f.key}
+                    className={`review-filter-tab ${reviewFilter === f.key ? "active" : ""}`}
+                    onClick={() => { setReviewFilter(f.key); setReviewPage(0); }}
+                  >
+                    <span className="rft-icon">{f.icon}</span>
+                    <span className="rft-label">{f.label}</span>
+                    {f.key === "5" || f.key === "4" ? (
+                      <span className="rft-count">
+                        {reviewsData.reviews.filter(r => r.rating === Number(f.key)).length}
+                      </span>
+                    ) : null}
+                  </button>
+                ))}
               </div>
-              {reviewsData.reviews.length > REVIEWS_PER_PAGE && (
-                <div className="reviews-carousel-controls">
-                  <button
-                    className="rcc-nav-btn"
-                    onClick={() => setReviewPage(p => Math.max(0, p - 1))}
-                    disabled={reviewPage === 0}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                  </button>
-                  <div className="rcc-dots">
-                    {Array.from({ length: Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) }).map((_, i) => (
-                      <button
-                        key={i}
-                        className={`rcc-dot ${i === reviewPage ? "active" : ""}`}
-                        onClick={() => setReviewPage(i)}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    className="rcc-nav-btn"
-                    onClick={() => setReviewPage(p => Math.min(Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) - 1, p + 1))}
-                    disabled={reviewPage >= Math.ceil(reviewsData.reviews.length / REVIEWS_PER_PAGE) - 1}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                  </button>
-                </div>
-              )}
+
+              {(() => {
+                const filtered = getFilteredReviews();
+                const totalPages = Math.ceil(filtered.length / REVIEWS_PER_PAGE);
+                const page = Math.min(reviewPage, Math.max(0, totalPages - 1));
+                const visible = filtered.slice(page * REVIEWS_PER_PAGE, page * REVIEWS_PER_PAGE + REVIEWS_PER_PAGE);
+
+                return filtered.length === 0 ? (
+                  <p className="no-reviews-text">No {reviewFilter}-star reviews yet.</p>
+                ) : (
+                  <>
+                    <div className="reviews-carousel-track">
+                      {visible.map((review) => (
+                        <ReviewCard key={review._id} review={review} />
+                      ))}
+                    </div>
+                    {totalPages > 1 && (
+                      <div className="reviews-carousel-controls">
+                        <button
+                          className="rcc-nav-btn"
+                          onClick={() => setReviewPage(p => Math.max(0, p - 1))}
+                          disabled={page === 0}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                        <div className="rcc-dots">
+                          {Array.from({ length: totalPages }).map((_, i) => (
+                            <button
+                              key={i}
+                              className={`rcc-dot ${i === page ? "active" : ""}`}
+                              onClick={() => setReviewPage(i)}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          className="rcc-nav-btn"
+                          onClick={() => setReviewPage(p => Math.min(totalPages - 1, p + 1))}
+                          disabled={page >= totalPages - 1}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </>
           )}
         </div>
