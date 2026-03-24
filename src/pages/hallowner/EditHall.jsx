@@ -87,7 +87,7 @@ const EditHall = () => {
         capacity: hall.capacity,
         pricePerHour: hall.pricePerHour,
         amenities: hall.amenities || [],
-        isAvailable: hall.isAvailable,
+        isAvailable: hall.isAvailable !== false, // default to true unless explicitly false
         images: hall.images || [],
       });
 

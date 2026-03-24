@@ -453,7 +453,9 @@ const HallDetail = () => {
       }, 2000);
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to create booking");
+      const errData = error.response?.data;
+      const msg = errData?.message || errData?.errors?.[0]?.msg || "Failed to create booking";
+      toast.error(msg);
     } finally {
       setBooking(false);
     }
