@@ -2872,9 +2872,10 @@ button:active {
     margin-bottom: 14px;
   }
 
+  /* ADD Padding  */
   .hall-card,
   .user-card {
-    padding: 18px;
+    padding: 5px;
     margin-bottom: 18px;
   }
 
@@ -2962,7 +2963,7 @@ button:active {
 
   .hall-card,
   .user-card {
-    padding: 20px;
+    padding: 4px;
     margin-bottom: 20px;
   }
 

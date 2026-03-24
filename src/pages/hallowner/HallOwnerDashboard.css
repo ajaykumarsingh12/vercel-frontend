@@ -2557,7 +2557,14 @@
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
+@media only screen and (max-width:384px){
+  .action-buttons-section{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50px 50px 50px;
 
+  }
+}
 .dashboard-btn,
 .slot-management-btn,
 .earnings-report-btn {

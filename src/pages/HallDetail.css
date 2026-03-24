@@ -1425,6 +1425,24 @@
 
 .booking-modal-content.visible { transform: translateY(0); }
 
+@media (max-width: 640px) {
+  .booking-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .booking-modal-content {
+    max-width: 100%;
+    width: 100%;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    transform: translateY(100%);
+  }
+
+  .booking-modal-content.visible { transform: translateY(0); }
+}
+
 .booking-modal-main { padding: 2rem; position: relative; }
 
 .modal-close-btn {

@@ -942,7 +942,14 @@
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-
+/* Modify */
+@media only screen and (max-width: 480px) {
+  .hall-details  {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
 .detail-item {
   display: flex;
   flex-direction: column;
@@ -1132,9 +1139,15 @@
   /* Card Actions adjustments */
   .hall-card-actions {
     flex-direction: column;
+    align-items: anchor-center;
     gap: 0.75rem;
+  
   }
 
+.hall-card-actions {
+  display: grid;
+    grid-template-columns: 1fr 1fr;
+}
   .btn-action {
     width: 100%;
   }
@@ -1208,6 +1221,7 @@
   .hall-card-actions {
     padding: 1.25rem;
     padding-top: 0;
+    grid-template-columns: 1fr;
   }
 
   .hall-status-badges {
