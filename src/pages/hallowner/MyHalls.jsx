@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -297,6 +297,36 @@ const MyHallCard = ({ hall, handleDelete }) => {
   );
 };
 
+const CityRow = ({ city, halls, handleDelete }) => {
+  const rowRef = useRef(null);
+  return (
+    <div className="city-row">
+      <div className="city-row-header">
+        <span className="city-row-icon">📍</span>
+        <h3 className="city-row-title">{city}</h3>
+        <span className="city-row-count">{halls.length} {halls.length === 1 ? "hall" : "halls"}</span>
+      </div>
+      <div
+        className="city-row-scroll"
+        ref={rowRef}
+        onWheel={(e) => {
+          if (!window.matchMedia("(hover: hover)").matches) return;
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+          if (!rowRef.current) return;
+          e.preventDefault();
+          rowRef.current.scrollLeft += e.deltaY;
+        }}
+      >
+        {halls.map((hall) => (
+          <div key={hall._id} className="city-row-card">
+            <MyHallCard hall={hall} handleDelete={handleDelete} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const MyHalls = () => {
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -310,8 +340,6 @@ const MyHalls = () => {
     try {
       // Fetch only current user's halls
       const response = await axios.get("/api/halls/my-halls");
-      
-      console.log('📊 [Frontend] Fetched halls:', response.data.length);
       setHalls(response.data);
     } catch (error) {
       console.error('❌ [Frontend] Failed to fetch halls:', error);
@@ -597,15 +625,21 @@ const MyHalls = () => {
               </div>
 
               {viewMode === 'grid' ? (
-                <div className="halls-container grid">
-                  {halls.map((hall) => (
-                    <MyHallCard
-                      key={hall._id}
-                      hall={hall}
-                      handleDelete={handleDelete}
-                    />
-                  ))}
-                </div>
+                (() => {
+                  const grouped = halls.reduce((acc, hall) => {
+                    const city = hall.location?.city || "Other";
+                    if (!acc[city]) acc[city] = [];
+                    acc[city].push(hall);
+                    return acc;
+                  }, {});
+                  return (
+                    <div className="city-groups">
+                      {Object.entries(grouped).map(([city, cityHalls]) => (
+                        <CityRow key={city} city={city} halls={cityHalls} handleDelete={handleDelete} />
+                      ))}
+                    </div>
+                  );
+                })()
               ) : (
                 <div className="table-container">
                   <table className="halls-table">
