@@ -301,6 +301,7 @@ const MyHalls = () => {
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
+  const [searchQuery, setSearchQuery] = useState('');
   const hallsGridRef = useRef(null);
 
   useEffect(() => {
@@ -630,12 +631,29 @@ const MyHalls = () => {
                 </div>
               </div>
 
+              {/* Search bar */}
+              <div className="halls-search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input
+                  type="text"
+                  placeholder="Search halls by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="halls-search-input"
+                />
+                {searchQuery && (
+                  <button className="halls-search-clear" onClick={() => setSearchQuery('')}>✕</button>
+                )}
+              </div>
+
               {viewMode === 'grid' ? (
                 <div
                   className="halls-container grid"
                   ref={hallsGridRef}
                 >
-                  {halls.map((hall) => (
+                  {halls
+                    .filter(h => h.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                    .map((hall) => (
                     <MyHallCard
                       key={hall._id}
                       hall={hall}
@@ -659,7 +677,7 @@ const MyHalls = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {halls.map((hall) => {
+                      {halls.filter(h => h.name.toLowerCase().includes(searchQuery.toLowerCase())).map((hall) => {
                         const images =
                           hall.images && hall.images.length > 0
                             ? hall.images.map((img) =>
