@@ -304,6 +304,19 @@ const MyHalls = () => {
   const hallsGridRef = useRef(null);
 
   useEffect(() => {
+    const el = hallsGridRef.current;
+    if (!el) return;
+    const handler = (e) => {
+      if (!window.matchMedia("(hover: hover)").matches) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, [viewMode]);
+
+  useEffect(() => {
     fetchHalls();
   }, []);
 
@@ -599,13 +612,6 @@ const MyHalls = () => {
                 <div
                   className="halls-container grid"
                   ref={hallsGridRef}
-                  onWheel={(e) => {
-                    if (!window.matchMedia("(hover: hover)").matches) return;
-                    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-                    if (!hallsGridRef.current) return;
-                    e.preventDefault();
-                    hallsGridRef.current.scrollLeft += e.deltaY;
-                  }}
                 >
                   {halls.map((hall) => (
                     <MyHallCard
