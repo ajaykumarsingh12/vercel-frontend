@@ -708,6 +708,7 @@
 
 .halls-container.grid .hall-card-header {
   height: 160px;
+  aspect-ratio: 16 / 9;
 }
 
 .hall-image-container {

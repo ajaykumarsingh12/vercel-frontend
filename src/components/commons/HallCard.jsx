@@ -78,6 +78,10 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
             src={images[currentImageIndex]}
             alt={hall.name}
             className="browse-hall-card__image"
+            width={380}
+            height={250}
+            loading="lazy"
+            decoding="async"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}

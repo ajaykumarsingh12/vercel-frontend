@@ -31,6 +31,7 @@
   position: relative;
   width: 100%;
   height: 460px;
+  aspect-ratio: 16 / 9;
   border-radius: 2px;
   overflow: hidden;
   cursor: pointer;
@@ -1476,6 +1477,7 @@
   position: relative;
   width: 100%;
   height: 200px;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
 }
 

@@ -520,6 +520,10 @@ const HallDetail = () => {
                   src={getImageUrl(hall.images[activeImageIndex])}
                   alt={`${hall.name} - ${imageLabels[activeImageIndex] || "Photo"}`}
                   className="gallery-hero-img"
+                  fetchpriority="high"
+                  decoding="async"
+                  width={900}
+                  height={460}
                   onError={(e) => { e.target.src = "/placeholder-image.png"; }}
                 />
                 <div className="gallery-hero-overlay">
@@ -558,6 +562,10 @@ const HallDetail = () => {
                       <img
                         src={getImageUrl(img)}
                         alt={imageLabels[idx] || `Photo ${idx + 1}`}
+                        width={88}
+                        height={60}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => { e.target.src = "/placeholder-image.png"; }}
                       />
                       <span className="thumb-label">{imageLabels[idx] || `Photo ${idx + 1}`}</span>
@@ -1193,6 +1201,10 @@ const HallDetail = () => {
                           : "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=250&fit=crop&crop=center"
                       }
                       alt={similarHall.name}
+                      width={400}
+                      height={200}
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         e.target.src = "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=250&fit=crop&crop=center";
                       }}

@@ -48,6 +48,10 @@ const MyHallCard = ({ hall, handleDelete }) => {
               src={images[currentImageIndex]}
               alt={hall.name}
               className="hall-image"
+              width={300}
+              height={160}
+              loading="lazy"
+              decoding="async"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -696,6 +700,10 @@ const MyHalls = () => {
                                 <img
                                   src={images[0]}
                                   alt={hall.name}
+                                  width={80}
+                                  height={60}
+                                  loading="lazy"
+                                  decoding="async"
                                   onError={(e) => {
                                     e.target.src =
                                       "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=250&fit=crop&crop=center";
