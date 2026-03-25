@@ -306,14 +306,31 @@ const MyHalls = () => {
   useEffect(() => {
     const el = hallsGridRef.current;
     if (!el) return;
+
+    let velocity = 0;
+    let rafId = null;
+
+    const glide = () => {
+      if (Math.abs(velocity) < 0.5) { velocity = 0; return; }
+      el.scrollLeft += velocity;
+      velocity *= 0.88;
+      rafId = requestAnimationFrame(glide);
+    };
+
     const handler = (e) => {
       if (!window.matchMedia("(hover: hover)").matches) return;
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       e.preventDefault();
-      el.scrollLeft += e.deltaY;
+      velocity += e.deltaY * 0.8;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(glide);
     };
+
     el.addEventListener("wheel", handler, { passive: false });
-    return () => el.removeEventListener("wheel", handler);
+    return () => {
+      el.removeEventListener("wheel", handler);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [viewMode]);
 
   useEffect(() => {
