@@ -588,72 +588,6 @@
   margin-top: 0.25rem;
 }
 
-/* City-grouped horizontal rows */
-.city-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.city-row {}
-
-.city-row-header {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  padding-left: 0.25rem;
-}
-
-.city-row-icon { font-size: 1rem; }
-
-.city-row-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--secondary-color);
-  margin: 0;
-}
-
-.city-row-count {
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: rgba(249,115,22,0.12);
-  color: #f97316;
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
-  border: 1px solid rgba(249,115,22,0.2);
-}
-
-.city-row-scroll {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding-bottom: 0.5rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.city-row-scroll::-webkit-scrollbar { display: none; }
-
-.city-row-card {
-  flex: 0 0 300px;
-  min-width: 300px;
-}
-
-/* Mobile: allow natural wrap */
-@media (max-width: 640px) {
-  .city-row-scroll {
-    flex-wrap: wrap;
-    overflow-x: visible;
-  }
-  .city-row-card {
-    flex: 1 1 100%;
-    min-width: 0;
-  }
-}
-
 /* Halls Container */
 .halls-container {
   margin-bottom: 2rem;
@@ -665,23 +599,35 @@
   gap: 2rem;
 }
 
-/* Responsive Grid */
-@media (max-width: 1200px) {
+/* Desktop only: horizontal swipe row */
+@media (hover: hover) {
   .halls-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
     gap: 1.5rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .halls-container.grid::-webkit-scrollbar { display: none; }
+  .halls-container.grid > * {
+    flex: 0 0 300px;
+    min-width: 300px;
   }
 }
-@media (max-width: 1010px) {
-  .halls-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-}
+
+/* Mobile: keep grid */
 @media (max-width: 768px) {
   .halls-container.grid {
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.25rem;
+    overflow-x: visible;
+  }
+  .halls-container.grid > * {
+    flex: unset;
+    min-width: unset;
   }
 }
 

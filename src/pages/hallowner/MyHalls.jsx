@@ -297,40 +297,11 @@ const MyHallCard = ({ hall, handleDelete }) => {
   );
 };
 
-const CityRow = ({ city, halls, handleDelete }) => {
-  const rowRef = useRef(null);
-  return (
-    <div className="city-row">
-      <div className="city-row-header">
-        <span className="city-row-icon">📍</span>
-        <h3 className="city-row-title">{city}</h3>
-        <span className="city-row-count">{halls.length} {halls.length === 1 ? "hall" : "halls"}</span>
-      </div>
-      <div
-        className="city-row-scroll"
-        ref={rowRef}
-        onWheel={(e) => {
-          if (!window.matchMedia("(hover: hover)").matches) return;
-          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-          if (!rowRef.current) return;
-          e.preventDefault();
-          rowRef.current.scrollLeft += e.deltaY;
-        }}
-      >
-        {halls.map((hall) => (
-          <div key={hall._id} className="city-row-card">
-            <MyHallCard hall={hall} handleDelete={handleDelete} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 const MyHalls = () => {
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
+  const [viewMode, setViewMode] = useState('grid');
+  const hallsGridRef = useRef(null);
 
   useEffect(() => {
     fetchHalls();
@@ -625,21 +596,25 @@ const MyHalls = () => {
               </div>
 
               {viewMode === 'grid' ? (
-                (() => {
-                  const grouped = halls.reduce((acc, hall) => {
-                    const city = hall.location?.city || "Other";
-                    if (!acc[city]) acc[city] = [];
-                    acc[city].push(hall);
-                    return acc;
-                  }, {});
-                  return (
-                    <div className="city-groups">
-                      {Object.entries(grouped).map(([city, cityHalls]) => (
-                        <CityRow key={city} city={city} halls={cityHalls} handleDelete={handleDelete} />
-                      ))}
-                    </div>
-                  );
-                })()
+                <div
+                  className="halls-container grid"
+                  ref={hallsGridRef}
+                  onWheel={(e) => {
+                    if (!window.matchMedia("(hover: hover)").matches) return;
+                    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+                    if (!hallsGridRef.current) return;
+                    e.preventDefault();
+                    hallsGridRef.current.scrollLeft += e.deltaY;
+                  }}
+                >
+                  {halls.map((hall) => (
+                    <MyHallCard
+                      key={hall._id}
+                      hall={hall}
+                      handleDelete={handleDelete}
+                    />
+                  ))}
+                </div>
               ) : (
                 <div className="table-container">
                   <table className="halls-table">
