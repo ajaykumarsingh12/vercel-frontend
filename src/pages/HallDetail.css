@@ -1433,6 +1433,27 @@
   gap: 1.5rem;
 }
 
+/* Desktop: horizontal scroll via two-finger trackpad */
+@media (hover: hover) {
+  .similar-halls-grid-scrollable {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1.25rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: default;
+  }
+
+  .similar-halls-grid-scrollable::-webkit-scrollbar { display: none; }
+
+  .similar-hall-wrapper {
+    flex: 0 0 300px;
+    min-width: 300px;
+  }
+}
+
 .similar-hall-wrapper { min-width: 0; }
 
 .similar-hall-card {

@@ -114,6 +114,7 @@ const HallDetail = () => {
   // Rating bars scroll animation — callback ref so observer attaches immediately
   const [barsVisible, setBarsVisible] = useState(false);
   const reviewsSectionRef = useRef(null);
+  const similarHallsRef = useRef(null);
   const reviewsCallbackRef = (node) => {
     if (!node) return;
     reviewsSectionRef.current = node;
@@ -1167,7 +1168,18 @@ const HallDetail = () => {
               ))}
             </div>
           ) : (
-            <div className="similar-halls-grid-scrollable">
+            <div
+              className="similar-halls-grid-scrollable"
+              ref={similarHallsRef}
+              onWheel={(e) => {
+                if (!window.matchMedia("(hover: hover)").matches) return;
+                if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+                const el = similarHallsRef.current;
+                if (!el) return;
+                e.preventDefault();
+                el.scrollLeft += e.deltaY;
+              }}
+            >
               {similarHalls.map((similarHall) => (
               <div key={similarHall._id} className="similar-hall-wrapper">
                 <div className="similar-hall-card">
@@ -1196,10 +1208,6 @@ const HallDetail = () => {
                         <span>{similarHall.capacity}</span>
                       </div>
                       <div className="price-badge">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <line x1="12" y1="1" x2="12" y2="23"></line>
-                          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
                         <span>₹{similarHall.pricePerHour}/hr</span>
                       </div>
                     </div>
