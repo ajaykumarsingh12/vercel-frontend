@@ -320,6 +320,11 @@ const MyHalls = () => {
     const handler = (e) => {
       if (!window.matchMedia("(hover: hover)").matches) return;
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      const atStart = el.scrollLeft === 0 && e.deltaY < 0;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 && e.deltaY > 0;
+      if (atStart || atEnd) return; // let page scroll naturally
+
       e.preventDefault();
       velocity += e.deltaY * 0.8;
       if (rafId) cancelAnimationFrame(rafId);
