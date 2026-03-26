@@ -115,10 +115,11 @@ const Halls = () => {
     setAppliedFilters(emptyFilters);
   };
 
-  /* ... existing state ... */
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [sortBy, setSortBy] = useState("recommended");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [nameSearch, setNameSearch] = useState("");
+  const [searchExpanded, setSearchExpanded] = useState(false);
   const dropdownRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -180,7 +181,9 @@ const Halls = () => {
     return { budget, midRange, premium };
   };
 
-  const { budget, midRange, premium } = categorizeHallsByPrice(sortedHalls);
+  const { budget, midRange, premium } = categorizeHallsByPrice(
+    nameSearch ? sortedHalls.filter(h => h.name.toLowerCase().includes(nameSearch.toLowerCase())) : sortedHalls
+  );
 
   // Carousel navigation
   const scrollCarousel = (categoryId, direction) => {
@@ -374,6 +377,30 @@ const Halls = () => {
           <p className="results-count">
             {halls.length} {halls.length === 1 ? "venue available" : "venues available"}
           </p>
+
+          {/* Expandable name search */}
+          <div className={`hall-name-search ${searchExpanded ? "expanded" : ""}`}>
+            <button
+              className="hall-name-search-icon"
+              onClick={() => setSearchExpanded(v => !v)}
+              title="Search by name"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+            </button>
+            <input
+              type="text"
+              className="hall-name-search-input"
+              placeholder="Search by name..."
+              value={nameSearch}
+              onChange={e => setNameSearch(e.target.value)}
+            />
+            {nameSearch && (
+              <button className="hall-name-search-clear" onClick={() => setNameSearch("")}>✕</button>
+            )}
+          </div>
 
           <div className="sort-container">
             <label>Sort by:</label>

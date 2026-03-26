@@ -1466,3 +1466,67 @@
     max-width: 340px;
   }
 }
+
+/* Expandable name search */
+.hall-name-search {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1.5px solid var(--input-border);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: width 0.3s ease, border-color 0.2s ease;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.hall-name-search.expanded {
+  width: 260px;
+  border-color: #d4af37;
+}
+
+.hall-name-search-icon {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.hall-name-search-icon:hover { opacity: 1; color: #d4af37; }
+
+.hall-name-search-input {
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 0.88rem;
+  outline: none;
+  width: 0;
+  padding: 0;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.hall-name-search.expanded .hall-name-search-input {
+  width: 240px;
+  padding: 0 0.25rem;
+}
+
+.hall-name-search-clear {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0 0.5rem 0 0;
+  flex-shrink: 0;
+}
+
+.hall-name-search-clear:hover { color: #ef4444; }
