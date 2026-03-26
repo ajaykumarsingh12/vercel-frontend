@@ -478,13 +478,9 @@ const AdminHallCard = ({ hall, handleApproveHall, onViewDetails, onViewReviews }
         </div>
 
         <div className="hall-owner-info">
-          <div className="owner-avatar">
-          </div>
           <div className="owner-details">
-            <span className="owner-label">Owner  </span>
-            <span className="owner-name">
-              {hall.owner?.name}
-            </span>
+            <span className="owner-label">Owner </span>
+            <span className="owner-name">{hall.owner?.name}</span>
           </div>
         </div>
       </div>
