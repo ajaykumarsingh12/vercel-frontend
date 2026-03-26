@@ -2882,7 +2882,6 @@ button:active {
   }
 }
 
-/* ===== DESKTOP (1025px - 1399px) ===== */
 @media (min-width: 1025px) and (max-width: 1399px) {
   .dashboard-content {
     padding: 24px;
@@ -3199,7 +3198,6 @@ button:active {
   }
 }
 
-/* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
 
   .stat-card,
@@ -3209,6 +3207,7 @@ button:active {
   .view-btn,
   .hall-card-actions .btn {
     transition: none !important;
+    border-radius: 5px;
   }
 
   .stat-card:hover,
