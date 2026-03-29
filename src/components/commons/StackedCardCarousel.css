@@ -1,0 +1,92 @@
+/* Only visible on mobile */
+.stacked-carousel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .stacked-carousel {
+    display: flex;
+  }
+}
+
+/* Stage — tall enough to show peeking cards behind */
+.stacked-carousel__stage {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 580px;
+  margin-bottom: 1.2rem;
+}
+
+/* Base card styles */
+.stacked-card {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  transform-origin: top center;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.35s ease,
+              filter 0.35s ease;
+}
+
+/* Front card — full, sharp */
+.stacked-card--0 {
+  z-index: 3;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  filter: none;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* First card behind — peeking */
+.stacked-card--1 {
+  z-index: 2;
+  transform: translateY(16px) scale(0.93);
+  opacity: 0.72;
+  filter: brightness(0.82);
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Second card behind — more peeking */
+.stacked-card--2 {
+  z-index: 1;
+  transform: translateY(30px) scale(0.86);
+  opacity: 0.45;
+  filter: brightness(0.65);
+  pointer-events: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Dots */
+.stacked-carousel__dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.sc-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-color, #d1d5db);
+  transition: background 0.2s, width 0.2s, border-radius 0.2s;
+}
+
+.sc-dot--active {
+  background: #6c63ff;
+  width: 20px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .sc-dot {
+  background: #374151;
+}

@@ -664,3 +664,10 @@
 [data-theme="dark"] .faq-item.active .faq-icon {
   color: #818cf8;
 }
+
+/* Hide desktop grid on mobile — stacked carousel takes over */
+@media (max-width: 640px) {
+  .halls-grid-desktop {
+    display: none;
+  }
+}

@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroSection from "../components/commons/HeroSection";
 import HallCard from "../components/commons/HallCard";
 import HallCardSkeleton from "../components/commons/HallCardSkeleton";
+import StackedCardCarousel from "../components/commons/StackedCardCarousel";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import "./Home.css";
@@ -197,15 +198,20 @@ const Home = () => {
               </p>
             </div>
           ) : (
-            <div className="halls-grid-container">
-              <div className="halls-grid">
-                {featuredHalls.slice(0, 6).map((hall) => (
-                  <div key={hall._id} className="hall-grid-item">
-                    <HallCard hall={hall} renderStars={renderStars} />
-                  </div>
-                ))}
+            <>
+              {/* Desktop grid */}
+              <div className="halls-grid-container halls-grid-desktop">
+                <div className="halls-grid">
+                  {featuredHalls.slice(0, 6).map((hall) => (
+                    <div key={hall._id} className="hall-grid-item">
+                      <HallCard hall={hall} renderStars={renderStars} />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+              {/* Mobile swipe stacked cards */}
+              <StackedCardCarousel halls={featuredHalls.slice(0, 6)} renderStars={renderStars} />
+            </>
           )}
         </div>
       </div>
