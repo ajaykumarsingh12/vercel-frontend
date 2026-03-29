@@ -13,16 +13,16 @@
   }
 }
 
-/* Stage — tall enough to show peeking cards behind */
+/* Stage — extra bottom space so peeking cards are visible */
 .stacked-carousel__stage {
   position: relative;
   width: 100%;
   max-width: 360px;
-  height: 580px;
+  height: 544px;
   margin-bottom: 1.2rem;
 }
 
-/* Base card styles */
+/* Base */
 .stacked-card {
   position: absolute;
   width: 100%;
@@ -31,38 +31,38 @@
   border-radius: 16px;
   overflow: hidden;
   transform-origin: top center;
-  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              opacity 0.35s ease,
-              filter 0.35s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.4s ease,
+              filter 0.4s ease;
 }
 
-/* Front card — full, sharp */
+/* Active card — front */
 .stacked-card--0 {
   z-index: 3;
   transform: translateY(0) scale(1);
   opacity: 1;
   filter: none;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
 }
 
-/* First card behind — peeking */
+/* First card — peeks 14px below, slightly smaller */
 .stacked-card--1 {
   z-index: 2;
-  transform: translateY(16px) scale(0.93);
-  opacity: 0.72;
-  filter: brightness(0.82);
+  transform: translateY(14px) scale(0.96);
+  opacity: 0.7;
+  filter: brightness(0.78);
   pointer-events: none;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
 }
 
-/* Second card behind — more peeking */
+/* Second card — peeks 26px below, more smaller */
 .stacked-card--2 {
   z-index: 1;
-  transform: translateY(30px) scale(0.86);
-  opacity: 0.45;
-  filter: brightness(0.65);
+  transform: translateY(26px) scale(0.92);
+  opacity: 0.4;
+  filter: brightness(0.58);
   pointer-events: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 /* Dots */
@@ -82,11 +82,11 @@
 }
 
 .sc-dot--active {
-  background: #6c63ff;
+  background: #fcae00;
   width: 20px;
   border-radius: 4px;
 }
 
 [data-theme="dark"] .sc-dot {
-  background: #374151;
+  background: #fcae00;
 }
