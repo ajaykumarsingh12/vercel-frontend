@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import WishlistToast from "./WishlistToast";
 import "./HallCard.css";
 
 const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
@@ -11,6 +12,12 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showBigHeart, setShowBigHeart] = useState(false);
+  const [wishlistToast, setWishlistToast] = useState({ visible: false, message: "" });
+
+  const showWishlistToast = (message) => {
+    setWishlistToast({ visible: true, message });
+    setTimeout(() => setWishlistToast({ visible: false, message: "" }), 1500);
+  };
   const images =
     hall.images && hall.images.length > 0
       ? hall.images.map((img) =>
@@ -167,15 +174,20 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
             
             // Trigger animation
             setIsAnimating(true);
+
+            const isCurrentlyFav = favorites?.includes(hall._id);
             
             // Show big heart animation only when liking (not unliking)
-            if (!favorites?.includes(hall._id)) {
+            if (!isCurrentlyFav) {
               setShowBigHeart(true);
               setTimeout(() => setShowBigHeart(false), 1000);
             }
             
             // Call toggle favorite
             await toggleFavorite(hall._id);
+
+            // Show bottom-center viewport toast via portal
+            showWishlistToast(isCurrentlyFav ? "Removed from Favourites" : "Added to your Favourites");
             
             // Remove animation class after animation completes
             setTimeout(() => {
@@ -310,6 +322,7 @@ const HallCard = ({ hall, cardAnimation, renderStars, showShare = false }) => {
           VIEW DETAIL
         </Link>
       </div>
+      <WishlistToast visible={wishlistToast.visible} message={wishlistToast.message} />
     </motion.div>
   );
 };
