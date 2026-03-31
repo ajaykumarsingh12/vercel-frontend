@@ -1170,7 +1170,7 @@
 
 .review-card-carousel {
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 1.25rem;
   border: 1px solid var(--input-border);
   display: flex;
