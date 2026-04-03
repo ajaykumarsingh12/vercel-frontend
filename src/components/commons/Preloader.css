@@ -29,8 +29,8 @@
 
 /* Simple White Loader Spinner */
 .loader-spinner {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
   margin: 0 auto 30px;
   border: 5px solid white;
   /* border-top: 5px solid #FF4444;  */
