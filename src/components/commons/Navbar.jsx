@@ -1146,15 +1146,11 @@ c14 0 27 9 34 23 9 19 11 16 11 -25 1 -27 -3 -48 -9 -48 -5 0 -10 9 -10 20 0
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                fill="currentColor"
                 style={{ display: user?.profileImage ? 'none' : 'block' }}
               >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
               </svg>
             </button>
             {showProfileMenu && renderProfileMenu()}
@@ -1322,15 +1318,11 @@ c14 0 27 9 34 23 9 19 11 16 11 -25 1 -27 -3 -48 -9 -48 -5 0 -10 9 -10 20 0
               width="20"
               height="20"
               viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              fill="currentColor"
               style={{ display: user?.profileImage ? 'none' : 'block' }}
             >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
             </svg>
           </button>
           {showProfileMenu && renderProfileMenu()}
