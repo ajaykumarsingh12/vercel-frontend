@@ -177,6 +177,7 @@ function App() {
               draggablePercent={40}
               draggableDirection="x"
               swipeToClose
+              style={{ zIndex: 999999 }}
             />
           </div>
         </Router>

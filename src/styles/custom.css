@@ -111,3 +111,8 @@
 .grid-3 {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
+
+/* Ensure toasts always appear above modals */
+.Toastify__toast-container {
+  z-index: 999999 !important;
+}
