@@ -1,4 +1,4 @@
-.auth-container {
+﻿.auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -647,9 +647,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 99999;
   backdrop-filter: blur(4px);
 }
+
 
 .modal-content {
   background: var(--card-bg);
@@ -660,6 +661,8 @@
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--input-border);
   animation: modalFadeIn 0.3s ease-out;
+  position: relative;
+  z-index: 100000;
 }
 
 @keyframes modalFadeIn {
@@ -1110,3 +1113,5 @@
   background-color: #166fe5;
   box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
 }
+
+

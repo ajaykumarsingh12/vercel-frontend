@@ -381,6 +381,7 @@ const Login = () => {
     setOtpValue("");
     setNewPasswordData({ newPassword: "", confirmNewPassword: "" });
     setNewPasswordErrors({});
+    document.body.classList.remove("modal-open");
   };
 
   const handleSubmit = async (e) => {
@@ -516,7 +517,7 @@ const Login = () => {
           <div className="forgot-password-link">
             <button
               type="button"
-              onClick={() => setShowForgotPassword(true)}
+              onClick={() => { setShowForgotPassword(true); document.body.classList.add("modal-open"); }}
               className="forgot-password-btn"
             >
               Forgot Password?
@@ -718,7 +719,12 @@ const Login = () => {
                 {forgotStep === "otp" && "Enter OTP"}
                 {forgotStep === "password" && "Set New Password"}
               </h3>
-              <button className="modal-close-btn" onClick={closeForgotPasswordModal} type="button">Ã—</button>
+              <button className="modal-close-btn" onClick={closeForgotPasswordModal} type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
             </div>
 
             {/* Step 1: Email */}
