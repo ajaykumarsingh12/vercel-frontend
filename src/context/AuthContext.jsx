@@ -227,19 +227,23 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-  const verifyEmailExists = async (email) => {
+  const sendOTP = async (email) => {
     try {
-      const response = await axios.post(
-        "/api/auth/verify-email",
-        { email }
-      );
-      return { success: true, exists: response.data.exists };
+      const response = await axios.post("/api/auth/send-otp", { email });
+      return { success: true, message: response.data.message };
     } catch (error) {
       console.error(error);
-      return {
-        success: false,
-        message: error.response?.data?.message || "Failed to verify email",
-      };
+      return { success: false, message: error.response?.data?.message || "Failed to send OTP" };
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      const response = await axios.post("/api/auth/verify-otp", { email, otp });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: error.response?.data?.message || "Invalid OTP" };
     }
   };
 
@@ -346,7 +350,9 @@ export const AuthProvider = ({ children }) => {
     toggleFavorite,
     updateProfile,
     updateUser,
-    verifyEmailExists,
+    verifyEmailExists: sendOTP, // keep backward compat alias
+    sendOTP,
+    verifyOTP,
     resetPassword,
     googleLogin,
     appleLogin,

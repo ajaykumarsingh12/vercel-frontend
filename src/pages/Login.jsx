@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -10,7 +10,8 @@ const Login = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
-  const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
+  const [forgotStep, setForgotStep] = useState("email"); // "email" | "otp" | "password"
+  const [otpValue, setOtpValue] = useState("");
   const [newPasswordData, setNewPasswordData] = useState({
     newPassword: "",
     confirmNewPassword: ""
@@ -24,7 +25,7 @@ const Login = () => {
   const [showSocialLoginModal, setShowSocialLoginModal] = useState(false); // Modal for social login
   const [socialLoginType, setSocialLoginType] = useState("google"); // Track which social login (google or facebook)
   const [fbReady, setFbReady] = useState(false); // Track if Facebook SDK is ready
-  const { login, verifyEmailExists, resetPassword, googleLogin, facebookLogin } = useAuth();
+  const { login, sendOTP, verifyOTP, resetPassword, googleLogin, facebookLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,7 +48,7 @@ const Login = () => {
       if (data.success) {
         setSessionId(data.sessionId);
         localStorage.setItem('socialLoginSessionId', data.sessionId);
-        // console.log('🔵 Role stored in database:', role, 'Session ID:', data.sessionId);
+        // console.log('ðŸ”µ Role stored in database:', role, 'Session ID:', data.sessionId);
       }
     } catch (error) {
       console.error('Failed to store role:', error);
@@ -279,23 +280,42 @@ const Login = () => {
     setForgotPasswordLoading(true);
 
     try {
-      // Check if email exists in the database
-      const result = await verifyEmailExists(forgotPasswordEmail.trim());
-
-      if (result.success && result.exists) {
-        // Email exists, show new password form
-        setShowNewPasswordForm(true);
-        toast.success("Email verified! Please set your new password.");
-      } else if (result.success && !result.exists) {
-        // Email doesn't exist
-        toast.error("Email not found. Please check your email address or register for a new account.");
+      const result = await sendOTP(forgotPasswordEmail.trim());
+      if (result.success) {
+        setForgotStep("otp");
+        toast.success("OTP sent to your email! Please check your inbox.");
       } else {
-        // API call failed
-        toast.error("Failed to verify email. Please try again.");
+        toast.error(result.message || "Failed to send OTP. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to verify email. Please try again.");
+      toast.error("Failed to send OTP. Please try again.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+
+    if (!otpValue.trim() || otpValue.trim().length !== 6) {
+      toast.error("Please enter the 6-digit OTP");
+      return;
+    }
+
+    setForgotPasswordLoading(true);
+
+    try {
+      const result = await verifyOTP(forgotPasswordEmail.trim(), otpValue.trim());
+      if (result.success) {
+        setForgotStep("password");
+        toast.success("OTP verified! Please set your new password.");
+      } else {
+        toast.error(result.message || "Invalid OTP. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to verify OTP. Please try again.");
     } finally {
       setForgotPasswordLoading(false);
     }
@@ -356,8 +376,9 @@ const Login = () => {
 
   const closeForgotPasswordModal = () => {
     setShowForgotPassword(false);
-    setShowNewPasswordForm(false);
+    setForgotStep("email");
     setForgotPasswordEmail("");
+    setOtpValue("");
     setNewPasswordData({ newPassword: "", confirmNewPassword: "" });
     setNewPasswordErrors({});
   };
@@ -619,7 +640,7 @@ const Login = () => {
                 onClick={() => setShowSocialLoginModal(false)}
                 type="button"
               >
-                ×
+                Ã—
               </button>
             </div>
 
@@ -692,34 +713,23 @@ const Login = () => {
         <div className="modal-overlay" onClick={closeForgotPasswordModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{showNewPasswordForm ? "Set New Password" : "Reset Password"}</h3>
-              <button
-                className="modal-close-btn"
-                onClick={closeForgotPasswordModal}
-                type="button"
-              >
-                ×
-              </button>
+              <h3>
+                {forgotStep === "email" && "Reset Password"}
+                {forgotStep === "otp" && "Enter OTP"}
+                {forgotStep === "password" && "Set New Password"}
+              </h3>
+              <button className="modal-close-btn" onClick={closeForgotPasswordModal} type="button">Ã—</button>
             </div>
 
-            {!showNewPasswordForm ? (
+            {/* Step 1: Email */}
+            {forgotStep === "email" && (
               <form onSubmit={handleForgotPassword} className="modal-form">
                 <p className="modal-description">
-                  Enter your email address to verify your account and reset your password.
+                  Enter your registered email. We will send a 6-digit OTP to verify it&apos;s you.
                 </p>
                 <div className="form-group">
                   <label htmlFor="forgot-email">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
@@ -730,55 +740,64 @@ const Login = () => {
                     type="email"
                     value={forgotPasswordEmail}
                     onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder="Enter your registered email"
                     required
                     disabled={forgotPasswordLoading}
                   />
                 </div>
                 <div className="modal-actions">
-                  <button
-                    type="button"
-                    onClick={closeForgotPasswordModal}
-                    className="btn-modal-cancel"
-                    disabled={forgotPasswordLoading}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-modal-submit"
-                    disabled={forgotPasswordLoading}
-                  >
-                    {forgotPasswordLoading ? (
-                      <>
-                        <span className="spinner"></span>
-                        Verifying...
-                      </>
-                    ) : (
-                      "Verify Email"
-                    )}
+                  <button type="button" onClick={closeForgotPasswordModal} className="btn-modal-cancel" disabled={forgotPasswordLoading}>Cancel</button>
+                  <button type="submit" className="btn-modal-submit" disabled={forgotPasswordLoading}>
+                    {forgotPasswordLoading ? (<><span className="spinner"></span>Sending OTP...</>) : "Send OTP"}
                   </button>
                 </div>
               </form>
-            ) : (
+            )}
+
+            {/* Step 2: OTP */}
+            {forgotStep === "otp" && (
+              <form onSubmit={handleVerifyOTP} className="modal-form">
+                <p className="modal-description">
+                  A 6-digit OTP has been sent to <strong>{forgotPasswordEmail}</strong>. Enter it below. Valid for 10 minutes.
+                </p>
+                <div className="form-group">
+                  <label htmlFor="otp-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Enter OTP
+                  </label>
+                  <input
+                    id="otp-input"
+                    type="text"
+                    value={otpValue}
+                    onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="Enter 6-digit OTP"
+                    maxLength={6}
+                    required
+                    disabled={forgotPasswordLoading}
+                    style={{ letterSpacing: "4px", fontSize: "20px", textAlign: "center" }}
+                  />
+                </div>
+                <div className="modal-actions">
+                  <button type="button" onClick={() => setForgotStep("email")} className="btn-modal-cancel" disabled={forgotPasswordLoading}>Back</button>
+                  <button type="submit" className="btn-modal-submit" disabled={forgotPasswordLoading}>
+                    {forgotPasswordLoading ? (<><span className="spinner"></span>Verifying...</>) : "Verify OTP"}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Step 3: New Password */}
+            {forgotStep === "password" && (
               <form onSubmit={handleNewPasswordSubmit} className="modal-form">
                 <p className="modal-description">
-                  Email verified for: <strong>{forgotPasswordEmail}</strong><br />
-                  Please enter your new password below.
+                  OTP verified for <strong>{forgotPasswordEmail}</strong>. Please set your new password.
                 </p>
                 <div className="form-group">
                   <label htmlFor="new-password">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
@@ -798,39 +817,16 @@ const Login = () => {
                   {newPasswordData.newPassword && (
                     <div className="password-strength">
                       <div className="strength-bar">
-                        <div
-                          className="strength-fill"
-                          style={{
-                            width: `${(getPasswordStrength(newPasswordData.newPassword).strength / 5) * 100}%`,
-                            backgroundColor: getPasswordStrength(newPasswordData.newPassword).color
-                          }}
-                        ></div>
+                        <div className="strength-fill" style={{ width: `${(getPasswordStrength(newPasswordData.newPassword).strength / 5) * 100}%`, backgroundColor: getPasswordStrength(newPasswordData.newPassword).color }}></div>
                       </div>
-                      <span
-                        className="strength-text"
-                        style={{ color: getPasswordStrength(newPasswordData.newPassword).color }}
-                      >
-                        {getPasswordStrength(newPasswordData.newPassword).text}
-                      </span>
+                      <span className="strength-text" style={{ color: getPasswordStrength(newPasswordData.newPassword).color }}>{getPasswordStrength(newPasswordData.newPassword).text}</span>
                     </div>
                   )}
-                  {newPasswordErrors.newPassword && (
-                    <span className="error-message">{newPasswordErrors.newPassword}</span>
-                  )}
+                  {newPasswordErrors.newPassword && <span className="error-message">{newPasswordErrors.newPassword}</span>}
                 </div>
                 <div className="form-group">
                   <label htmlFor="confirm-new-password">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
@@ -847,32 +843,12 @@ const Login = () => {
                     disabled={forgotPasswordLoading}
                     className={newPasswordErrors.confirmNewPassword ? 'error' : ''}
                   />
-                  {newPasswordErrors.confirmNewPassword && (
-                    <span className="error-message">{newPasswordErrors.confirmNewPassword}</span>
-                  )}
+                  {newPasswordErrors.confirmNewPassword && <span className="error-message">{newPasswordErrors.confirmNewPassword}</span>}
                 </div>
                 <div className="modal-actions">
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPasswordForm(false)}
-                    className="btn-modal-cancel"
-                    disabled={forgotPasswordLoading}
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-modal-submit"
-                    disabled={forgotPasswordLoading}
-                  >
-                    {forgotPasswordLoading ? (
-                      <>
-                        <span className="spinner"></span>
-                        Updating...
-                      </>
-                    ) : (
-                      "Update Password"
-                    )}
+                  <button type="button" onClick={() => setForgotStep("otp")} className="btn-modal-cancel" disabled={forgotPasswordLoading}>Back</button>
+                  <button type="submit" className="btn-modal-submit" disabled={forgotPasswordLoading}>
+                    {forgotPasswordLoading ? (<><span className="spinner"></span>Updating...</>) : "Update Password"}
                   </button>
                 </div>
               </form>
@@ -883,5 +859,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
